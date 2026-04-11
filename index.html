@@ -721,6 +721,8 @@
             const main = document.getElementById('mainContent');
             console.log('loadEnabledFeeds called, enabledFeeds:', enabledFeeds);
             
+            hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
+            
             if (!enabledFeeds || enabledFeeds.length === 0) {
                 main.innerHTML = '<div class="no-feeds">Keine Feeds ausgewählt.<br>Nutze das Menü (☰) um Feeds zu aktivieren.</div>';
                 return;
@@ -764,7 +766,8 @@
                                 };
                             });
                             feedArticles[url] = { name: feedName, items: items };
-                            allArticles.push(...items);
+                            const newItems = items.filter(item => !hiddenItems.includes(item.link));
+                            allArticles.push(...newItems);
                             loaded++;
                             renderIncremental();
                         } else {
@@ -805,7 +808,8 @@
                                 };
                             });
                             feedArticles[url] = { name: feedName, items: articles };
-                            allArticles.push(...articles);
+                            const newArticles = articles.filter(item => !hiddenItems.includes(item.link));
+                            allArticles.push(...newArticles);
                         }
                         loaded++;
                         renderIncremental();
@@ -853,7 +857,6 @@
                             ${item.thumbnail ? `<img class="article-image" src="${item.thumbnail}" alt="">` : ''}
                             <div class="article-header">
                                 <div class="article-title">${item.title}</div>
-                                <span class="article-status" onclick="event.stopPropagation(); toggleRead('${item.link}')">👁</span>
                             </div>
                             <div class="article-meta">
                                 <span style="color:var(--accent)">${item.feedName}</span>
