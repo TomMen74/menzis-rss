@@ -111,6 +111,25 @@
             box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
             filter: brightness(1.5);
             cursor: pointer;
+            position: relative;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .article-card.swiping {
+            transform: translateX(-80px);
+            opacity: 0.6;
+        }
+        .article-card .swipe-hint {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .article-card:hover .swipe-hint {
+            opacity: 0.4;
         }
 
         .article-card img {
@@ -759,7 +778,8 @@
             document.getElementById('mainContent').innerHTML = `
                 <div class="articles-list">
                     ${articles.map(a => `
-                        <div class="article-card" onclick="openArticle('${a.link}')">
+                        <div class="article-card" data-link="${a.link}" onclick="openArticle('${a.link}')" ontouchstart="startSwipe(event, this)" ontouchend="endSwipe(event, this)">
+                            <span class="swipe-hint">←</span>
                             ${a.thumbnail ? `<img src="${a.thumbnail}" alt="">` : ''}
                             <div class="article-title">${a.title}</div>
                             <div class="article-meta"><span>${a.feedName}</span> • ${new Date(a.pubDate).toLocaleString('de-DE', {hour:'2-digit', minute:'2-digit'})}</div>
@@ -769,6 +789,29 @@
                 <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
             `;
             initPullToRefresh();
+        }
+
+        let swipeStartX = 0;
+        let cardEl = null;
+
+        function startSwipe(e, card) {
+            cardEl = card;
+            swipeStartX = e.touches[0].clientX;
+        }
+
+        function endSwipe(e, card) {
+            const endX = e.changedTouches[0].clientX;
+            const diff = swipeStartX - endX;
+            if (diff > 80) {
+                const link = card.dataset.link;
+                if (!hiddenItems.includes(link)) {
+                    hiddenItems.push(link);
+                    localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
+                    updateHiddenCount();
+                }
+                card.style.display = 'none';
+            }
+            card.classList.remove('swiping');
         }
 
         function filterArticles(query) {
