@@ -401,8 +401,11 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v2.0</small></div>
-        <input type="text" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
+        <div class="header-title">Menzis RSS <small>v2.0.2</small></div>
+        <div style="position:relative;display:flex;align-items:center;">
+            <svg style="position:absolute;left:8px;width:14px;height:14px;fill:var(--text-dim)" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
+            <input type="text" class="search-input" style="padding-left:28px" placeholder="Suchen..." oninput="filterArticles(this.value)">
+        </div>
     </div>
 
     <div class="tab-bar" id="tabBar">
@@ -453,10 +456,6 @@
         <div class="overlay-content">
             <div class="feed-category-title">Farbschema</div>
             <div class="theme-selector" id="themeSelector"></div>
-            <div class="feed-category-title">Artikeldarstellung</div>
-            <div class="card-style-selector">
-                <div class="card-style-btn active" data-style="modern" onclick="setCardStyle('modern')">Modern</div>
-            </div>
         </div>
     </div>
 
@@ -738,6 +737,10 @@
                                 }
                                 if (!thumb && item.description) {
                                     const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
+                                    if (m) thumb = m[1];
+                                }
+                                if (!thumb && item.content) {
+                                    const m = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
                                     if (m) thumb = m[1];
                                 }
                                 allArticles.push({
