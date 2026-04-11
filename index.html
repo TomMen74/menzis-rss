@@ -946,8 +946,7 @@
                             const items = data.items.slice(0, 50).map(item => {
                                 let thumbnail = item.thumbnail || '';
                                 if (!thumbnail && item.enclosure) {
-                                    if (item.enclosure.thumbnail) thumbnail = item.enclosure.thumbnail;
-                                    else if (item.enclosure.link) thumbnail = item.enclosure.link;
+                                    thumbnail = item.enclosure.thumbnail || item.enclosure.link || '';
                                 }
                                 if (!thumbnail && item.description) {
                                     const imgMatch = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
