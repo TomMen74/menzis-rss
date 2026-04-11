@@ -2,104 +2,71 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1E0505">
-    <title>Menzis RSS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Menzis RSS v2.0</title>
     <style>
         :root {
             --bg: #000000;
             --card-bg: #1E0505;
+            --text: #e0e0e0;
+            --text-dim: #888;
             --accent: #00B800;
-            --text: #ffffff;
-            --text-dim: #888888;
             --orange: #ff8c00;
             --red: #ff0000;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-
-        body { background: var(--bg); color: var(--text); min-height: 100vh; }
-
-        .modern-card {
-            border: 1px solid var(--accent);
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .modern-card:hover {
-            background: rgba(255,255,255,0.05);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .header {
-            position: fixed; top: 0; left: 0; right: 0;
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
             background: var(--card-bg);
-            border-bottom: 2px solid var(--accent);
-            padding: 1rem;
-            display: flex; align-items: center; gap: 1rem;
+            border-bottom: 1px solid var(--accent);
             z-index: 100;
         }
 
         .hamburger {
-            width: 30px; height: 24px;
-            display: flex; flex-direction: column; justify-content: space-between;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
             cursor: pointer;
-            padding: 4px 0;
+            padding: 5px;
         }
-
         .hamburger span {
-            display: block; height: 3px; background: var(--accent); border-radius: 2px;
-            transition: 0.3s;
+            width: 20px;
+            height: 2px;
+            background: var(--accent);
         }
-
-        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
-        .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
 
         .header-title {
-            font-size: 1.2rem; font-weight: 600; color: var(--orange);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--orange);
             flex: 1;
         }
 
         .search-input {
-            background: var(--card-bg);
+            background: var(--bg);
             border: 1px solid var(--accent);
             color: var(--text);
-            padding: 0.5rem;
-            padding-left: 30px;
-            border-radius: 8px;
+            padding: 0.4rem 0.5rem;
+            border-radius: 6px;
             width: 100px;
-            font-size: 0.85rem;
-            outline: none;
-            transition: width 0.3s;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            font-size: 0.8rem;
         }
-        .search-input:focus {
-            width: 160px;
-        }
-        .search-input::placeholder {
-            color: var(--text-dim);
-        }
-        .search-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .search-icon {
-            position: absolute;
-            left: 8px;
-            font-size: 0.9rem;
-            color: var(--text-dim);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-        }
-        .search-icon svg {
-            width: 16px;
-            height: 16px;
-            fill: var(--accent);
-        }
+        .search-input:focus { width: 150px; outline: none; }
 
         .tab-bar {
             display: flex;
@@ -111,12 +78,13 @@
             scrollbar-width: none;
         }
         .tab-bar::-webkit-scrollbar { display: none; }
+
         .tab {
-            padding: 0.4rem 0.8rem;
-            border-radius: 15px;
+            padding: 0.35rem 0.7rem;
+            border-radius: 12px;
             background: var(--bg);
             color: var(--text-dim);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             white-space: nowrap;
             cursor: pointer;
             border: 1px solid transparent;
@@ -124,418 +92,373 @@
         }
         .tab.active {
             background: var(--accent);
-            color: var(--bg);
+            color: #000;
             font-weight: 600;
         }
 
-        .sidebar-nav {
-            display: flex; flex-direction: column; gap: 0.5rem;
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 0.75rem;
         }
-
-        .nav-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem; background: rgba(0,0,0,0.3);
-            border-radius: 10px; border: 1px solid rgba(0,180,0,0.3);
-            cursor: pointer; font-size: 1rem;
-            transition: 0.2s;
-        }
-
-        .nav-item:hover {
-            background: rgba(0,180,0,0.15);
-            border-color: var(--accent);
-        }
-
-        .nav-item::after { content: '→'; color: var(--accent); }
-
-        .overlay-page {
-            position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
-            background: var(--card-bg);
-            z-index: 150;
-            display: none;
-            overflow-y: auto;
-        }
-
-        .overlay-page.active { display: block; }
-
-        .overlay-header {
-            background: var(--bg);
-            padding: 1rem;
-            border-bottom: 2px solid var(--accent);
-            display: flex; align-items: center; gap: 1rem;
-        }
-
-        .overlay-back {
-            background: var(--accent); color: #000;
-            border: none; padding: 0.5rem 1rem;
-            border-radius: 8px; cursor: pointer;
-            font-weight: 600;
-        }
-
-        .overlay-title { font-size: 1.1rem; color: var(--orange); }
-
-        .overlay-content { padding: 1rem; }
-
-        .sidebar {
-            position: fixed; top: 60px; left: -300px;
-            width: 300px; height: calc(100vh - 60px);
-            background: var(--card-bg);
-            border-right: 2px solid var(--accent);
-            padding: 1rem;
-            overflow-y: auto;
-            transition: 0.3s;
-            z-index: 99;
-        }
-
-        .sidebar.active { left: 0; }
-
-        .sidebar-section { margin-bottom: 1.5rem; }
-
-        .sidebar-title {
-            font-size: 1rem; color: var(--orange);
-            margin-bottom: 0.75rem; padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(0,180,0,0.3);
-        }
-
-        .feed-list { display: flex; flex-direction: column; gap: 0.5rem; }
-
-        .feed-item {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.5rem; background: rgba(0,0,0,0.3);
-            border-radius: 8px; cursor: pointer;
-        }
-
-        .feed-item:hover { background: rgba(0,180,0,0.1); }
-
-        .feed-checkbox { display: none; }
-
-        .feed-toggle {
-            width: 20px; height: 20px; border: 2px solid var(--accent);
-            border-radius: 4px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; flex-shrink: 0;
-        }
-
-        .feed-toggle.checked { background: var(--accent); }
-
-        .feed-toggle.checked::after { content: '✓'; color: #000; font-size: 12px; }
-
-        .feed-name { font-size: 0.85rem; color: var(--text); }
-
-        .custom-url-input {
-            width: 100%; padding: 0.5rem; margin-bottom: 0.5rem;
-            background: #000; border: 1px solid var(--accent);
-            color: var(--text); border-radius: 8px;
-        }
-
-        .add-btn {
-            width: 100%; padding: 0.5rem; background: var(--accent);
-            color: #000; border: none; border-radius: 8px;
-            cursor: pointer; font-weight: 600;
-        }
-
-        .add-btn:hover { opacity: 0.8; }
-
-        .feed-category-title {
-            font-size: 0.85rem; color: var(--text-dim);
-            margin: 1rem 0 0.5rem 0; padding-top: 0.5rem;
-            border-top: 1px solid rgba(0,180,0,0.2);
-        }
-
-        .feed-category-title:first-of-type {
-            margin-top: 0; padding-top: 0; border-top: none;
-        }
-
-        .theme-selector {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
-        }
-
-        .theme-btn {
-            padding: 0.75rem; border: 2px solid transparent;
-            border-radius: 8px; cursor: pointer;
-            text-align: center; font-size: 0.8rem;
-        }
-
-        .theme-btn.active { border-color: var(--accent); }
-
-        .theme-btn[data-theme="classic"] { background: #1E0505; color: #00B800; }
-        .theme-btn[data-theme="blue"] { background: #051525; color: #00D4FF; }
-        .theme-btn[data-theme="forest"] { background: #0A2008; color: #00FF66; }
-        .theme-btn[data-theme="sunset"] { background: #200A15; color: #FF8C00; }
-        .theme-btn[data-theme="neutral"] { background: #1a1a1a; color: #888888; }
-        .theme-btn[data-theme="light"] { background: #f5f5f5; color: #333333; }
-        .theme-btn[data-theme="night"] { background: #000000; color: #ffffff; }
 
         .article-card {
-            position: relative;
-            transition: transform 0.2s, opacity 0.2s;
-            touch-action: pan-y;
             background: var(--card-bg);
             border: 1px solid var(--accent);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 10px;
+            padding: 0.75rem;
             box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-            cursor: pointer;
             filter: brightness(1.5);
-        }
-        .article-card.swiping {
-            transform: translateX(-100px);
-            opacity: 0.5;
-        }
-        .article-card.hidden {
-            display: none;
-        }
-
-        .swipe-hint {
-            position: absolute; right: 10px; top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5rem; opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .article-card:hover .swipe-hint { opacity: 0.5; }
-
-        .hidden-counter {
-            background: var(--accent); color: #000;
-            padding: 2px 8px; border-radius: 10px;
-            font-size: 0.75rem; margin-left: 0.5rem;
-        }
-
-        .main-content {
-            padding-top: 70px; padding-bottom: 2rem;
-            padding-left: 1rem; padding-right: 1rem;
-        }
-
-        .category-title {
-            font-size: 1.1rem; color: var(--orange);
-            margin: 1.5rem 0 1rem 0; padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(0,180,0,0.3);
-        }
-
-        .articles-list { display: flex; flex-direction: column; gap: 1rem; }
-
-        .modern-card {
-            background: var(--card-bg);
-            border: 1px solid var(--accent);
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
             cursor: pointer;
-            filter: brightness(1.5);
         }
 
-        .article-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
+        .article-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
             margin-bottom: 0.5rem;
         }
 
         .article-title {
-            font-size: 1rem; font-weight: 500;
-            color: var(--text); flex: 1;
-            line-height: 1.4;
-        }
-
-        .article-status {
-            font-size: 1.2rem; cursor: pointer;
-            margin-left: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.3rem;
         }
 
         .article-meta {
-            font-size: 0.75rem; color: var(--text-dim);
-            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+        .article-meta span { color: var(--accent); }
+
+        .swipe-hint {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--accent);
+            opacity: 0.3;
         }
 
-        .article-image {
-            width: 100%; height: 150px; object-fit: cover;
-            border-radius: 8px; margin-bottom: 0.5rem;
-            background: rgba(0,0,0,0.3);
+        .no-feeds {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-dim);
         }
 
-        .loading { 
-            text-align: center; 
-            padding: 4rem 2rem; 
-            color: var(--accent); 
+        .loading {
+            text-align: center;
+            padding: 3rem;
         }
         .loading-dots {
             display: flex;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
         }
         .loading-dots span {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
-            animation: bounceLetter 1.5s ease-in-out infinite;
+            animation: bounce 1.5s ease-in-out infinite;
         }
         .loading-dots span:nth-child(1) { animation-delay: 0s; }
         .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
         .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
         .loading-dots span:nth-child(4) { animation-delay: 0.45s; }
         .loading-dots span:nth-child(5) { animation-delay: 0.6s; }
-        @keyframes bounceLetter {
-            0%, 100% { 
-                transform: translateY(0) scale(1); 
-            }
-            20% { 
-                transform: translateY(-25px) scale(1.1) rotate(-8deg); 
-            }
-            40% { 
-                transform: translateY(0) scale(1); 
-            }
-            60% { 
-                transform: translateY(-10px) scale(0.95) rotate(5deg); 
-            }
-            80% { 
-                transform: translateY(0) scale(1); 
-            }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-20px); }
+            60% { transform: translateY(0); }
         }
 
-        .no-feeds {
-            text-align: center; padding: 3rem;
-            color: var(--text-dim);
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100vh;
+            background: var(--card-bg);
+            border-right: 2px solid var(--accent);
+            z-index: 200;
+            transition: left 0.3s;
+            overflow-y: auto;
+            padding-bottom: 2rem;
+        }
+        .sidebar.active { left: 0; }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
-        .article-viewer {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.9);
-            z-index: 200; overflow-y: auto;
+        .sidebar-title {
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            border-bottom: 1px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hidden-count {
+            background: var(--accent);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
         }
 
-        .article-viewer.active { display: block; }
+        .nav-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: background 0.2s;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
 
-        .viewer-header {
-            position: fixed; top: 0; left: 0; right: 0;
-            background: var(--card-bg); padding: 1rem;
-            border-bottom: 2px solid var(--accent);
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 201;
+        .overlay-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            z-index: 300;
+            display: none;
+            flex-direction: column;
+        }
+        .overlay-page.active { display: flex; }
+
+        .overlay-header {
+            padding: 1rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .close-btn {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
-        .back-btn {
-            background: var(--accent); color: #000; border: none;
-            padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;
+        .overlay-title {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .overlay-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .feed-category-title {
+            padding: 0.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--card-bg);
+            margin-top: 0.5rem;
+        }
+
+        .feed-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .feed-toggle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .feed-toggle.checked::after {
+            content: '✓';
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+
+        .theme-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+
+        .theme-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid var(--accent);
+        }
+        .theme-btn.active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .card-style-selector {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+        .card-style-btn {
+            flex: 1;
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .card-style-btn.active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .custom-url-input {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .add-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
             font-weight: 600;
         }
 
-        .viewer-title { color: var(--text); font-weight: 600; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .viewer-content {
-            padding: 80px 1rem 2rem 1rem;
-            max-width: 800px; margin: 0 auto;
+        .restore-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
         }
 
-        .viewer-content iframe { width: 100%; height: 80vh; border: none; }
+        .pull-indicator {
+            text-align: center;
+            padding: 0.5rem;
+            color: var(--accent);
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="hamburger" id="hamburger" onclick="handleHamburgerClick()">
+        <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <span style="font-size:0.7rem;color:var(--text-dim)">v1.3.2</span></div>
-        <div class="search-wrapper">
-            <span class="search-icon">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
-            </span>
-            <input type="text" id="searchInput" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
-        </div>
+        <div class="header-title">Menzis RSS <small>v2.0</small></div>
+        <input type="text" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
     </div>
 
-    <div class="tab-bar">
-        <div class="tab active" data-filter="all" onclick="setArticleFilter('all')">Alle</div>
-        <div class="tab" data-filter="national" onclick="setArticleFilter('national')">Nachrichten</div>
-        <div class="tab" data-filter="tech" onclick="setArticleFilter('tech')">Tech</div>
-        <div class="tab" data-filter="finance" onclick="setArticleFilter('finance')">Wirtschaft</div>
-        <div class="tab" data-filter="tech2" onclick="setArticleFilter('tech2')">Tech-News</div>
-        <div class="tab" data-filter="mobile" onclick="setArticleFilter('mobile')">Mobile</div>
-        <div class="tab" data-filter="apple" onclick="setArticleFilter('apple')">Apple</div>
-        <div class="tab" data-filter="society" onclick="setArticleFilter('society')">Gesellschaft</div>
-        <div class="tab" data-filter="cooking" onclick="setArticleFilter('cooking')">Kochen</div>
+    <div class="tab-bar" id="tabBar">
+        <div class="tab active" data-filter="all" onclick="setFilter('all')">Alle</div>
+        <div class="tab" data-filter="national" onclick="setFilter('national')">Nachrichten</div>
+        <div class="tab" data-filter="tech" onclick="setFilter('tech')">Tech</div>
+        <div class="tab" data-filter="finance" onclick="setFilter('finance')">Wirtschaft</div>
+        <div class="tab" data-filter="tech2" onclick="setFilter('tech2')">Tech-News</div>
+        <div class="tab" data-filter="mobile" onclick="setFilter('mobile')">Mobile</div>
+        <div class="tab" data-filter="apple" onclick="setFilter('apple')">Apple</div>
+        <div class="tab" data-filter="society" onclick="setFilter('society')">Gesellschaft</div>
+        <div class="tab" data-filter="cooking" onclick="setFilter('cooking')">Kochen</div>
+    </div>
+
+    <div id="mainContent">
+        <div class="loading">
+            <div class="loading-dots"><span>L</span><span>A</span><span>D</span><span>E</span><span>N</span></div>
+        </div>
+        <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
     </div>
 
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-nav" id="sidebarNav">
+        <div class="sidebar-header">
+            <span>Menü</span>
+            <button class="close-sidebar" onclick="toggleSidebar()">×</button>
+        </div>
+        <div class="nav-item" onclick="openOverlay('feeds')">Feed-Auswahl</div>
+        <div class="nav-item" onclick="openOverlay('design')">Aussehen</div>
+        <div class="nav-item" onclick="openOverlay('url')">Eigene URL</div>
+        <div class="nav-item" onclick="openOverlay('hidden')">
+            Versteckte Artikel <span id="hiddenCount" class="hidden-count">0</span>
         </div>
     </div>
 
-    <!-- Overlay: Feed-Auswahl -->
     <div class="overlay-page" id="overlay-feeds">
         <div class="overlay-header">
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Feed-Auswahl</span>
         </div>
-        <div class="overlay-content">
-            <div class="feed-category-title">Nachrichten</div>
-            <div class="feed-list" id="overlay-nationalFeeds"></div>
-            <div class="feed-category-title">Regional</div>
-            <div class="feed-list" id="overlay-regionalFeeds"></div>
-            <div class="feed-category-title">Technik</div>
-            <div class="feed-list" id="overlay-techFeeds"></div>
-            <div class="feed-category-title">Wirtschaft</div>
-            <div class="feed-list" id="overlay-financeFeeds"></div>
-            <div class="feed-category-title">Sport</div>
-            <div class="feed-list" id="overlay-sportFeeds"></div>
-            <div class="feed-category-title">Wissenschaft</div>
-            <div class="feed-list" id="overlay-scienceFeeds"></div>
-            <div class="feed-category-title">Kultur</div>
-            <div class="feed-list" id="overlay-cultureFeeds"></div>
-            <div class="feed-category-title">Tech-News</div>
-            <div class="feed-list" id="overlay-tech2Feeds"></div>
-            <div class="feed-category-title">Wirtschaft</div>
-            <div class="feed-list" id="overlay-finance2Feeds"></div>
-            <div class="feed-category-title">Gesellschaft</div>
-            <div class="feed-list" id="overlay-societyFeeds"></div>
-            <div class="feed-category-title">Wissenschaft 2</div>
-            <div class="feed-list" id="overlay-science2Feeds"></div>
-            <div class="feed-category-title">Lifestyle</div>
-            <div class="feed-list" id="overlay-lifestyleFeeds"></div>
-            <div class="feed-category-title">Android & Mobile</div>
-            <div class="feed-list" id="overlay-mobileFeeds"></div>
-            <div class="feed-category-title">Apple</div>
-            <div class="feed-list" id="overlay-appleFeeds"></div>
-            <div class="feed-category-title">Kochen</div>
-            <div class="feed-list" id="overlay-cookingFeeds"></div>
-        </div>
+        <div class="overlay-content" id="feedLists"></div>
     </div>
 
-    <!-- Overlay: Aussehen -->
     <div class="overlay-page" id="overlay-design">
         <div class="overlay-header">
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Aussehen</span>
         </div>
         <div class="overlay-content">
-            <div class="theme-selector">
-                <div class="theme-btn active" data-theme="classic" onclick="setTheme('classic')">Classic</div>
-                <div class="theme-btn" data-theme="blue" onclick="setTheme('blue')">Midnight</div>
-                <div class="theme-btn" data-theme="forest" onclick="setTheme('forest')">Forest</div>
-                <div class="theme-btn" data-theme="sunset" onclick="setTheme('sunset')">Sunset</div>
-                <div class="theme-btn night-btn" data-theme="night" onclick="setTheme('night')">Nacht</div>
-            </div>
+            <div class="feed-category-title">Farbschema</div>
+            <div class="theme-selector" id="themeSelector"></div>
             <div class="feed-category-title">Artikeldarstellung</div>
-            <div class="theme-selector">
-                <div class="theme-btn active" data-card="modern" onclick="setCardStyle('modern')">Modern</div>
-                <div class="theme-btn" data-card="pulsate" onclick="setCardStyle('pulsate')">Pulsierend</div>
+            <div class="card-style-selector">
+                <div class="card-style-btn active" data-style="modern" onclick="setCardStyle('modern')">Modern</div>
             </div>
         </div>
     </div>
 
-    <!-- Overlay: Manuelle URL -->
     <div class="overlay-page" id="overlay-url">
         <div class="overlay-header">
-            <span class="overlay-title">Manuelle URL</span>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <span class="overlay-title">Eigene URL hinzufügen</span>
         </div>
         <div class="overlay-content">
-            <input type="text" class="custom-url-input" id="customFeedUrl2" placeholder="https://...">
-            <button class="add-btn" onclick="addCustomFeedFromOverlay()">Hinzufügen</button>
+            <input type="text" class="custom-url-input" id="customUrl" placeholder="https://...">
+            <button class="add-btn" onclick="addCustomFeed()">Hinzufügen</button>
         </div>
     </div>
 
-    <!-- Overlay: Versteckte Artikel -->
     <div class="overlay-page" id="overlay-hidden">
         <div class="overlay-header">
-            <span class="overlay-title" id="hiddenTitle">Versteckte Artikel</span>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <span class="overlay-title">Versteckte Artikel</span>
         </div>
-        <div class="overlay-content">
-            <div id="hiddenArticlesList"></div>
-        </div>
+        <div class="overlay-content" id="hiddenList"></div>
     </div>
-
-    <div class="main-content" id="mainContent"></div>
 
     <script>
         const feedData = {
@@ -599,26 +522,11 @@
                 { name: 'Caschy', url: 'https://stadt-bremerhaven.de/feed/' },
                 { name: 'Netzpolitik', url: 'https://netzpolitik.org/feed/' },
                 { name: 't3n', url: 'https://t3n.de/rss.xml' },
-                { name: 'Golem', url: 'https://www.golem.de/rss.php?feed=RSS2.0' },
-                { name: 'Heise', url: 'https://www.heise.de/rss/heise-atom.xml' },
                 { name: 'Kuketz IT', url: 'https://www.kuketz-blog.de/feed/' },
-                { name: 'Linux-Magazin', url: 'https://www.linux-magazin.de/feed/' },
                 { name: 'ComputerBase', url: 'https://www.computerbase.de/rss/news.xml' },
-                { name: 'Deskmodder', url: 'https://www.deskmodder.de/blog/feed/' },
-                { name: 'iPhone-Ticker', url: 'https://www.iphone-ticker.de/feed/' },
-                { name: 'Borns IT', url: 'https://www.borncity.com/blog/feed/' },
                 { name: 'Hardwareluxx', url: 'https://www.hardwareluxx.de/index.php?format=feed&type=rss' },
-                { name: 'MobileGeeks', url: 'https://www.mobilegeeks.de/feed/' },
-                { name: 'SmartHome', url: 'https://www.smarthomeassistent.de/feed/' },
-                { name: 'Admin Magazin', url: 'https://www.admin-magazin.de/feed/' },
-                { name: 'Linux-Community', url: 'https://www.linux-community.de/feed/' },
-                { name: 'Pro-Linux', url: 'https://www.pro-linux.de/backend/pro-linux.rdf' },
-                { name: 'Thomas-Krenn', url: 'https://www.thomas-krenn.com/de/wiki/index.php?title=Spezial:Letzte_%C3%84nderungen&feed=atom' },
                 { name: 'Inside Digital', url: 'https://www.inside-digital.de/feed' },
-                { name: 'Appgefahren', url: 'https://www.appgefahren.de/feed/' },
-                { name: 'WinFuture', url: 'https://rss.winfuture.de/f/1.xml' },
                 { name: 'ZDNet', url: 'https://www.zdnet.de/feed/' },
-                { name: 'Silicon', url: 'https://www.silicon.de/feed/' },
                 { name: 'PC-Games', url: 'https://www.pcgames.de/rss/pcgames.xml' }
             ],
             finance2: [
@@ -626,12 +534,7 @@
                 { name: 'Finanztip', url: 'https://www.finanztip.de/feed/' },
                 { name: 'Gründerszene', url: 'https://www.businessinsider.de/gruenderszene/feed/' },
                 { name: 'Deutsche Startups', url: 'https://www.deutsche-startups.de/feed/' },
-                { name: 'ExtraETF', url: 'https://extraetf.com/de/feed/' },
-                { name: 'IT-Finanzmagazin', url: 'https://www.it-finanzmagazin.de/feed/' },
-                { name: 'Payment-Banking', url: 'https://paymentandbanking.com/feed/' },
-                { name: 'WirtschaftsWoche Blogs', url: 'https://blog.wiwo.de/feed/' },
-                { name: 'Finanz-Szene', url: 'https://finanz-szene.de/feed/' },
-                { name: 'Oeconomicus', url: 'https://oeconomicus.blog/feed/' }
+                { name: 'ExtraETF', url: 'https://extraetf.com/de/feed/' }
             ],
             society: [
                 { name: 'Postillon', url: 'https://www.der-postillon.com/feeds/posts/default' },
@@ -642,653 +545,352 @@
                 { name: 'Cicero', url: 'https://www.cicero.de/rss.xml' },
                 { name: 'Tichys Einblick', url: 'https://www.tichyseinblick.de/feed/' },
                 { name: 'Telepolis', url: 'https://www.telepolis.de/news-atom.xml' },
-                { name: 'Bildblog', url: 'https://bildblog.de/feed/' },
-                { name: 'Law Blog', url: 'https://www.lawblog.de/feed/' },
-                { name: 'Krautreporter', url: 'https://krautreporter.de/feed/rss' },
-                { name: 'Lage der Nation', url: 'https://lagedernation.org/feed/mp3/' },
-                { name: 'The European', url: 'https://www.theeuropean.de/feed/' },
-                { name: 'Piqd', url: 'https://piqd.de/feeds' },
-                { name: 'Belltower', url: 'https://www.belltower.news/feed/' },
                 { name: 'Multipolar', url: 'https://multipolar-magazin.de/feed/' },
-                { name: 'Manova', url: 'https://manova.news/feed' },
                 { name: 'Apollo News', url: 'https://apollo-news.de/feed/' },
                 { name: 'Achgut', url: 'https://achgut.com/feed' },
                 { name: 'Junge Freiheit', url: 'https://jungefreiheit.de/feed/' }
             ],
             science2: [
                 { name: 'Spektrum', url: 'https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/829656' },
-                { name: 'ScienceBlogs', url: 'https://scienceblogs.de/feed/' },
-                { name: 'Utopia', url: 'https://utopia.de/feed/' },
-                { name: 'Klimareporter', url: 'https://www.klimareporter.de/?format=feed&type=rss' },
-                { name: 'Quarks', url: 'https://www.quarks.de/feed/' }
+                { name: 'Quarks', url: 'https://www.quarks.de/feed/' },
+                { name: 'Klimareporter', url: 'https://www.klimareporter.de/?format=feed&type=rss' }
             ],
             lifestyle: [
                 { name: 'Mit Vergnügen', url: 'https://mitvergnuegen.com/feed/' },
-                { name: 'Spreeblick', url: 'https://www.spreeblick.com/feed/' },
-                { name: 'Metal.de', url: 'https://www.metal.de/feed/' },
                 { name: 'Serienjunkies', url: 'https://www.serienjunkies.de/xml/feeds/news.xml' },
-                { name: '22places', url: 'https://www.22places.de/feed/' },
-                { name: 'Kwerfeldein', url: 'https://kwerfeldein.de/feed/' },
-                { name: 'Stilsucht', url: 'https://www.stilsucht.de/feed/' },
-                { name: 'Vinyl-Keks', url: 'https://vinyl-keks.eu/feed/' },
-                { name: 'Moviepilot', url: 'https://www.moviepilot.de/news.rss' },
-                { name: 'Eurogamer', url: 'https://www.eurogamer.de/feed/news' }
+                { name: 'Eurogamer', url: 'https://www.eurogamer.de/feed/news' },
+                { name: 'Moviepilot', url: 'https://www.moviepilot.de/news.rss' }
             ],
             mobile: [
                 { name: 'Android-User.de', url: 'https://www.android-user.de/feed/' },
-                { name: 'Android-Hilfe News', url: 'https://www.android-hilfe.de/forum/-/index.rss' },
-                { name: 'SmartDroid', url: 'https://www.smartdroid.de/feed/' },
-                { name: 'Schmidtis Blog', url: 'https://www.schmidtisblog.de/feed/' },
                 { name: 'XDA Android', url: 'https://www.xda-developers.com/feed/' },
-                { name: 'Linux-Handy', url: 'https://linux-handy.de/feed/' },
-                { name: 'APK Mirror Blog', url: 'https://www.apkmirror.com/feed/' },
-                { name: 'Areamobile', url: 'http://www.areamobile.de/rss/news.xml' },
-                { name: 'Xiaomi Community DE', url: 'https://germany.community.mi.com/feed/' }
+                { name: 'SmartDroid', url: 'https://www.smartdroid.de/feed/' },
+                { name: 'Areamobile', url: 'http://www.areamobile.de/rss/news.xml' }
             ],
             apple: [
                 { name: 'Macerkopf', url: 'https://www.macerkopf.de/feed/' },
                 { name: 'Mac-and-i', url: 'https://www.heise.de/mac-and-i/rss/mac-and-i-atom.xml' },
                 { name: 'Sir Apfelot', url: 'https://www.sir-apfelot.de/feed/' },
                 { name: 'Apfelpage', url: 'https://www.apfelpage.de/feed/' },
-                { name: 'Mac Tech News', url: 'https://www.mactechnews.de/rss/news.xml' },
-                { name: 'Apfeltalk', url: 'https://www.apfeltalk.de/magazin/feed/' },
-                { name: 'Apple-Infoticker', url: 'https://apple-infoticker.de/feed/' },
-                { name: 'iFun.de', url: 'https://www.ifun.de/feed/' },
-                { name: 'Macwelt', url: 'https://www.macwelt.de/feed/' },
-                { name: 'Eclectic Light', url: 'https://eclecticlight.co/feed/' }
+                { name: 'Macwelt', url: 'https://www.macwelt.de/feed/' }
             ],
             cooking: [
                 { name: 'Eat this! (Vegan)', url: 'https://www.eat-this.org/feed/' },
-                { name: 'Zucker&Jagdwurst', url: 'https://www.zuckerundjagdwurst.com/de/feed/' },
                 { name: 'Valentinas Kochbuch', url: 'https://valentinas-kochbuch.de/feed/' },
-                { name: 'Arthurs Tochter kocht', url: 'https://www.arthurstochterkochtblog.com/feeds/posts/default' },
                 { name: 'HighFoodality', url: 'https://www.highfoodality.de/feed/' },
-                { name: 'S-Küche', url: 'https://s-kueche.com/feed/' },
-                { name: 'Emmi kocht einfach', url: 'https://emmikochteinfach.de/feed/' },
-                { name: 'Maltes Kitchen', url: 'https://www.malteskitchen.de/feed/' },
-                { name: 'Moeys Kitchen', url: 'https://www.moeyskitchen.com/feed/' },
                 { name: 'Backen macht glücklich', url: 'https://www.backenmachtgluecklich.de/feed/' },
                 { name: 'Mann backt', url: 'https://www.mannbackt.de/feed/' },
-                { name: 'Knusperstübchen', url: 'https://knusperstuebchen.net/feed/' },
-                { name: 'Backbube', url: 'https://backbube.com/feed/' },
-                { name: 'Effilee', url: 'https://www.effilee.de/feed/' },
-                { name: 'Kaffee-Netz', url: 'https://www.kaffee-netz.de/portal/index.rss' },
-                { name: 'Das Lamm', url: 'https://daslamm.ch/feed/' },
-                { name: 'Gaumenfreundin', url: 'https://www.gaumenfreundin.de/feed/' },
-                { name: 'Wasi kocht', url: 'https://wasikocht.de/feed/' }
+                { name: 'Effilee', url: 'https://www.effilee.de/feed/' }
             ]
         };
 
         const themes = {
-            classic: { bg: '#000000', card: '#1E0505', accent: '#00B800', orange: '#ff8c00', red: '#ff0000' },
-            blue: { bg: '#000510', card: '#051525', accent: '#00D4FF', orange: '#00AACC', red: '#FF4444' },
-            forest: { bg: '#051005', card: '#0A2008', accent: '#00FF66', orange: '#88FF00', red: '#FF6644' },
-            sunset: { bg: '#100505', card: '#200A15', accent: '#FF8C00', orange: '#FF6600', red: '#FF3366' },
-            night: { bg: '#000000', card: '#111111', accent: '#ffffff', orange: '#888888', red: '#444444' }
+            classic: { bg: '#000000', card: '#1E0505', accent: '#00B800' },
+            blue: { bg: '#000510', card: '#051525', accent: '#00D4FF' },
+            forest: { bg: '#051005', card: '#0A2008', accent: '#00FF66' },
+            sunset: { bg: '#100505', card: '#200A15', accent: '#FF8C00' },
+            night: { bg: '#000000', card: '#111111', accent: '#ffffff' }
         };
 
-        const themeDescriptions = {
-            classic: 'Klassisch Dunkelrot/Grün',
-            blue: 'Mitternachtsblau/Cyan',
-            forest: 'Wald Dunkelgrün/Lime',
-            sunset: 'Sonnenuntergang Violett/Orange',
-            night: 'Nacht (Grau/Schwarz/Weiß)'
+        const themeNames = {
+            classic: 'Classic', blue: 'Midnight', forest: 'Forest', sunset: 'Sunset', night: 'Nacht'
         };
-
-        let cardStyle = localStorage.getItem('cardStyle') || 'modern';
 
         let enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds')) || [];
-        let readItems = JSON.parse(localStorage.getItem('readItems')) || [];
         let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
-        let scrollPositions = JSON.parse(localStorage.getItem('scrollPositions')) || {};
-        let currentFeed = null;
-        let feedArticles = {};
-        let allArticles = [];
+        let cardStyle = localStorage.getItem('cardStyle') || 'modern';
+        let currentTheme = localStorage.getItem('theme') || 'classic';
         let articleFilter = localStorage.getItem('articleFilter') || 'all';
-        
+        let allArticles = [];
+        let customFeeds = JSON.parse(localStorage.getItem('customFeeds')) || [];
+
         const feedCategoryMap = {};
-        for (const [category, feeds] of Object.entries(feedData)) {
-            feeds.forEach(feed => {
-                feedCategoryMap[feed.url] = category;
-            });
-        }
+        Object.entries(feedData).forEach(([cat, feeds]) => {
+            feeds.forEach(f => feedCategoryMap[f.url] = cat);
+        });
+        customFeeds.forEach(f => feedCategoryMap[f.url] = 'custom');
 
         function init() {
-            console.log('init called');
-            enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds')) || [];
-            hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
-            cardStyle = localStorage.getItem('cardStyle') || 'modern';
-            articleFilter = localStorage.getItem('articleFilter') || 'all';
-            console.log('enabledFeeds:', enabledFeeds);
-            renderOverlayFeedLists();
-            renderSidebar();
-            loadEnabledFeeds();
-            setupScrollMemory();
-            
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            const activeTab = document.querySelector(`.tab[data-filter="${articleFilter}"]`);
-            if (activeTab) activeTab.classList.add('active');
-            
-            const savedTheme = localStorage.getItem('selectedTheme') || 'classic';
-            setTheme(savedTheme);
-        }
-
-        function renderSidebar() {
-            const nav = document.getElementById('sidebarNav');
-            const count = hiddenItems.length;
-            nav.innerHTML = `
-                <div class="nav-item" onclick="openOverlay('feeds')">Feed-Auswahl</div>
-                <div class="nav-item" onclick="openOverlay('design')">Aussehen</div>
-                <div class="nav-item" onclick="openOverlay('url')">Manuelle URL</div>
-                <div class="nav-item" onclick="openOverlay('hidden')">
-                    Versteckte Artikel
-                    ${count > 0 ? `<span class="hidden-counter">${count}</span>` : ''}
-                </div>
-            `;
-        }
-
-        function toggleSidebar() {
-            console.log('toggleSidebar called');
-            const sidebar = document.getElementById('sidebar');
-            const hamburger = document.getElementById('hamburger');
-            console.log('sidebar:', sidebar, 'hamburger:', hamburger);
-            if (sidebar && hamburger) {
-                sidebar.classList.toggle('active');
-                hamburger.classList.toggle('active');
-            }
-        }
-
-        function handleHamburgerClick() {
-            const activeOverlay = document.querySelector('.overlay-page.active');
-            if (activeOverlay) {
-                handleOverlayClose();
-            } else {
-                toggleSidebar();
-            }
-        }
-
-        function handleOverlayClose() {
-            closeOverlay();
-            const sidebar = document.getElementById('sidebar');
-            const hamburger = document.getElementById('hamburger');
-            if (sidebar) sidebar.classList.remove('active');
-            if (hamburger) hamburger.classList.remove('active');
-        }
-
-        function openOverlay(name) {
-            document.getElementById('overlay-' + name).classList.add('active');
-            document.getElementById('sidebar').classList.remove('active');
-            document.querySelector('.hamburger').classList.remove('active');
-            if (name === 'hidden') {
-                renderHiddenArticles();
-            }
-        }
-
-        function closeOverlay() {
-            document.querySelectorAll('.overlay-page').forEach(el => el.classList.remove('active'));
-        }
-
-        function renderOverlayFeedLists() {
-            const sections = {
-                national: 'overlay-nationalFeeds',
-                regional: 'overlay-regionalFeeds',
-                tech: 'overlay-techFeeds',
-                finance: 'overlay-financeFeeds',
-                sport: 'overlay-sportFeeds',
-                science: 'overlay-scienceFeeds',
-                culture: 'overlay-cultureFeeds',
-                tech2: 'overlay-tech2Feeds',
-                finance2: 'overlay-finance2Feeds',
-                society: 'overlay-societyFeeds',
-                science2: 'overlay-science2Feeds',
-                lifestyle: 'overlay-lifestyleFeeds',
-                mobile: 'overlay-mobileFeeds',
-                apple: 'overlay-appleFeeds',
-                cooking: 'overlay-cookingFeeds'
-            };
-
-            for (const [category, elementId] of Object.entries(sections)) {
-                const container = document.getElementById(elementId);
-                if (container && feedData[category]) {
-                    container.innerHTML = feedData[category].map((feed) => `
-                        <div class="feed-item" onclick="toggleFeedFromOverlay('${feed.url}')">
-                            <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" data-url="${feed.url}"></div>
-                            <span class="feed-name">${feed.name}</span>
-                        </div>
-                    `).join('');
-                }
-            }
-        }
-
-        function toggleFeedFromOverlay(url) {
-            const toggle = document.querySelector(`.feed-toggle[data-url="${url}"]`);
-            if (enabledFeeds.includes(url)) {
-                enabledFeeds = enabledFeeds.filter(f => f !== url);
-                toggle.classList.remove('checked');
-            } else {
-                enabledFeeds.push(url);
-                toggle.classList.add('checked');
-            }
-            localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
-            loadEnabledFeeds();
-        }
-
-        function addCustomFeedFromOverlay() {
-            const urlInput = document.getElementById('customFeedUrl2');
-            const url = urlInput.value.trim();
-            if (!url) return;
-
-            let customFeeds = JSON.parse(localStorage.getItem('customFeeds')) || [];
-            if (!customFeeds.find(f => f.url === url)) {
-                const name = url.split('/')[2] || 'Eigener Feed';
-                customFeeds.push({ name, url });
-                localStorage.setItem('customFeeds', JSON.stringify(customFeeds));
-                if (!enabledFeeds.includes(url)) {
-                    enabledFeeds.push(url);
-                    localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
-                }
-            }
-
-            urlInput.value = '';
-            renderOverlayFeedLists();
-            loadEnabledFeeds();
-            closeOverlay();
+            setTheme(currentTheme);
+            renderThemeSelector();
+            renderFeedLists();
+            updateHiddenCount();
+            loadFeeds();
+            setFilter(articleFilter);
         }
 
         function setTheme(theme) {
+            currentTheme = theme;
             const colors = themes[theme];
             document.documentElement.style.setProperty('--bg', colors.bg);
             document.documentElement.style.setProperty('--card-bg', colors.card);
             document.documentElement.style.setProperty('--accent', colors.accent);
-            document.documentElement.style.setProperty('--orange', colors.orange);
-            document.documentElement.style.setProperty('--red', colors.red);
-
-            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
-            localStorage.setItem('selectedTheme', theme);
+            localStorage.setItem('theme', theme);
+            
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
+            });
         }
 
-        function setCardStyle(style) {
-            cardStyle = style;
-            localStorage.setItem('cardStyle', style);
-            document.querySelectorAll('.theme-btn[data-card]').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-card="${style}"]`).classList.add('active');
-            renderFeeds();
+        function renderThemeSelector() {
+            const container = document.getElementById('themeSelector');
+            container.innerHTML = Object.entries(themes).map(([key, val]) => 
+                `<div class="theme-btn" data-theme="${key}" onclick="setTheme('${key}')" style="background:${val.card};color:${val.accent}">${themeNames[key]}</div>`
+            ).join('');
         }
 
-        function loadEnabledFeeds() {
-            const main = document.getElementById('mainContent');
-            console.log('loadEnabledFeeds called, enabledFeeds:', enabledFeeds);
+        function renderFeedLists() {
+            const container = document.getElementById('feedLists');
+            let html = '';
             
-            hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
+            const allCategories = { ...feedData };
+            if (customFeeds.length) allCategories.custom = customFeeds;
+
+            Object.entries(allCategories).forEach(([category, feeds]) => {
+                const title = category.charAt(0).toUpperCase() + category.slice(1);
+                html += `<div class="feed-category-title">${title}</div>`;
+                html += feeds.map(feed => `
+                    <div class="feed-item" onclick="toggleFeed('${feed.url}')">
+                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" data-url="${feed.url}"></div>
+                        <span>${feed.name}</span>
+                    </div>
+                `).join('');
+            });
             
-            if (!enabledFeeds || enabledFeeds.length === 0) {
-                main.innerHTML = '<div class="no-feeds">Keine Feeds ausgewählt.<br>Nutze das Menü (☰) um Feeds zu aktivieren.</div>';
+            container.innerHTML = html;
+        }
+
+        function toggleFeed(url) {
+            if (enabledFeeds.includes(url)) {
+                enabledFeeds = enabledFeeds.filter(f => f !== url);
+            } else {
+                enabledFeeds.push(url);
+            }
+            localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
+            renderFeedLists();
+            loadFeeds();
+        }
+
+        function addCustomFeed() {
+            const url = document.getElementById('customUrl').value.trim();
+            if (!url) return;
+            
+            const name = url.split('/')[2] || 'Custom';
+            customFeeds.push({ name, url });
+            localStorage.setItem('customFeeds', JSON.stringify(customFeeds));
+            
+            if (!enabledFeeds.includes(url)) {
+                enabledFeeds.push(url);
+                localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
+            }
+            
+            document.getElementById('customUrl').value = '';
+            renderFeedLists();
+            loadFeeds();
+            closeOverlay();
+        }
+
+        function loadFeeds() {
+            if (!enabledFeeds.length) {
+                document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Feeds ausgewählt.<br>Menü → Feed-Auswahl</div>';
                 return;
             }
 
-            main.innerHTML = '<div class="loading"><div class="loading-dots"><span>L</span><span>A</span><span>D</span><span>E</span><span>N</span></div></div><div id="pullIndicator" style="display:none;text-align:center;padding:10px;color:var(--accent);">↓ Runterziehen zum Aktualisieren</div>';
+            document.getElementById('mainContent').innerHTML = `
+                <div class="loading"><div class="loading-dots"><span>L</span><span>A</span><span>D</span><span>E</span><span>N</span></div></div>
+                <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
+            `;
 
-            let loaded = 0;
-            feedArticles = {};
             allArticles = [];
+            let loaded = 0;
 
-            enabledFeeds.forEach((url) => {
-                fetchFeed(url);
-            });
+            enabledFeeds.forEach(url => fetchFeed(url));
 
             function fetchFeed(url) {
                 fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`)
                     .then(res => res.json())
                     .then(data => {
-                        if (data.status === 'ok' && data.items && data.items.length > 0) {
+                        if (data.status === 'ok' && data.items) {
                             const feedName = data.feed.title || url.split('/')[2];
-                            const items = data.items.slice(0, 50).map(item => {
-                                let thumbnail = item.thumbnail || '';
-                                if (!thumbnail && item.enclosure) {
-                                    thumbnail = item.enclosure.thumbnail || item.enclosure.link || '';
+                            data.items.slice(0, 30).forEach(item => {
+                                let thumb = item.thumbnail || '';
+                                if (!thumb && item.enclosure) {
+                                    thumb = item.enclosure.thumbnail || item.enclosure.link || '';
                                 }
-                                if (!thumbnail && item.description) {
-                                    const imgMatch = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
-                                    if (imgMatch) thumbnail = imgMatch[1];
+                                if (!thumb && item.description) {
+                                    const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
+                                    if (m) thumb = m[1];
                                 }
-                                if (!thumbnail && item.content) {
-                                    const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
-                                    if (imgMatch) thumbnail = imgMatch[1];
-                                }
-                                return {
-                                    ...item,
-                                    feedName: feedName,
-                                    feedUrl: url,
-                                    thumbnail: thumbnail
-                                };
-                            });
-                            feedArticles[url] = { name: feedName, items: items };
-                            const newItems = items.filter(item => !hiddenItems.includes(item.link));
-                            allArticles.push(...newItems);
-                            loaded++;
-                            renderIncremental();
-                        } else {
-                            return fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-                        }
-                    })
-                    .then(res => {
-                        if (!res) return;
-                        return res.json ? res.json() : res.text();
-                    })
-                    .then(data => {
-                        if (!data || !data.contents) return;
-                        const parser = new DOMParser();
-                        const xml = parser.parseFromString(data.contents, 'text/xml');
-                        const items = Array.from(xml.querySelectorAll('item, entry')).slice(0, 50);
-                        if (items.length > 0) {
-                            const feedName = xml.querySelector('title')?.textContent || url.split('/')[2];
-                            const articles = items.map(item => {
-                                let thumbnail = '';
-                                thumbnail = item.querySelector('enclosure')?.getAttribute('url') || '';
-                                if (!thumbnail) thumbnail = item.querySelector('media\\:thumbnail, media\\:content, thumbnail')?.getAttribute('url') || '';
-                                if (!thumbnail) {
-                                    const mediaContent = item.querySelector('media\\:content, media\\:thumbnail');
-                                    if (mediaContent) thumbnail = mediaContent.getAttribute('url') || '';
-                                }
-                                if (!thumbnail) {
-                                    const content = item.querySelector('content\\:encoded, description')?.textContent || '';
-                                    const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/);
-                                    if (imgMatch) thumbnail = imgMatch[1];
-                                }
-                                return {
-                                    title: item.querySelector('title')?.textContent || '',
-                                    link: item.querySelector('link')?.textContent || item.querySelector('link')?.getAttribute('href') || '',
-                                    pubDate: item.querySelector('pubDate, published')?.textContent || '',
-                                    thumbnail: thumbnail,
-                                    feedName: feedName,
+                                allArticles.push({
+                                    title: item.title,
+                                    link: item.link,
+                                    pubDate: item.pubDate,
+                                    thumbnail: thumb,
+                                    feedName,
                                     feedUrl: url
-                                };
+                                });
                             });
-                            feedArticles[url] = { name: feedName, items: articles };
-                            const newArticles = articles.filter(item => !hiddenItems.includes(item.link));
-                            allArticles.push(...newArticles);
                         }
                         loaded++;
-                        renderIncremental();
+                        if (loaded >= enabledFeeds.length) renderArticles();
                     })
                     .catch(() => {
-                        console.log('Error loading feed:', url);
                         loaded++;
-                        renderIncremental();
+                        if (loaded >= enabledFeeds.length) renderArticles();
                     });
-            }
-
-            function renderIncremental() {
-                const currentArticles = allArticles
-                    .filter(item => !hiddenItems.includes(item.link))
-                    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-                    .slice(0, 100);
-                renderFeeds(currentArticles);
-            }
-
-            function sortAndRender() {
-                const sortedArticles = allArticles
-                    .filter(item => !hiddenItems.includes(item.link))
-                    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-                    .slice(0, 100);
-                renderFeeds(sortedArticles);
             }
         }
 
-        function renderFeeds(articles) {
-            const main = document.getElementById('mainContent');
-            let displayArticles = articles || allArticles;
-            
+        function renderArticles() {
+            let articles = allArticles
+                .filter(a => !hiddenItems.includes(a.link))
+                .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+                .slice(0, 100);
+
             if (articleFilter !== 'all') {
-                displayArticles = displayArticles.filter(item => feedCategoryMap[item.feedUrl] === articleFilter);
+                articles = articles.filter(a => feedCategoryMap[a.feedUrl] === articleFilter);
             }
-            
-            if (displayArticles.length === 0) {
-                main.innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle Artikel wurden ausgeblendet oder Feeds laden noch.</div>';
+
+            if (!articles.length) {
+                document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle ausgeblendet oder keine Feeds aktiviert.</div>';
                 return;
             }
 
-            const cardClass = cardStyle === 'modern' ? 'modern-card' : 'article-card';
-
-            main.innerHTML = `
-                <div class="articles-list" id="articlesList">
-                    ${displayArticles.map(item => `
-                        <div class="${cardClass}" data-link="${item.link}" onclick="openArticle('${item.link}', '${item.title.replace(/'/g, "\\'")}', '${item.feedUrl}')" onmousedown="startSwipe(event, this)" ontouchstart="startSwipe(event, this)">
-                            ${cardStyle !== 'modern' ? '<span class="swipe-hint">←</span>' : ''}
-                            ${item.thumbnail ? `<img class="article-image" src="${item.thumbnail}" alt="">` : ''}
-                            <div class="article-header">
-                                <div class="article-title">${item.title}</div>
-                            </div>
-                            <div class="article-meta">
-                                <span style="color:var(--accent)">${item.feedName}</span>
-                                • ${new Date(item.pubDate).toLocaleString('de-DE', {hour:'2-digit', minute:'2-digit'})}
-                            </div>
+            document.getElementById('mainContent').innerHTML = `
+                <div class="articles-list">
+                    ${articles.map(a => `
+                        <div class="article-card" onclick="openArticle('${a.link}')">
+                            ${a.thumbnail ? `<img src="${a.thumbnail}" alt="">` : ''}
+                            <div class="article-title">${a.title}</div>
+                            <div class="article-meta"><span>${a.feedName}</span> • ${new Date(a.pubDate).toLocaleString('de-DE', {hour:'2-digit', minute:'2-digit'})}</div>
                         </div>
                     `).join('')}
                 </div>
+                <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
             `;
-
-            if (typeof initPullToRefresh === 'function') {
-                initPullToRefresh();
-            }
+            initPullToRefresh();
         }
 
-        function setArticleFilter(filter) {
+        function filterArticles(query) {
+            query = query.toLowerCase();
+            document.querySelectorAll('.article-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        function setFilter(filter) {
             articleFilter = filter;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.tab[data-filter="${filter}"]`).classList.add('active');
             localStorage.setItem('articleFilter', filter);
-            renderFeeds();
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.filter === filter);
+            });
+            renderArticles();
         }
 
-        let swipeStartX = 0;
-        let swipeStartY = 0;
-        let currentSwipeCard = null;
-        let swiped = false;
-
-        function startSwipe(e, card) {
-            swiped = false;
-            const touch = e.touches ? e.touches[0] : e;
-            swipeStartX = touch.clientX;
-            swipeStartY = touch.clientY;
-            currentSwipeCard = card;
-            
-            document.addEventListener('mousemove', onSwipeMove);
-            document.addEventListener('mouseup', endSwipe);
-            document.addEventListener('touchmove', onSwipeMove);
-            document.addEventListener('touchend', endSwipe);
-        }
-
-        function onSwipeMove(e) {
-            if (!currentSwipeCard) return;
-            const touch = e.touches ? e.touches[0] : e;
-            const deltaX = touch.clientX - swipeStartX;
-            const deltaY = Math.abs(touch.clientY - swipeStartY);
-            
-            if (deltaX < -30 && deltaY < 50) {
-                currentSwipeCard.classList.add('swiping');
-            } else {
-                currentSwipeCard.classList.remove('swiping');
-            }
-        }
-
-        function endSwipe(e) {
-            if (!currentSwipeCard) return;
-            
-            const touch = e.changedTouches ? e.changedTouches[0] : e;
-            const deltaX = touch.clientX - swipeStartX;
-            
-            if (deltaX < -80) {
-                const link = currentSwipeCard.dataset.link;
-                hideArticle(link);
-                currentSwipeCard.style.display = 'none';
-                swiped = true;
-            }
-            
-            currentSwipeCard.classList.remove('swiping');
-            currentSwipeCard = null;
-            
-            document.removeEventListener('mousemove', onSwipeMove);
-            document.removeEventListener('mouseup', endSwipe);
-            document.removeEventListener('touchmove', onSwipeMove);
-            document.removeEventListener('touchend', endSwipe);
-        }
-
-        function openArticle(link, title, feedUrl) {
-            hideArticle(link);
-            if (window.Capacitor && window.Capacitor.isNativePlatform && window.InAppBrowser) {
-                window.InAppBrowser.open(link, '_blank');
-            } else {
-                window.open(link, '_blank');
-            }
-        }
-
-        function hideArticle(link) {
+        function openArticle(link) {
             if (!hiddenItems.includes(link)) {
                 hiddenItems.push(link);
                 localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
+                updateHiddenCount();
             }
-            allArticles = allArticles.filter(item => item.link !== link);
-            renderSidebar();
-            renderFeeds();
+            window.open(link, '_blank');
+            setTimeout(renderArticles, 500);
         }
 
-        function closeArticle() {
-            document.getElementById('articleViewer').classList.remove('active');
-            document.body.style.overflow = '';
-            renderFeeds();
+        function updateHiddenCount() {
+            document.getElementById('hiddenCount').textContent = hiddenItems.length;
         }
 
-        function renderHiddenArticles() {
-            const container = document.getElementById('hiddenArticlesList');
-            if (hiddenItems.length === 0) {
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function openOverlay(name) {
+            document.getElementById('overlay-' + name).classList.add('active');
+            document.getElementById('sidebar').classList.remove('active');
+            
+            if (name === 'hidden') {
+                renderHiddenList();
+            }
+        }
+
+        function closeOverlay() {
+            document.querySelectorAll('.overlay-page').forEach(o => o.classList.remove('active'));
+        }
+
+        function renderHiddenList() {
+            const hidden = allArticles.filter(a => hiddenItems.includes(a.link));
+            const container = document.getElementById('hiddenList');
+            
+            if (!hidden.length) {
                 container.innerHTML = '<div class="no-feeds">Keine Artikel versteckt.</div>';
                 return;
             }
 
-            const allArticles = [];
-            for (const [url, feed] of Object.entries(feedArticles)) {
-                feed.items.forEach(item => {
-                    if (hiddenItems.includes(item.link)) {
-                        allArticles.push({...item, feedName: feed.name});
-                    }
-                });
-            }
-
             container.innerHTML = `
-                <button class="add-btn" style="margin-bottom:1rem" onclick="restoreAllHidden()">Alle wiederherstellen</button>
+                <button class="restore-btn" onclick="restoreAllHidden()">Alle wiederherstellen</button>
                 <div class="articles-list">
-                    ${allArticles.map(item => `
-                        <div class="article-card" onclick="openHiddenArticle('${item.link}', '${item.title.replace(/'/g, "\\'")}')">
-                            ${item.thumbnail ? `<img class="article-image" src="${item.thumbnail}" alt="">` : ''}
-                            <div class="article-header">
-                                <div class="article-title">${item.title}</div>
-                                <span class="article-status" onclick="event.stopPropagation(); restoreArticle('${item.link}')">↩</span>
-                            </div>
-                            <div class="article-meta">${item.feedName} - ${new Date(item.pubDate).toLocaleString('de-DE')}</div>
+                    ${hidden.map(a => `
+                        <div class="article-card" onclick="restoreHidden('${a.link}')">
+                            ${a.thumbnail ? `<img src="${a.thumbnail}" alt="">` : ''}
+                            <div class="article-title">${a.title}</div>
+                            <div class="article-meta"><span>${a.feedName}</span></div>
                         </div>
                     `).join('')}
                 </div>
             `;
         }
 
-        function openHiddenArticle(link, title) {
-            if (window.Capacitor && window.Capacitor.isNativePlatform && window.InAppBrowser) {
-                window.InAppBrowser.open(link, '_blank');
-            } else {
-                window.open(link, '_blank');
-            }
-        }
-
-        function restoreArticle(link) {
+        function restoreHidden(link) {
             hiddenItems = hiddenItems.filter(l => l !== link);
             localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
-            renderSidebar();
-            renderHiddenArticles();
-            renderFeeds();
+            updateHiddenCount();
+            renderHiddenList();
+            renderArticles();
         }
 
         function restoreAllHidden() {
             hiddenItems = [];
             localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
-            renderSidebar();
-            renderHiddenArticles();
-            renderFeeds();
+            updateHiddenCount();
+            renderHiddenList();
+            renderArticles();
         }
 
-        function setupScrollMemory() {
-            const main = document.getElementById('mainContent');
-            const savedScroll = localStorage.getItem('mainScrollPosition');
-            if (savedScroll && main) {
-                main.scrollTop = parseInt(savedScroll);
-            }
-            
-            window.addEventListener('scroll', () => {
-                localStorage.setItem('mainScrollPosition', window.scrollY);
+        function setCardStyle(style) {
+            cardStyle = style;
+            localStorage.setItem('cardStyle', style);
+            document.querySelectorAll('.card-style-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.style === style);
             });
         }
 
-        function filterArticles(query) {
-            query = query.toLowerCase().trim();
-            const cards = document.querySelectorAll('.article-card, .modern-card');
-            cards.forEach(card => {
-                const title = card.querySelector('.article-title');
-                const feedName = card.querySelector('.article-meta span');
-                if (!title) return;
-                
-                const text = (title.textContent + ' ' + (feedName ? feedName.textContent : '')).toLowerCase();
-                card.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-
-        let ptrStartY = 0;
-        let ptrPulling = false;
-        let ptrIndicator = null;
-
+        let ptrStart = 0;
         function initPullToRefresh() {
             const main = document.getElementById('mainContent');
-            if (!main) return;
+            main.addEventListener('touchstart', e => {
+                if (main.scrollTop > 0) return;
+                ptrStart = e.touches[0].clientY;
+            }, { passive: true });
             
-            main.addEventListener('touchstart', function(e) {
+            main.addEventListener('touchmove', e => {
                 if (main.scrollTop > 0) return;
-                ptrStartY = e.touches[0].clientY;
-                ptrPulling = false;
-                ptrIndicator = document.getElementById('pullIndicator');
-            }, { passive: true });
-
-            main.addEventListener('touchmove', function(e) {
-                if (main.scrollTop > 0) return;
-                const currentY = e.touches[0].clientY;
-                const diff = currentY - ptrStartY;
-                
-                if (diff > 80) {
-                    ptrPulling = true;
-                    if (ptrIndicator) {
-                        ptrIndicator.style.display = 'block';
-                        ptrIndicator.textContent = '↓ Loslassen zum Aktualisieren';
-                    }
-                } else {
-                    ptrPulling = false;
-                    if (ptrIndicator) {
-                        ptrIndicator.style.display = 'none';
-                    }
+                const diff = e.touches[0].clientY - ptrStart;
+                const indicator = document.getElementById('pullIndicator');
+                if (diff > 60) {
+                    indicator.style.display = 'block';
+                    indicator.textContent = '↓ Loslassen zum Aktualisieren';
                 }
             }, { passive: true });
-
-            main.addEventListener('touchend', function(e) {
-                if (ptrPulling && main.scrollTop <= 0) {
-                    if (ptrIndicator) {
-                        ptrIndicator.textContent = 'Lade...';
-                    }
-                    loadEnabledFeeds();
+            
+            main.addEventListener('touchend', e => {
+                const indicator = document.getElementById('pullIndicator');
+                if (indicator.style.display === 'block') {
+                    indicator.textContent = 'Lade...';
+                    loadFeeds();
+                    setTimeout(() => indicator.style.display = 'none', 1000);
                 }
-                if (ptrIndicator) {
-                    setTimeout(() => {
-                        if (ptrIndicator) ptrIndicator.style.display = 'none';
-                    }, 1000);
-                }
-                ptrPulling = false;
             }, { passive: true });
         }
 
