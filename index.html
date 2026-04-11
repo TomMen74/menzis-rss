@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1E0505">
+    <title>Menzis RSS</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --card-bg: #1E0505;
+            --accent: #00B800;
+            --text: #ffffff;
+            --text-dim: #888888;
+            --orange: #ff8c00;
+            --red: #ff0000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+        .modern-card {
+            border: 1px solid var(--accent);
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modern-card:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .header {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--accent);
+            padding: 1rem;
+            display: flex; align-items: center; gap: 1rem;
+            z-index: 100;
+        }
+
+        .hamburger {
+            width: 30px; height: 24px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .hamburger span {
+            display: block; height: 3px; background: var(--accent); border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+
+        .header-title {
+            font-size: 1.2rem; font-weight: 600; color: var(--orange);
+            flex: 1;
+        }
+
+        .search-input {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            padding: 0.5rem;
+            padding-left: 30px;
+            border-radius: 8px;
+            width: 100px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: width 0.3s;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        .search-input:focus {
+            width: 160px;
+        }
+        .search-input::placeholder {
+            color: var(--text-dim);
+        }
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-icon {
+            position: absolute;
+            left: 8px;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+        .search-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--accent);
+        }
+
+        .sidebar-nav {
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem; background: rgba(0,0,0,0.3);
+            border-radius: 10px; border: 1px solid rgba(0,180,0,0.3);
+            cursor: pointer; font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(0,180,0,0.15);
+            border-color: var(--accent);
+        }
+
+        .nav-item::after { content: '→'; color: var(--accent); }
+
+        .overlay-page {
+            position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
+            background: var(--card-bg);
+            z-index: 150;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .overlay-page.active { display: block; }
+
+        .overlay-header {
+            background: var(--bg);
+            padding: 1rem;
+            border-bottom: 2px solid var(--accent);
+            display: flex; align-items: center; gap: 1rem;
+        }
+
+        .overlay-back {
+            background: var(--accent); color: #000;
+            border: none; padding: 0.5rem 1rem;
+            border-radius: 8px; cursor: pointer;
+            font-weight: 600;
+        }
+
+        .overlay-title { font-size: 1.1rem; color: var(--orange); }
+
+        .overlay-content { padding: 1rem; }
+
+        .sidebar {
+            position: fixed; top: 60px; left: -300px;
+            width: 300px; height: calc(100vh - 60px);
+            background: var(--card-bg);
+            border-right: 2px solid var(--accent);
+            padding: 1rem;
+            overflow-y: auto;
+            transition: 0.3s;
+            z-index: 99;
+        }
+
+        .sidebar.active { left: 0; }
+
+        .sidebar-section { margin-bottom: 1.5rem; }
+
+        .sidebar-title {
+            font-size: 1rem; color: var(--orange);
+            margin-bottom: 0.75rem; padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0,180,0,0.3);
+        }
+
+        .feed-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+        .feed-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem; background: rgba(0,0,0,0.3);
+            border-radius: 8px; cursor: pointer;
+        }
+
+        .feed-item:hover { background: rgba(0,180,0,0.1); }
+
+        .feed-checkbox { display: none; }
+
+        .feed-toggle {
+            width: 20px; height: 20px; border: 2px solid var(--accent);
+            border-radius: 4px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0;
+        }
+
+        .feed-toggle.checked { background: var(--accent); }
+
+        .feed-toggle.checked::after { content: '✓'; color: #000; font-size: 12px; }
+
+        .feed-name { font-size: 0.85rem; color: var(--text); }
+
+        .custom-url-input {
+            width: 100%; padding: 0.5rem; margin-bottom: 0.5rem;
+            background: #000; border: 1px solid var(--accent);
+            color: var(--text); border-radius: 8px;
+        }
+
+        .add-btn {
+            width: 100%; padding: 0.5rem; background: var(--accent);
+            color: #000; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 600;
+        }
+
+        .add-btn:hover { opacity: 0.8; }
+
+        .feed-category-title {
+            font-size: 0.85rem; color: var(--text-dim);
+            margin: 1rem 0 0.5rem 0; padding-top: 0.5rem;
+            border-top: 1px solid rgba(0,180,0,0.2);
+        }
+
+        .feed-category-title:first-of-type {
+            margin-top: 0; padding-top: 0; border-top: none;
+        }
+
+        .theme-selector {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+        }
+
+        .theme-btn {
+            padding: 0.75rem; border: 2px solid transparent;
+            border-radius: 8px; cursor: pointer;
+            text-align: center; font-size: 0.8rem;
+        }
+
+        .theme-btn.active { border-color: var(--accent); }
+
+        .theme-btn[data-theme="classic"] { background: #1E0505; color: #00B800; }
+        .theme-btn[data-theme="blue"] { background: #051525; color: #00D4FF; }
+        .theme-btn[data-theme="forest"] { background: #0A2008; color: #00FF66; }
+        .theme-btn[data-theme="sunset"] { background: #200A15; color: #FF8C00; }
+        .theme-btn[data-theme="neutral"] { background: #1a1a1a; color: #888888; }
+        .theme-btn[data-theme="light"] { background: #f5f5f5; color: #333333; }
+        .theme-btn[data-theme="night"] { background: #000000; color: #ffffff; }
+
+        .article-card {
+            position: relative;
+            transition: transform 0.2s, opacity 0.2s;
+            touch-action: pan-y;
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            cursor: pointer;
+            filter: brightness(1.5);
+        }
+        .article-card.swiping {
+            transform: translateX(-100px);
+            opacity: 0.5;
+        }
+        .article-card.hidden {
+            display: none;
+        }
+
+        .swipe-hint {
+            position: absolute; right: 10px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem; opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .article-card:hover .swipe-hint { opacity: 0.5; }
+
+        .hidden-counter {
+            background: var(--accent); color: #000;
+            padding: 2px 8px; border-radius: 10px;
+            font-size: 0.75rem; margin-left: 0.5rem;
+        }
+
+        .main-content {
+            padding-top: 70px; padding-bottom: 2rem;
+            padding-left: 1rem; padding-right: 1rem;
+        }
+
+        .category-title {
+            font-size: 1.1rem; color: var(--orange);
+            margin: 1.5rem 0 1rem 0; padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0,180,0,0.3);
+        }
+
+        .articles-list { display: flex; flex-direction: column; gap: 1rem; }
+
+        .modern-card {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            cursor: pointer;
+            filter: brightness(1.5);
+        }
+
+        .article-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .article-title {
+            font-size: 1rem; font-weight: 500;
+            color: var(--text); flex: 1;
+            line-height: 1.4;
+        }
+
+        .article-status {
+            font-size: 1.2rem; cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .article-meta {
+            font-size: 0.75rem; color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .article-image {
+            width: 100%; height: 150px; object-fit: cover;
+            border-radius: 8px; margin-bottom: 0.5rem;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .loading { 
+            text-align: center; 
+            padding: 4rem 2rem; 
+            color: var(--accent); 
+        }
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .loading-dots span {
+            font-size: 2.5rem;
+            font-weight: bold;
+            animation: bounceLetter 1.5s ease-in-out infinite;
+        }
+        .loading-dots span:nth-child(1) { animation-delay: 0s; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+        .loading-dots span:nth-child(4) { animation-delay: 0.45s; }
+        .loading-dots span:nth-child(5) { animation-delay: 0.6s; }
+        @keyframes bounceLetter {
+            0%, 100% { 
+                transform: translateY(0) scale(1); 
+            }
+            20% { 
+                transform: translateY(-25px) scale(1.1) rotate(-8deg); 
+            }
+            40% { 
+                transform: translateY(0) scale(1); 
+            }
+            60% { 
+                transform: translateY(-10px) scale(0.95) rotate(5deg); 
+            }
+            80% { 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .no-feeds {
+            text-align: center; padding: 3rem;
+            color: var(--text-dim);
+        }
+
+        .article-viewer {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.9);
+            z-index: 200; overflow-y: auto;
+        }
+
+        .article-viewer.active { display: block; }
+
+        .viewer-header {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: var(--card-bg); padding: 1rem;
+            border-bottom: 2px solid var(--accent);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 201;
+        }
+
+        .back-btn {
+            background: var(--accent); color: #000; border: none;
+            padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;
+            font-weight: 600;
+        }
+
+        .viewer-title { color: var(--text); font-weight: 600; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .viewer-content {
+            padding: 80px 1rem 2rem 1rem;
+            max-width: 800px; margin: 0 auto;
+        }
+
+        .viewer-content iframe { width: 100%; height: 80vh; border: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="hamburger" id="hamburger" onclick="handleHamburgerClick()">
+            <span></span><span></span><span></span>
+        </div>
+        <div class="header-title">Menzis RSS <span style="font-size:0.7rem;color:var(--text-dim)">v1.2</span></div>
+        <div class="search-wrapper">
+            <span class="search-icon">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-nav" id="sidebarNav">
+        </div>
+    </div>
+
+    <!-- Overlay: Feed-Auswahl -->
+    <div class="overlay-page" id="overlay-feeds">
+        <div class="overlay-header">
+            <span class="overlay-title">Feed-Auswahl</span>
+        </div>
+        <div class="overlay-content">
+            <div class="feed-category-title">Nachrichten</div>
+            <div class="feed-list" id="overlay-nationalFeeds"></div>
+            <div class="feed-category-title">Regional</div>
+            <div class="feed-list" id="overlay-regionalFeeds"></div>
+            <div class="feed-category-title">Technik</div>
+            <div class="feed-list" id="overlay-techFeeds"></div>
+            <div class="feed-category-title">Wirtschaft</div>
+            <div class="feed-list" id="overlay-financeFeeds"></div>
+            <div class="feed-category-title">Sport</div>
+            <div class="feed-list" id="overlay-sportFeeds"></div>
+            <div class="feed-category-title">Wissenschaft</div>
+            <div class="feed-list" id="overlay-scienceFeeds"></div>
+            <div class="feed-category-title">Kultur</div>
+            <div class="feed-list" id="overlay-cultureFeeds"></div>
+        </div>
+    </div>
+
+    <!-- Overlay: Aussehen -->
+    <div class="overlay-page" id="overlay-design">
+        <div class="overlay-header">
+            <span class="overlay-title">Aussehen</span>
+        </div>
+        <div class="overlay-content">
+            <div class="theme-selector">
+                <div class="theme-btn active" data-theme="classic" onclick="setTheme('classic')">Classic</div>
+                <div class="theme-btn" data-theme="blue" onclick="setTheme('blue')">Midnight</div>
+                <div class="theme-btn" data-theme="forest" onclick="setTheme('forest')">Forest</div>
+                <div class="theme-btn" data-theme="sunset" onclick="setTheme('sunset')">Sunset</div>
+                <div class="theme-btn night-btn" data-theme="night" onclick="setTheme('night')">Nacht</div>
+            </div>
+            <div class="feed-category-title">Artikeldarstellung</div>
+            <div class="theme-selector">
+                <div class="theme-btn active" data-card="modern" onclick="setCardStyle('modern')">Modern</div>
+                <div class="theme-btn" data-card="pulsate" onclick="setCardStyle('pulsate')">Pulsierend</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay: Manuelle URL -->
+    <div class="overlay-page" id="overlay-url">
+        <div class="overlay-header">
+            <span class="overlay-title">Manuelle URL</span>
+        </div>
+        <div class="overlay-content">
+            <input type="text" class="custom-url-input" id="customFeedUrl2" placeholder="https://...">
+            <button class="add-btn" onclick="addCustomFeedFromOverlay()">Hinzufügen</button>
+        </div>
+    </div>
+
+    <!-- Overlay: Versteckte Artikel -->
+    <div class="overlay-page" id="overlay-hidden">
+        <div class="overlay-header">
+            <span class="overlay-title" id="hiddenTitle">Versteckte Artikel</span>
+        </div>
+        <div class="overlay-content">
+            <div id="hiddenArticlesList"></div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent"></div>
+
+    <script>
+        const feedData = {
+            national: [
+                { name: 'Tagesschau', url: 'https://www.tagesschau.de/xml/rss2' },
+                { name: 'SPIEGEL', url: 'https://www.spiegel.de/schlagzeilen/index.rss' },
+                { name: 'ZEIT', url: 'https://www.zeit.de/feed/rss.xml' },
+                { name: 'Süddeutsche', url: 'https://www.sueddeutsche.de/politik.rss' },
+                { name: 'FAZ', url: 'https://www.faz.net/rss/aktuell' },
+                { name: 'WELT', url: 'https://www.welt.de/schlagzeilen/rss20520.xml' },
+                { name: 'n-tv', url: 'https://www.n-tv.de/rss/atom.xml' },
+                { name: 'taz', url: 'https://www.taz.de/!p5101.taz' },
+                { name: 'ZDF', url: 'https://www.zdf.de/rss/zdf_nachrichten' }
+            ],
+            regional: [
+                { name: 'NDR MV', url: 'https://www.ndr.de/nachrichten/mecklenburg-vorpommern/index~rss2.xml' },
+                { name: 'NDR SH', url: 'https://www.ndr.de/nachrichten/schleswig-holstein/index~rss2.xml' },
+                { name: 'NDR NI', url: 'https://www.ndr.de/nachrichten/niedersachsen/index~rss2.xml' },
+                { name: 'NDR HH', url: 'https://www.ndr.de/nachrichten/hamburg/index~rss2.xml' },
+                { name: 'BR', url: 'https://www.br.de/nachrichten/index.rss' },
+                { name: 'WDR', url: 'https://www.wdr.de/news/rssfeed-1028.xml' },
+                { name: 'MDR', url: 'https://www.mdr.de/nachrichten/feed.rss' },
+                { name: 'SWR', url: 'https://www.swr.de/swraktuell/rss-bild-rss-100.xml' }
+            ],
+            tech: [
+                { name: 'Heise', url: 'https://www.heise.de/rss/heise.rss' },
+                { name: 'ComputerBILD', url: 'https://www.computerbild.de/rssfeed_2261.xml' },
+                { name: 'Golem', url: 'https://www.golem.de/rss/feed.xml' },
+                { name: 'netzwelt', url: 'https://www.netzwelt.de/rss/news' },
+                { name: 'Chip', url: 'https://www.chip.de/rss/news' },
+                { name: 'WinFuture', url: 'https://www.winfuture.de/rss/news.xml' },
+                { name: 'Futurezone', url: 'https://futurezone.de/rss' },
+                { name: 'Turing', url: 'https://turingmagazin.de/feed' }
+            ],
+            finance: [
+                { name: 'Handelsblatt', url: 'https://www.handelsblatt.com/rss/feed' },
+                { name: 'WirtschaftsWoche', url: 'https://www.wiwo.de/rss/feed' },
+                { name: 'Manager Magazin', url: 'https://www.manager-magazin.de/rss/rss2_AlleTopStories' },
+                { name: 'Finanzen100', url: 'https://www.finanzen100.de/rss/feed' },
+                { name: 'Reuters DE', url: 'https://www.reutersagency.com/de/feed' }
+            ],
+            sport: [
+                { name: 'Kicker', url: 'https://www.kicker.de/rss/aktuell.xml' },
+                { name: 'Sport1', url: 'https://www.sport1.de/rss/news' },
+                { name: 'Sportschau', url: 'https://www.sportschau.de/rss/sportschow.xml' },
+                { name: 'Spox', url: 'https://www.spox.com/de/rss/spox.xml' },
+                { name: 'Bundesliga', url: 'https://www.bundesliga.com/rss/news_de_de.xml' }
+            ],
+            science: [
+                { name: 'scinexx', url: 'https://www.scinexx.de/rss.xml' },
+                { name: 'Spektrum', url: 'https://www.spektrum.de/feed/rss/spektrum' },
+                { name: 'Wissenschaft.de', url: 'https://www.wissenschaft.de/rss-feed' }
+            ],
+            culture: [
+                { name: 'NDR Kultur', url: 'https://www.ndr.de/kultur/index~rss2.xml' },
+                { name: 'ZDF Kultur', url: 'https://www.zdf.de/rss/zdf_kultur' },
+                { name: 'Tagesspiegel Kultur', url: 'https://www.tagesspiegel.de/kultur/index.rss' }
+            ]
+        };
+
+        const themes = {
+            classic: { bg: '#000000', card: '#1E0505', accent: '#00B800', orange: '#ff8c00', red: '#ff0000' },
+            blue: { bg: '#000510', card: '#051525', accent: '#00D4FF', orange: '#00AACC', red: '#FF4444' },
+            forest: { bg: '#051005', card: '#0A2008', accent: '#00FF66', orange: '#88FF00', red: '#FF6644' },
+            sunset: { bg: '#100505', card: '#200A15', accent: '#FF8C00', orange: '#FF6600', red: '#FF3366' },
+            night: { bg: '#000000', card: '#111111', accent: '#ffffff', orange: '#888888', red: '#444444' }
+        };
+
+        const themeDescriptions = {
+            classic: 'Klassisch Dunkelrot/Grün',
+            blue: 'Mitternachtsblau/Cyan',
+            forest: 'Wald Dunkelgrün/Lime',
+            sunset: 'Sonnenuntergang Violett/Orange',
+            night: 'Nacht (Grau/Schwarz/Weiß)'
+        };
+
+        let cardStyle = localStorage.getItem('cardStyle') || 'modern';
+
+        let enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds')) || [];
+        let readItems = JSON.parse(localStorage.getItem('readItems')) || [];
+        let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
+        let scrollPositions = JSON.parse(localStorage.getItem('scrollPositions')) || {};
+        let currentFeed = null;
+        let feedArticles = {};
+        let allArticles = [];
+
+        function init() {
+            console.log('init called');
+            enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds')) || [];
+            hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
+            cardStyle = localStorage.getItem('cardStyle') || 'modern';
+            console.log('enabledFeeds:', enabledFeeds);
+            renderOverlayFeedLists();
+            renderSidebar();
+            loadEnabledFeeds();
+            setupScrollMemory();
+            
+            const savedTheme = localStorage.getItem('selectedTheme') || 'classic';
+            setTheme(savedTheme);
+        }
+
+        function renderSidebar() {
+            const nav = document.getElementById('sidebarNav');
+            const count = hiddenItems.length;
+            nav.innerHTML = `
+                <div class="nav-item" onclick="openOverlay('feeds')">Feed-Auswahl</div>
+                <div class="nav-item" onclick="openOverlay('design')">Aussehen</div>
+                <div class="nav-item" onclick="openOverlay('url')">Manuelle URL</div>
+                <div class="nav-item" onclick="openOverlay('hidden')">
+                    Versteckte Artikel
+                    ${count > 0 ? `<span class="hidden-counter">${count}</span>` : ''}
+                </div>
+            `;
+        }
+
+        function toggleSidebar() {
+            console.log('toggleSidebar called');
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.getElementById('hamburger');
+            console.log('sidebar:', sidebar, 'hamburger:', hamburger);
+            if (sidebar && hamburger) {
+                sidebar.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            }
+        }
+
+        function handleHamburgerClick() {
+            const activeOverlay = document.querySelector('.overlay-page.active');
+            if (activeOverlay) {
+                handleOverlayClose();
+            } else {
+                toggleSidebar();
+            }
+        }
+
+        function handleOverlayClose() {
+            closeOverlay();
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.getElementById('hamburger');
+            if (sidebar) sidebar.classList.remove('active');
+            if (hamburger) hamburger.classList.remove('active');
+        }
+
+        function openOverlay(name) {
+            document.getElementById('overlay-' + name).classList.add('active');
+            document.getElementById('sidebar').classList.remove('active');
+            document.querySelector('.hamburger').classList.remove('active');
+            if (name === 'hidden') {
+                renderHiddenArticles();
+            }
+        }
+
+        function closeOverlay() {
+            document.querySelectorAll('.overlay-page').forEach(el => el.classList.remove('active'));
+        }
+
+        function renderOverlayFeedLists() {
+            const sections = {
+                national: 'overlay-nationalFeeds',
+                regional: 'overlay-regionalFeeds',
+                tech: 'overlay-techFeeds',
+                finance: 'overlay-financeFeeds',
+                sport: 'overlay-sportFeeds',
+                science: 'overlay-scienceFeeds',
+                culture: 'overlay-cultureFeeds'
+            };
+
+            for (const [category, elementId] of Object.entries(sections)) {
+                const container = document.getElementById(elementId);
+                if (container) {
+                    container.innerHTML = feedData[category].map((feed) => `
+                        <div class="feed-item" onclick="toggleFeedFromOverlay('${feed.url}')">
+                            <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" data-url="${feed.url}"></div>
+                            <span class="feed-name">${feed.name}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        function toggleFeedFromOverlay(url) {
+            const toggle = document.querySelector(`.feed-toggle[data-url="${url}"]`);
+            if (enabledFeeds.includes(url)) {
+                enabledFeeds = enabledFeeds.filter(f => f !== url);
+                toggle.classList.remove('checked');
+            } else {
+                enabledFeeds.push(url);
+                toggle.classList.add('checked');
+            }
+            localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
+            loadEnabledFeeds();
+        }
+
+        function addCustomFeedFromOverlay() {
+            const urlInput = document.getElementById('customFeedUrl2');
+            const url = urlInput.value.trim();
+            if (!url) return;
+
+            let customFeeds = JSON.parse(localStorage.getItem('customFeeds')) || [];
+            if (!customFeeds.find(f => f.url === url)) {
+                const name = url.split('/')[2] || 'Eigener Feed';
+                customFeeds.push({ name, url });
+                localStorage.setItem('customFeeds', JSON.stringify(customFeeds));
+                if (!enabledFeeds.includes(url)) {
+                    enabledFeeds.push(url);
+                    localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
+                }
+            }
+
+            urlInput.value = '';
+            renderOverlayFeedLists();
+            loadEnabledFeeds();
+            closeOverlay();
+        }
+
+        function setTheme(theme) {
+            const colors = themes[theme];
+            document.documentElement.style.setProperty('--bg', colors.bg);
+            document.documentElement.style.setProperty('--card-bg', colors.card);
+            document.documentElement.style.setProperty('--accent', colors.accent);
+            document.documentElement.style.setProperty('--orange', colors.orange);
+            document.documentElement.style.setProperty('--red', colors.red);
+
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+            localStorage.setItem('selectedTheme', theme);
+        }
+
+        function setCardStyle(style) {
+            cardStyle = style;
+            localStorage.setItem('cardStyle', style);
+            document.querySelectorAll('.theme-btn[data-card]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-card="${style}"]`).classList.add('active');
+            renderFeeds();
+        }
+
+        function loadEnabledFeeds() {
+            const main = document.getElementById('mainContent');
+            console.log('loadEnabledFeeds called, enabledFeeds:', enabledFeeds);
+            
+            if (!enabledFeeds || enabledFeeds.length === 0) {
+                main.innerHTML = '<div class="no-feeds">Keine Feeds ausgewählt.<br>Nutze das Menü (☰) um Feeds zu aktivieren.</div>';
+                return;
+            }
+
+            main.innerHTML = '<div class="loading"><div class="loading-dots"><span>L</span><span>A</span><span>D</span><span>E</span><span>N</span></div></div><div id="pullIndicator" style="display:none;text-align:center;padding:10px;color:var(--accent);">↓ Runterziehen zum Aktualisieren</div>';
+
+            let loaded = 0;
+            feedArticles = {};
+            allArticles = [];
+
+            enabledFeeds.forEach((url) => {
+                fetchFeed(url);
+            });
+
+            function fetchFeed(url) {
+                fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'ok' && data.items && data.items.length > 0) {
+                            const feedName = data.feed.title || url.split('/')[2];
+                            const items = data.items.slice(0, 50).map(item => {
+                                let thumbnail = item.thumbnail || '';
+                                if (!thumbnail && item.enclosure) {
+                                    if (item.enclosure.thumbnail) thumbnail = item.enclosure.thumbnail;
+                                    else if (item.enclosure.link) thumbnail = item.enclosure.link;
+                                }
+                                if (!thumbnail && item.description) {
+                                    const imgMatch = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
+                                    if (imgMatch) thumbnail = imgMatch[1];
+                                }
+                                if (!thumbnail && item.content) {
+                                    const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
+                                    if (imgMatch) thumbnail = imgMatch[1];
+                                }
+                                return {
+                                    ...item,
+                                    feedName: feedName,
+                                    feedUrl: url,
+                                    thumbnail: thumbnail
+                                };
+                            });
+                            feedArticles[url] = { name: feedName, items: items };
+                            allArticles.push(...items);
+                            loaded++;
+                            renderIncremental();
+                        } else {
+                            return fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                        }
+                    })
+                    .then(res => {
+                        if (!res) return;
+                        return res.json ? res.json() : res.text();
+                    })
+                    .then(data => {
+                        if (!data || !data.contents) return;
+                        const parser = new DOMParser();
+                        const xml = parser.parseFromString(data.contents, 'text/xml');
+                        const items = Array.from(xml.querySelectorAll('item, entry')).slice(0, 50);
+                        if (items.length > 0) {
+                            const feedName = xml.querySelector('title')?.textContent || url.split('/')[2];
+                            const articles = items.map(item => {
+                                let thumbnail = '';
+                                thumbnail = item.querySelector('enclosure')?.getAttribute('url') || '';
+                                if (!thumbnail) thumbnail = item.querySelector('media\\:thumbnail, media\\:content, thumbnail')?.getAttribute('url') || '';
+                                if (!thumbnail) {
+                                    const mediaContent = item.querySelector('media\\:content, media\\:thumbnail');
+                                    if (mediaContent) thumbnail = mediaContent.getAttribute('url') || '';
+                                }
+                                if (!thumbnail) {
+                                    const content = item.querySelector('content\\:encoded, description')?.textContent || '';
+                                    const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/);
+                                    if (imgMatch) thumbnail = imgMatch[1];
+                                }
+                                return {
+                                    title: item.querySelector('title')?.textContent || '',
+                                    link: item.querySelector('link')?.textContent || item.querySelector('link')?.getAttribute('href') || '',
+                                    pubDate: item.querySelector('pubDate, published')?.textContent || '',
+                                    thumbnail: thumbnail,
+                                    feedName: feedName,
+                                    feedUrl: url
+                                };
+                            });
+                            feedArticles[url] = { name: feedName, items: articles };
+                            allArticles.push(...articles);
+                        }
+                        loaded++;
+                        renderIncremental();
+                    })
+                    .catch(() => {
+                        console.log('Error loading feed:', url);
+                        loaded++;
+                        renderIncremental();
+                    });
+            }
+
+            function renderIncremental() {
+                const currentArticles = allArticles
+                    .filter(item => !hiddenItems.includes(item.link))
+                    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+                    .slice(0, 100);
+                renderFeeds(currentArticles);
+            }
+
+            function sortAndRender() {
+                const sortedArticles = allArticles
+                    .filter(item => !hiddenItems.includes(item.link))
+                    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+                    .slice(0, 100);
+                renderFeeds(sortedArticles);
+            }
+        }
+
+        function renderFeeds(articles) {
+            const main = document.getElementById('mainContent');
+            const displayArticles = articles || allArticles;
+            
+            if (displayArticles.length === 0) {
+                main.innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle Artikel wurden ausgeblendet oder Feeds laden noch.</div>';
+                return;
+            }
+
+            const cardClass = cardStyle === 'modern' ? 'modern-card' : 'article-card';
+
+            main.innerHTML = `
+                <div class="articles-list" id="articlesList">
+                    ${displayArticles.map(item => `
+                        <div class="${cardClass}" data-link="${item.link}" onclick="openArticle('${item.link}', '${item.title.replace(/'/g, "\\'")}', '${item.feedUrl}')" onmousedown="startSwipe(event, this)" ontouchstart="startSwipe(event, this)">
+                            ${cardStyle !== 'modern' ? '<span class="swipe-hint">←</span>' : ''}
+                            ${item.thumbnail ? `<img class="article-image" src="${item.thumbnail}" alt="">` : ''}
+                            <div class="article-header">
+                                <div class="article-title">${item.title}</div>
+                                <span class="article-status" onclick="event.stopPropagation(); toggleRead('${item.link}')">👁</span>
+                            </div>
+                            <div class="article-meta">
+                                <span style="color:var(--accent)">${item.feedName}</span>
+                                • ${new Date(item.pubDate).toLocaleString('de-DE', {hour:'2-digit', minute:'2-digit'})}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            if (typeof initPullToRefresh === 'function') {
+                initPullToRefresh();
+            }
+        }
+
+        let swipeStartX = 0;
+        let swipeStartY = 0;
+        let currentSwipeCard = null;
+        let swiped = false;
+
+        function startSwipe(e, card) {
+            swiped = false;
+            const touch = e.touches ? e.touches[0] : e;
+            swipeStartX = touch.clientX;
+            swipeStartY = touch.clientY;
+            currentSwipeCard = card;
+            
+            document.addEventListener('mousemove', onSwipeMove);
+            document.addEventListener('mouseup', endSwipe);
+            document.addEventListener('touchmove', onSwipeMove);
+            document.addEventListener('touchend', endSwipe);
+        }
+
+        function onSwipeMove(e) {
+            if (!currentSwipeCard) return;
+            const touch = e.touches ? e.touches[0] : e;
+            const deltaX = touch.clientX - swipeStartX;
+            const deltaY = Math.abs(touch.clientY - swipeStartY);
+            
+            if (deltaX < -30 && deltaY < 50) {
+                currentSwipeCard.classList.add('swiping');
+            } else {
+                currentSwipeCard.classList.remove('swiping');
+            }
+        }
+
+        function endSwipe(e) {
+            if (!currentSwipeCard) return;
+            
+            const touch = e.changedTouches ? e.changedTouches[0] : e;
+            const deltaX = touch.clientX - swipeStartX;
+            
+            if (deltaX < -80) {
+                const link = currentSwipeCard.dataset.link;
+                hideArticle(link);
+                currentSwipeCard.style.display = 'none';
+                swiped = true;
+            }
+            
+            currentSwipeCard.classList.remove('swiping');
+            currentSwipeCard = null;
+            
+            document.removeEventListener('mousemove', onSwipeMove);
+            document.removeEventListener('mouseup', endSwipe);
+            document.removeEventListener('touchmove', onSwipeMove);
+            document.removeEventListener('touchend', endSwipe);
+        }
+
+        function openArticle(link, title, feedUrl) {
+            hideArticle(link);
+            if (window.Capacitor && window.Capacitor.isNativePlatform && window.InAppBrowser) {
+                window.InAppBrowser.open(link, '_blank');
+            } else {
+                window.open(link, '_blank');
+            }
+        }
+
+        function hideArticle(link) {
+            if (!hiddenItems.includes(link)) {
+                hiddenItems.push(link);
+                localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
+            }
+            allArticles = allArticles.filter(item => item.link !== link);
+            renderSidebar();
+            renderFeeds();
+        }
+
+        function closeArticle() {
+            document.getElementById('articleViewer').classList.remove('active');
+            document.body.style.overflow = '';
+            renderFeeds();
+        }
+
+        function renderHiddenArticles() {
+            const container = document.getElementById('hiddenArticlesList');
+            if (hiddenItems.length === 0) {
+                container.innerHTML = '<div class="no-feeds">Keine Artikel versteckt.</div>';
+                return;
+            }
+
+            const allArticles = [];
+            for (const [url, feed] of Object.entries(feedArticles)) {
+                feed.items.forEach(item => {
+                    if (hiddenItems.includes(item.link)) {
+                        allArticles.push({...item, feedName: feed.name});
+                    }
+                });
+            }
+
+            container.innerHTML = `
+                <button class="add-btn" style="margin-bottom:1rem" onclick="restoreAllHidden()">Alle wiederherstellen</button>
+                <div class="articles-list">
+                    ${allArticles.map(item => `
+                        <div class="article-card" onclick="openHiddenArticle('${item.link}', '${item.title.replace(/'/g, "\\'")}')">
+                            ${item.thumbnail ? `<img class="article-image" src="${item.thumbnail}" alt="">` : ''}
+                            <div class="article-header">
+                                <div class="article-title">${item.title}</div>
+                                <span class="article-status" onclick="event.stopPropagation(); restoreArticle('${item.link}')">↩</span>
+                            </div>
+                            <div class="article-meta">${item.feedName} - ${new Date(item.pubDate).toLocaleString('de-DE')}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function openHiddenArticle(link, title) {
+            if (window.Capacitor && window.Capacitor.isNativePlatform && window.InAppBrowser) {
+                window.InAppBrowser.open(link, '_blank');
+            } else {
+                window.open(link, '_blank');
+            }
+        }
+
+        function restoreArticle(link) {
+            hiddenItems = hiddenItems.filter(l => l !== link);
+            localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
+            renderSidebar();
+            renderHiddenArticles();
+            renderFeeds();
+        }
+
+        function restoreAllHidden() {
+            hiddenItems = [];
+            localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
+            renderSidebar();
+            renderHiddenArticles();
+            renderFeeds();
+        }
+
+        function setupScrollMemory() {
+            const main = document.getElementById('mainContent');
+            const savedScroll = localStorage.getItem('mainScrollPosition');
+            if (savedScroll && main) {
+                main.scrollTop = parseInt(savedScroll);
+            }
+            
+            window.addEventListener('scroll', () => {
+                localStorage.setItem('mainScrollPosition', window.scrollY);
+            });
+        }
+
+        function filterArticles(query) {
+            query = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.article-card, .modern-card');
+            cards.forEach(card => {
+                const title = card.querySelector('.article-title');
+                const feedName = card.querySelector('.article-meta span');
+                if (!title) return;
+                
+                const text = (title.textContent + ' ' + (feedName ? feedName.textContent : '')).toLowerCase();
+                card.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        let ptrStartY = 0;
+        let ptrPulling = false;
+        let ptrIndicator = null;
+
+        function initPullToRefresh() {
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+            
+            main.addEventListener('touchstart', function(e) {
+                if (main.scrollTop > 0) return;
+                ptrStartY = e.touches[0].clientY;
+                ptrPulling = false;
+                ptrIndicator = document.getElementById('pullIndicator');
+            }, { passive: true });
+
+            main.addEventListener('touchmove', function(e) {
+                if (main.scrollTop > 0) return;
+                const currentY = e.touches[0].clientY;
+                const diff = currentY - ptrStartY;
+                
+                if (diff > 80) {
+                    ptrPulling = true;
+                    if (ptrIndicator) {
+                        ptrIndicator.style.display = 'block';
+                        ptrIndicator.textContent = '↓ Loslassen zum Aktualisieren';
+                    }
+                } else {
+                    ptrPulling = false;
+                    if (ptrIndicator) {
+                        ptrIndicator.style.display = 'none';
+                    }
+                }
+            }, { passive: true });
+
+            main.addEventListener('touchend', function(e) {
+                if (ptrPulling && main.scrollTop <= 0) {
+                    if (ptrIndicator) {
+                        ptrIndicator.textContent = 'Lade...';
+                    }
+                    loadEnabledFeeds();
+                }
+                if (ptrIndicator) {
+                    setTimeout(() => {
+                        if (ptrIndicator) ptrIndicator.style.display = 'none';
+                    }, 1000);
+                }
+                ptrPulling = false;
+            }, { passive: true });
+        }
+
+        init();
+    </script>
+</body>
+</html>
