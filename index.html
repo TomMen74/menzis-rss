@@ -101,6 +101,33 @@
             fill: var(--accent);
         }
 
+        .tab-bar {
+            display: flex;
+            overflow-x: auto;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--accent);
+            scrollbar-width: none;
+        }
+        .tab-bar::-webkit-scrollbar { display: none; }
+        .tab {
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            background: var(--bg);
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            background: var(--accent);
+            color: var(--bg);
+            font-weight: 600;
+        }
+
         .sidebar-nav {
             display: flex; flex-direction: column; gap: 0.5rem;
         }
@@ -401,13 +428,25 @@
         <div class="hamburger" id="hamburger" onclick="handleHamburgerClick()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <span style="font-size:0.7rem;color:var(--text-dim)">v1.2</span></div>
+        <div class="header-title">Menzis RSS <span style="font-size:0.7rem;color:var(--text-dim)">v1.3</span></div>
         <div class="search-wrapper">
             <span class="search-icon">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
             </span>
             <input type="text" id="searchInput" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
         </div>
+    </div>
+
+    <div class="tab-bar">
+        <div class="tab active" data-filter="all" onclick="setArticleFilter('all')">Alle</div>
+        <div class="tab" data-filter="national" onclick="setArticleFilter('national')">Nachrichten</div>
+        <div class="tab" data-filter="tech" onclick="setArticleFilter('tech')">Tech</div>
+        <div class="tab" data-filter="finance" onclick="setArticleFilter('finance')">Wirtschaft</div>
+        <div class="tab" data-filter="tech2" onclick="setArticleFilter('tech2')">Tech-News</div>
+        <div class="tab" data-filter="mobile" onclick="setArticleFilter('mobile')">Mobile</div>
+        <div class="tab" data-filter="apple" onclick="setArticleFilter('apple')">Apple</div>
+        <div class="tab" data-filter="society" onclick="setArticleFilter('society')">Gesellschaft</div>
+        <div class="tab" data-filter="cooking" onclick="setArticleFilter('cooking')">Kochen</div>
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -435,6 +474,22 @@
             <div class="feed-list" id="overlay-scienceFeeds"></div>
             <div class="feed-category-title">Kultur</div>
             <div class="feed-list" id="overlay-cultureFeeds"></div>
+            <div class="feed-category-title">Tech-News</div>
+            <div class="feed-list" id="overlay-tech2Feeds"></div>
+            <div class="feed-category-title">Wirtschaft</div>
+            <div class="feed-list" id="overlay-finance2Feeds"></div>
+            <div class="feed-category-title">Gesellschaft</div>
+            <div class="feed-list" id="overlay-societyFeeds"></div>
+            <div class="feed-category-title">Wissenschaft 2</div>
+            <div class="feed-list" id="overlay-science2Feeds"></div>
+            <div class="feed-category-title">Lifestyle</div>
+            <div class="feed-list" id="overlay-lifestyleFeeds"></div>
+            <div class="feed-category-title">Android & Mobile</div>
+            <div class="feed-list" id="overlay-mobileFeeds"></div>
+            <div class="feed-category-title">Apple</div>
+            <div class="feed-list" id="overlay-appleFeeds"></div>
+            <div class="feed-category-title">Kochen</div>
+            <div class="feed-list" id="overlay-cookingFeeds"></div>
         </div>
     </div>
 
@@ -538,6 +593,124 @@
                 { name: 'NDR Kultur', url: 'https://www.ndr.de/kultur/index~rss2.xml' },
                 { name: 'ZDF Kultur', url: 'https://www.zdf.de/rss/zdf_kultur' },
                 { name: 'Tagesspiegel Kultur', url: 'https://www.tagesspiegel.de/kultur/index.rss' }
+            ],
+            tech2: [
+                { name: 'Fefe', url: 'https://blog.fefe.de/rss.xml' },
+                { name: 'Caschy', url: 'https://stadt-bremerhaven.de/feed/' },
+                { name: 'Netzpolitik', url: 'https://netzpolitik.org/feed/' },
+                { name: 't3n', url: 'https://t3n.de/rss.xml' },
+                { name: 'Golem', url: 'https://www.golem.de/rss.php?feed=RSS2.0' },
+                { name: 'Heise', url: 'https://www.heise.de/rss/heise-atom.xml' },
+                { name: 'Kuketz IT', url: 'https://www.kuketz-blog.de/feed/' },
+                { name: 'Linux-Magazin', url: 'https://www.linux-magazin.de/feed/' },
+                { name: 'ComputerBase', url: 'https://www.computerbase.de/rss/news.xml' },
+                { name: 'Deskmodder', url: 'https://www.deskmodder.de/blog/feed/' },
+                { name: 'iPhone-Ticker', url: 'https://www.iphone-ticker.de/feed/' },
+                { name: 'Borns IT', url: 'https://www.borncity.com/blog/feed/' },
+                { name: 'Hardwareluxx', url: 'https://www.hardwareluxx.de/index.php?format=feed&type=rss' },
+                { name: 'MobileGeeks', url: 'https://www.mobilegeeks.de/feed/' },
+                { name: 'SmartHome', url: 'https://www.smarthomeassistent.de/feed/' },
+                { name: 'Admin Magazin', url: 'https://www.admin-magazin.de/feed/' },
+                { name: 'Linux-Community', url: 'https://www.linux-community.de/feed/' },
+                { name: 'Pro-Linux', url: 'https://www.pro-linux.de/backend/pro-linux.rdf' },
+                { name: 'Thomas-Krenn', url: 'https://www.thomas-krenn.com/de/wiki/index.php?title=Spezial:Letzte_%C3%84nderungen&feed=atom' },
+                { name: 'Inside Digital', url: 'https://www.inside-digital.de/feed' },
+                { name: 'Appgefahren', url: 'https://www.appgefahren.de/feed/' },
+                { name: 'WinFuture', url: 'https://rss.winfuture.de/f/1.xml' },
+                { name: 'ZDNet', url: 'https://www.zdnet.de/feed/' },
+                { name: 'Silicon', url: 'https://www.silicon.de/feed/' },
+                { name: 'PC-Games', url: 'https://www.pcgames.de/rss/pcgames.xml' }
+            ],
+            finance2: [
+                { name: 'Finanzfluss', url: 'https://www.finanzfluss.de/feed/' },
+                { name: 'Finanztip', url: 'https://www.finanztip.de/feed/' },
+                { name: 'Gründerszene', url: 'https://www.businessinsider.de/gruenderszene/feed/' },
+                { name: 'Deutsche Startups', url: 'https://www.deutsche-startups.de/feed/' },
+                { name: 'ExtraETF', url: 'https://extraetf.com/de/feed/' },
+                { name: 'IT-Finanzmagazin', url: 'https://www.it-finanzmagazin.de/feed/' },
+                { name: 'Payment-Banking', url: 'https://paymentandbanking.com/feed/' },
+                { name: 'WirtschaftsWoche Blogs', url: 'https://blog.wiwo.de/feed/' },
+                { name: 'Finanz-Szene', url: 'https://finanz-szene.de/feed/' },
+                { name: 'Oeconomicus', url: 'https://oeconomicus.blog/feed/' }
+            ],
+            society: [
+                { name: 'Postillon', url: 'https://www.der-postillon.com/feeds/posts/default' },
+                { name: 'Übermedien', url: 'https://uebermedien.de/feed/' },
+                { name: 'NachDenkSeiten', url: 'https://www.nachdenkseiten.de/?feed=rss2' },
+                { name: 'Katapult', url: 'https://katapult-magazin.de/de/feed/' },
+                { name: 'LTO', url: 'https://www.lto.de/rss/redaktion/brandaktuell/' },
+                { name: 'Cicero', url: 'https://www.cicero.de/rss.xml' },
+                { name: 'Tichys Einblick', url: 'https://www.tichyseinblick.de/feed/' },
+                { name: 'Telepolis', url: 'https://www.telepolis.de/news-atom.xml' },
+                { name: 'Bildblog', url: 'https://bildblog.de/feed/' },
+                { name: 'Law Blog', url: 'https://www.lawblog.de/feed/' },
+                { name: 'Krautreporter', url: 'https://krautreporter.de/feed/rss' },
+                { name: 'Lage der Nation', url: 'https://lagedernation.org/feed/mp3/' },
+                { name: 'The European', url: 'https://www.theeuropean.de/feed/' },
+                { name: 'Piqd', url: 'https://piqd.de/feeds' },
+                { name: 'Belltower', url: 'https://www.belltower.news/feed/' }
+            ],
+            science2: [
+                { name: 'Spektrum', url: 'https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/829656' },
+                { name: 'ScienceBlogs', url: 'https://scienceblogs.de/feed/' },
+                { name: 'Utopia', url: 'https://utopia.de/feed/' },
+                { name: 'Klimareporter', url: 'https://www.klimareporter.de/?format=feed&type=rss' },
+                { name: 'Quarks', url: 'https://www.quarks.de/feed/' }
+            ],
+            lifestyle: [
+                { name: 'Mit Vergnügen', url: 'https://mitvergnuegen.com/feed/' },
+                { name: 'Spreeblick', url: 'https://www.spreeblick.com/feed/' },
+                { name: 'Metal.de', url: 'https://www.metal.de/feed/' },
+                { name: 'Serienjunkies', url: 'https://www.serienjunkies.de/xml/feeds/news.xml' },
+                { name: '22places', url: 'https://www.22places.de/feed/' },
+                { name: 'Kwerfeldein', url: 'https://kwerfeldein.de/feed/' },
+                { name: 'Stilsucht', url: 'https://www.stilsucht.de/feed/' },
+                { name: 'Vinyl-Keks', url: 'https://vinyl-keks.eu/feed/' },
+                { name: 'Moviepilot', url: 'https://www.moviepilot.de/news.rss' },
+                { name: 'Eurogamer', url: 'https://www.eurogamer.de/feed/news' }
+            ],
+            mobile: [
+                { name: 'Android-User.de', url: 'https://www.android-user.de/feed/' },
+                { name: 'Android-Hilfe News', url: 'https://www.android-hilfe.de/forum/-/index.rss' },
+                { name: 'SmartDroid', url: 'https://www.smartdroid.de/feed/' },
+                { name: 'Schmidtis Blog', url: 'https://www.schmidtisblog.de/feed/' },
+                { name: 'XDA Android', url: 'https://www.xda-developers.com/feed/' },
+                { name: 'Linux-Handy', url: 'https://linux-handy.de/feed/' },
+                { name: 'APK Mirror Blog', url: 'https://www.apkmirror.com/feed/' },
+                { name: 'Areamobile', url: 'http://www.areamobile.de/rss/news.xml' },
+                { name: 'Xiaomi Community DE', url: 'https://germany.community.mi.com/feed/' }
+            ],
+            apple: [
+                { name: 'Macerkopf', url: 'https://www.macerkopf.de/feed/' },
+                { name: 'Mac-and-i', url: 'https://www.heise.de/mac-and-i/rss/mac-and-i-atom.xml' },
+                { name: 'Sir Apfelot', url: 'https://www.sir-apfelot.de/feed/' },
+                { name: 'Apfelpage', url: 'https://www.apfelpage.de/feed/' },
+                { name: 'Mac Tech News', url: 'https://www.mactechnews.de/rss/news.xml' },
+                { name: 'Apfeltalk', url: 'https://www.apfeltalk.de/magazin/feed/' },
+                { name: 'Apple-Infoticker', url: 'https://apple-infoticker.de/feed/' },
+                { name: 'iFun.de', url: 'https://www.ifun.de/feed/' },
+                { name: 'Macwelt', url: 'https://www.macwelt.de/feed/' },
+                { name: 'Eclectic Light', url: 'https://eclecticlight.co/feed/' }
+            ],
+            cooking: [
+                { name: 'Eat this! (Vegan)', url: 'https://www.eat-this.org/feed/' },
+                { name: 'Zucker&Jagdwurst', url: 'https://www.zuckerundjagdwurst.com/de/feed/' },
+                { name: 'Valentinas Kochbuch', url: 'https://valentinas-kochbuch.de/feed/' },
+                { name: 'Arthurs Tochter kocht', url: 'https://www.arthurstochterkochtblog.com/feeds/posts/default' },
+                { name: 'HighFoodality', url: 'https://www.highfoodality.de/feed/' },
+                { name: 'S-Küche', url: 'https://s-kueche.com/feed/' },
+                { name: 'Emmi kocht einfach', url: 'https://emmikochteinfach.de/feed/' },
+                { name: 'Maltes Kitchen', url: 'https://www.malteskitchen.de/feed/' },
+                { name: 'Moeys Kitchen', url: 'https://www.moeyskitchen.com/feed/' },
+                { name: 'Backen macht glücklich', url: 'https://www.backenmachtgluecklich.de/feed/' },
+                { name: 'Mann backt', url: 'https://www.mannbackt.de/feed/' },
+                { name: 'Knusperstübchen', url: 'https://knusperstuebchen.net/feed/' },
+                { name: 'Backbube', url: 'https://backbube.com/feed/' },
+                { name: 'Effilee', url: 'https://www.effilee.de/feed/' },
+                { name: 'Kaffee-Netz', url: 'https://www.kaffee-netz.de/portal/index.rss' },
+                { name: 'Das Lamm', url: 'https://daslamm.ch/feed/' },
+                { name: 'Gaumenfreundin', url: 'https://www.gaumenfreundin.de/feed/' },
+                { name: 'Wasi kocht', url: 'https://wasikocht.de/feed/' }
             ]
         };
 
@@ -566,17 +739,30 @@
         let currentFeed = null;
         let feedArticles = {};
         let allArticles = [];
+        let articleFilter = localStorage.getItem('articleFilter') || 'all';
+        
+        const feedCategoryMap = {};
+        for (const [category, feeds] of Object.entries(feedData)) {
+            feeds.forEach(feed => {
+                feedCategoryMap[feed.url] = category;
+            });
+        }
 
         function init() {
             console.log('init called');
             enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds')) || [];
             hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
             cardStyle = localStorage.getItem('cardStyle') || 'modern';
+            articleFilter = localStorage.getItem('articleFilter') || 'all';
             console.log('enabledFeeds:', enabledFeeds);
             renderOverlayFeedLists();
             renderSidebar();
             loadEnabledFeeds();
             setupScrollMemory();
+            
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const activeTab = document.querySelector(`.tab[data-filter="${articleFilter}"]`);
+            if (activeTab) activeTab.classList.add('active');
             
             const savedTheme = localStorage.getItem('selectedTheme') || 'classic';
             setTheme(savedTheme);
@@ -645,12 +831,20 @@
                 finance: 'overlay-financeFeeds',
                 sport: 'overlay-sportFeeds',
                 science: 'overlay-scienceFeeds',
-                culture: 'overlay-cultureFeeds'
+                culture: 'overlay-cultureFeeds',
+                tech2: 'overlay-tech2Feeds',
+                finance2: 'overlay-finance2Feeds',
+                society: 'overlay-societyFeeds',
+                science2: 'overlay-science2Feeds',
+                lifestyle: 'overlay-lifestyleFeeds',
+                mobile: 'overlay-mobileFeeds',
+                apple: 'overlay-appleFeeds',
+                cooking: 'overlay-cookingFeeds'
             };
 
             for (const [category, elementId] of Object.entries(sections)) {
                 const container = document.getElementById(elementId);
-                if (container) {
+                if (container && feedData[category]) {
                     container.innerHTML = feedData[category].map((feed) => `
                         <div class="feed-item" onclick="toggleFeedFromOverlay('${feed.url}')">
                             <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" data-url="${feed.url}"></div>
@@ -840,7 +1034,11 @@
 
         function renderFeeds(articles) {
             const main = document.getElementById('mainContent');
-            const displayArticles = articles || allArticles;
+            let displayArticles = articles || allArticles;
+            
+            if (articleFilter !== 'all') {
+                displayArticles = displayArticles.filter(item => feedCategoryMap[item.feedUrl] === articleFilter);
+            }
             
             if (displayArticles.length === 0) {
                 main.innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle Artikel wurden ausgeblendet oder Feeds laden noch.</div>';
@@ -870,6 +1068,14 @@
             if (typeof initPullToRefresh === 'function') {
                 initPullToRefresh();
             }
+        }
+
+        function setArticleFilter(filter) {
+            articleFilter = filter;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-filter="${filter}"]`).classList.add('active');
+            localStorage.setItem('articleFilter', filter);
+            renderFeeds();
         }
 
         let swipeStartX = 0;
