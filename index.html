@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Menzis RSS v2.0</title>
+    <title>Menzis RSS v2.1</title>
     <style>
         :root {
             --bg: #000000;
@@ -401,24 +401,14 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v2.0.2</small></div>
+        <div class="header-title">Menzis RSS <small>v2.1</small></div>
         <div style="position:relative;display:flex;align-items:center;">
             <svg style="position:absolute;left:8px;width:14px;height:14px;fill:var(--text-dim)" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
             <input type="text" class="search-input" style="padding-left:28px" placeholder="Suchen..." oninput="filterArticles(this.value)">
         </div>
     </div>
 
-    <div class="tab-bar" id="tabBar">
-        <div class="tab active" data-filter="all" onclick="setFilter('all')">Alle</div>
-        <div class="tab" data-filter="national" onclick="setFilter('national')">Nachrichten</div>
-        <div class="tab" data-filter="tech" onclick="setFilter('tech')">Tech</div>
-        <div class="tab" data-filter="finance" onclick="setFilter('finance')">Wirtschaft</div>
-        <div class="tab" data-filter="tech2" onclick="setFilter('tech2')">Tech-News</div>
-        <div class="tab" data-filter="mobile" onclick="setFilter('mobile')">Mobile</div>
-        <div class="tab" data-filter="apple" onclick="setFilter('apple')">Apple</div>
-        <div class="tab" data-filter="society" onclick="setFilter('society')">Gesellschaft</div>
-        <div class="tab" data-filter="cooking" onclick="setFilter('cooking')">Kochen</div>
-    </div>
+    <div class="tab-bar" id="tabBar"></div>
 
     <div id="mainContent">
         <div class="loading">
@@ -483,57 +473,18 @@
             national: [
                 { name: 'Tagesschau', url: 'https://www.tagesschau.de/xml/rss2' },
                 { name: 'SPIEGEL', url: 'https://www.spiegel.de/schlagzeilen/index.rss' },
-                { name: 'ZEIT', url: 'https://www.zeit.de/feed/rss.xml' },
-                { name: 'Süddeutsche', url: 'https://www.sueddeutsche.de/politik.rss' },
-                { name: 'FAZ', url: 'https://www.faz.net/rss/aktuell' },
-                { name: 'WELT', url: 'https://www.welt.de/schlagzeilen/rss20520.xml' },
-                { name: 'n-tv', url: 'https://www.n-tv.de/rss/atom.xml' },
-                { name: 'taz', url: 'https://www.taz.de/!p5101.taz' },
-                { name: 'ZDF', url: 'https://www.zdf.de/rss/zdf_nachrichten' }
+                { name: 'FAZ', url: 'https://www.faz.net/rss/aktuell' }
             ],
             regional: [
                 { name: 'NDR MV', url: 'https://www.ndr.de/nachrichten/mecklenburg-vorpommern/index~rss2.xml' },
                 { name: 'NDR SH', url: 'https://www.ndr.de/nachrichten/schleswig-holstein/index~rss2.xml' },
                 { name: 'NDR NI', url: 'https://www.ndr.de/nachrichten/niedersachsen/index~rss2.xml' },
-                { name: 'NDR HH', url: 'https://www.ndr.de/nachrichten/hamburg/index~rss2.xml' },
-                { name: 'BR', url: 'https://www.br.de/nachrichten/index.rss' },
-                { name: 'WDR', url: 'https://www.wdr.de/news/rssfeed-1028.xml' },
-                { name: 'MDR', url: 'https://www.mdr.de/nachrichten/feed.rss' },
-                { name: 'SWR', url: 'https://www.swr.de/swraktuell/rss-bild-rss-100.xml' }
+                { name: 'NDR HH', url: 'https://www.ndr.de/nachrichten/hamburg/index~rss2.xml' }
             ],
             tech: [
-                { name: 'Heise', url: 'https://www.heise.de/rss/heise.rss' },
                 { name: 'ComputerBILD', url: 'https://www.computerbild.de/rssfeed_2261.xml' },
-                { name: 'Golem', url: 'https://www.golem.de/rss/feed.xml' },
-                { name: 'netzwelt', url: 'https://www.netzwelt.de/rss/news' },
-                { name: 'Chip', url: 'https://www.chip.de/rss/news' },
-                { name: 'WinFuture', url: 'https://www.winfuture.de/rss/news.xml' },
                 { name: 'Futurezone', url: 'https://futurezone.de/rss' },
                 { name: 'Turing', url: 'https://turingmagazin.de/feed' }
-            ],
-            finance: [
-                { name: 'Handelsblatt', url: 'https://www.handelsblatt.com/rss/feed' },
-                { name: 'WirtschaftsWoche', url: 'https://www.wiwo.de/rss/feed' },
-                { name: 'Manager Magazin', url: 'https://www.manager-magazin.de/rss/rss2_AlleTopStories' },
-                { name: 'Finanzen100', url: 'https://www.finanzen100.de/rss/feed' },
-                { name: 'Reuters DE', url: 'https://www.reutersagency.com/de/feed' }
-            ],
-            sport: [
-                { name: 'Kicker', url: 'https://www.kicker.de/rss/aktuell.xml' },
-                { name: 'Sport1', url: 'https://www.sport1.de/rss/news' },
-                { name: 'Sportschau', url: 'https://www.sportschau.de/rss/sportschow.xml' },
-                { name: 'Spox', url: 'https://www.spox.com/de/rss/spox.xml' },
-                { name: 'Bundesliga', url: 'https://www.bundesliga.com/rss/news_de_de.xml' }
-            ],
-            science: [
-                { name: 'scinexx', url: 'https://www.scinexx.de/rss.xml' },
-                { name: 'Spektrum', url: 'https://www.spektrum.de/feed/rss/spektrum' },
-                { name: 'Wissenschaft.de', url: 'https://www.wissenschaft.de/rss-feed' }
-            ],
-            culture: [
-                { name: 'NDR Kultur', url: 'https://www.ndr.de/kultur/index~rss2.xml' },
-                { name: 'ZDF Kultur', url: 'https://www.zdf.de/rss/zdf_kultur' },
-                { name: 'Tagesspiegel Kultur', url: 'https://www.tagesspiegel.de/kultur/index.rss' }
             ],
             tech2: [
                 { name: 'Fefe', url: 'https://blog.fefe.de/rss.xml' },
@@ -542,52 +493,42 @@
                 { name: 't3n', url: 'https://t3n.de/rss.xml' },
                 { name: 'Kuketz IT', url: 'https://www.kuketz-blog.de/feed/' },
                 { name: 'ComputerBase', url: 'https://www.computerbase.de/rss/news.xml' },
-                { name: 'Hardwareluxx', url: 'https://www.hardwareluxx.de/index.php?format=feed&type=rss' },
-                { name: 'Inside Digital', url: 'https://www.inside-digital.de/feed' },
-                { name: 'ZDNet', url: 'https://www.zdnet.de/feed/' },
-                { name: 'PC-Games', url: 'https://www.pcgames.de/rss/pcgames.xml' }
+                { name: 'Inside Digital', url: 'https://www.inside-digital.de/feed' }
             ],
-            finance2: [
-                { name: 'Finanzfluss', url: 'https://www.finanzfluss.de/feed/' },
-                { name: 'Finanztip', url: 'https://www.finanztip.de/feed/' },
+            finance: [
                 { name: 'Gründerszene', url: 'https://www.businessinsider.de/gruenderszene/feed/' },
-                { name: 'Deutsche Startups', url: 'https://www.deutsche-startups.de/feed/' },
-                { name: 'ExtraETF', url: 'https://extraetf.com/de/feed/' }
+                { name: 'Deutsche Startups', url: 'https://www.deutsche-startups.de/feed/' }
             ],
             society: [
                 { name: 'Postillon', url: 'https://www.der-postillon.com/feeds/posts/default' },
                 { name: 'Übermedien', url: 'https://uebermedien.de/feed/' },
                 { name: 'NachDenkSeiten', url: 'https://www.nachdenkseiten.de/?feed=rss2' },
-                { name: 'Katapult', url: 'https://katapult-magazin.de/de/feed/' },
-                { name: 'LTO', url: 'https://www.lto.de/rss/redaktion/brandaktuell/' },
                 { name: 'Cicero', url: 'https://www.cicero.de/rss.xml' },
                 { name: 'Tichys Einblick', url: 'https://www.tichyseinblick.de/feed/' },
                 { name: 'Telepolis', url: 'https://www.telepolis.de/news-atom.xml' },
-                { name: 'Multipolar', url: 'https://multipolar-magazin.de/feed/' },
                 { name: 'Apollo News', url: 'https://apollo-news.de/feed/' },
-                { name: 'Achgut', url: 'https://achgut.com/feed' },
                 { name: 'Junge Freiheit', url: 'https://jungefreiheit.de/feed/' }
             ],
-            science2: [
-                { name: 'Spektrum', url: 'https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/829656' },
+            science: [
                 { name: 'Quarks', url: 'https://www.quarks.de/feed/' },
                 { name: 'Klimareporter', url: 'https://www.klimareporter.de/?format=feed&type=rss' }
             ],
+            culture: [
+                { name: 'NDR Kultur', url: 'https://www.ndr.de/kultur/index~rss2.xml' }
+            ],
             lifestyle: [
                 { name: 'Mit Vergnügen', url: 'https://mitvergnuegen.com/feed/' },
-                { name: 'Serienjunkies', url: 'https://www.serienjunkies.de/xml/feeds/news.xml' },
                 { name: 'Eurogamer', url: 'https://www.eurogamer.de/feed/news' },
                 { name: 'Moviepilot', url: 'https://www.moviepilot.de/news.rss' }
             ],
             mobile: [
                 { name: 'Android-User.de', url: 'https://www.android-user.de/feed/' },
                 { name: 'XDA Android', url: 'https://www.xda-developers.com/feed/' },
-                { name: 'SmartDroid', url: 'https://www.smartdroid.de/feed/' },
-                { name: 'Areamobile', url: 'http://www.areamobile.de/rss/news.xml' }
+                { name: 'SmartDroid', url: 'https://www.smartdroid.de/feed/' }
             ],
             apple: [
                 { name: 'Macerkopf', url: 'https://www.macerkopf.de/feed/' },
-                { name: 'Mac-and-i', url: 'https://www.heise.de/mac-and-i/rss/mac-and-i-atom.xml' },
+                { name: 'iFun', url: 'https://www.ifun.de/feed/' },
                 { name: 'Sir Apfelot', url: 'https://www.sir-apfelot.de/feed/' },
                 { name: 'Apfelpage', url: 'https://www.apfelpage.de/feed/' },
                 { name: 'Macwelt', url: 'https://www.macwelt.de/feed/' }
@@ -597,8 +538,7 @@
                 { name: 'Valentinas Kochbuch', url: 'https://valentinas-kochbuch.de/feed/' },
                 { name: 'HighFoodality', url: 'https://www.highfoodality.de/feed/' },
                 { name: 'Backen macht glücklich', url: 'https://www.backenmachtgluecklich.de/feed/' },
-                { name: 'Mann backt', url: 'https://www.mannbackt.de/feed/' },
-                { name: 'Effilee', url: 'https://www.effilee.de/feed/' }
+                { name: 'Mann backt', url: 'https://www.mannbackt.de/feed/' }
             ]
         };
 
@@ -614,11 +554,16 @@
             classic: 'Classic', blue: 'Midnight', forest: 'Forest', sunset: 'Sunset', night: 'Nacht'
         };
 
-        let enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds')) || [];
+        let enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds'));
+        if (!enabledFeeds || !enabledFeeds.length) {
+            enabledFeeds = ['https://stadt-bremerhaven.de/feed/'];
+            localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
+        }
+        
         let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
         let cardStyle = localStorage.getItem('cardStyle') || 'modern';
         let currentTheme = localStorage.getItem('theme') || 'classic';
-        let articleFilter = localStorage.getItem('articleFilter') || 'all';
+        let articleFilter = localStorage.getItem('articleFilter') || 'society';
         let allArticles = [];
         let customFeeds = JSON.parse(localStorage.getItem('customFeeds')) || [];
 
@@ -725,42 +670,87 @@
             enabledFeeds.forEach(url => fetchFeed(url));
 
             function fetchFeed(url) {
-                fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`)
+                fetch(`https://www.toptal.com/developers/feed2json/convert?url=${encodeURIComponent(url)}`)
                     .then(res => res.json())
                     .then(data => {
-                        if (data.status === 'ok' && data.items) {
-                            const feedName = data.feed.title || url.split('/')[2];
-                            data.items.slice(0, 30).forEach(item => {
-                                let thumb = item.thumbnail || '';
-                                if (!thumb && item.enclosure) {
-                                    thumb = item.enclosure.thumbnail || item.enclosure.link || '';
-                                }
-                                if (!thumb && item.description) {
-                                    const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
-                                    if (m) thumb = m[1];
-                                }
-                                if (!thumb && item.content) {
-                                    const m = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
-                                    if (m) thumb = m[1];
-                                }
-                                allArticles.push({
-                                    title: item.title,
-                                    link: item.link,
-                                    pubDate: item.pubDate,
-                                    thumbnail: thumb,
-                                    feedName,
-                                    feedUrl: url
-                                });
-                            });
+                        if (data.version && data.items && data.items.length > 0) {
+                            const feedData = {
+                                feed: { title: data.title || url.split('/')[2] },
+                                items: data.items.slice(0, 30).map(item => ({
+                                    title: item.title || '',
+                                    link: item.url || item.id || '',
+                                    pubDate: item.date_published || '',
+                                    description: item.content_text || item.content_html || '',
+                                    thumbnail: item.image || ''
+                                }))
+                            };
+                            processFeedData(feedData, url);
+                        } else {
+                            loaded++;
+                            if (loaded >= enabledFeeds.length) renderArticles();
                         }
-                        loaded++;
-                        if (loaded >= enabledFeeds.length) renderArticles();
                     })
                     .catch(() => {
                         loaded++;
                         if (loaded >= enabledFeeds.length) renderArticles();
                     });
             }
+
+            function processFeedData(data, url) {
+                const feedName = data.feed.title || url.split('/')[2];
+                data.items.slice(0, 30).forEach(item => {
+                    let thumb = item.thumbnail || '';
+                    if (!thumb && item.enclosure) {
+                        thumb = item.enclosure.thumbnail || item.enclosure.link || '';
+                    }
+                    if (!thumb && item.description) {
+                        const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
+                        if (m) thumb = m[1];
+                    }
+                    if (!thumb && item.content) {
+                        const m = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
+                        if (m) thumb = m[1];
+                    }
+                    allArticles.push({
+                        title: item.title,
+                        link: item.link,
+                        pubDate: item.pubDate,
+                        thumbnail: thumb,
+                        feedName,
+                        feedUrl: url
+                    });
+                });
+                loaded++;
+                if (loaded >= enabledFeeds.length) renderArticles();
+            }
+        }
+
+        function renderTabs() {
+            const categoryCounts = {};
+            allArticles
+                .filter(a => !hiddenItems.includes(a.link))
+                .forEach(a => {
+                    const cat = feedCategoryMap[a.feedUrl] || 'other';
+                    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+                });
+
+            const catNames = {
+                national: 'Nachrichten', tech: 'Tech', finance: 'Wirtschaft', tech2: 'Tech-News',
+                mobile: 'Mobile', apple: 'Apple', society: 'Gesellschaft', cooking: 'Kochen',
+                regional: 'Regional', science: 'Wissenschaft', culture: 'Kultur', lifestyle: 'Lifestyle'
+            };
+
+            const sortedCats = Object.entries(categoryCounts)
+                .sort((a, b) => b[1] - a[1])
+                .filter(([cat]) => cat !== 'other' && catNames[cat])
+                .map(([cat]) => cat);
+
+            let tabHtml = '<div class="tab' + (articleFilter === 'all' ? ' active' : '') + '" data-filter="all" onclick="setFilter(\'all\')">Alle</div>';
+            sortedCats.forEach(cat => {
+                tabHtml += '<div class="tab' + (articleFilter === cat ? ' active' : '') + '" data-filter="' + cat + '" onclick="setFilter(\'' + cat + '\')">' + catNames[cat] + '</div>';
+            });
+
+            document.getElementById('tabBar').innerHTML = tabHtml;
         }
 
         function renderArticles() {
@@ -772,6 +762,8 @@
             if (articleFilter !== 'all') {
                 articles = articles.filter(a => feedCategoryMap[a.feedUrl] === articleFilter);
             }
+
+            renderTabs();
 
             if (!articles.length) {
                 document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle ausgeblendet oder keine Feeds aktiviert.</div>';
@@ -831,7 +823,34 @@
             document.querySelectorAll('.tab').forEach(t => {
                 t.classList.toggle('active', t.dataset.filter === filter);
             });
-            renderArticles();
+            let articles = allArticles
+                .filter(a => !hiddenItems.includes(a.link))
+                .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+                .slice(0, 100);
+
+            if (filter !== 'all') {
+                articles = articles.filter(a => feedCategoryMap[a.feedUrl] === filter);
+            }
+
+            if (!articles.length) {
+                document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle ausgeblendet oder keine Feeds aktiviert.</div>';
+                return;
+            }
+
+            document.getElementById('mainContent').innerHTML = `
+                <div class="articles-list">
+                    ${articles.map(a => `
+                        <div class="article-card" data-link="${a.link}" onclick="openArticle('${a.link}')" ontouchstart="startSwipe(event, this)" ontouchend="endSwipe(event, this)">
+                            <span class="swipe-hint">←</span>
+                            ${a.thumbnail ? `<img src="${a.thumbnail}" alt="">` : ''}
+                            <div class="article-title">${a.title}</div>
+                            <div class="article-meta"><span>${a.feedName}</span> • ${new Date(a.pubDate).toLocaleString('de-DE', {hour:'2-digit', minute:'2-digit'})}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
+            `;
+            initPullToRefresh();
         }
 
         function openArticle(link) {
