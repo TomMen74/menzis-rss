@@ -676,6 +676,7 @@
                 fetch(`https://www.toptal.com/developers/feed2json/convert?url=${encodeURIComponent(url)}`)
                     .then(res => res.json())
                     .then(data => {
+                        console.log('loaded feed:', url, 'items:', data.items?.length);
                         if (data.version && data.items && data.items.length > 0) {
                             const feedData = {
                                 feed: { title: data.title || url.split('/')[2] },
@@ -688,16 +689,24 @@
                                 }))
                             };
                             processFeedData(feedData, url);
-                        } else {
-                            loaded++;
-                            if (loaded >= enabledFeeds.length) renderArticles();
                         }
+                        loaded++;
+                        if (loaded >= enabledFeeds.length) renderArticles();
                     })
-                    .catch(() => {
+                    .catch((e) => {
+                        console.log('error:', url, e);
                         loaded++;
                         if (loaded >= enabledFeeds.length) renderArticles();
                     });
             }
+
+            setTimeout(() => {
+                if (loaded < enabledFeeds.length) {
+                    console.log('timeout - forcing render');
+                    loaded = enabledFeeds.length;
+                    renderArticles();
+                }
+            }, 15000);
 
             function processFeedData(data, url) {
                 const feedName = data.feed.title || url.split('/')[2];
