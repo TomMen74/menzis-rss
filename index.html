@@ -579,7 +579,6 @@
             renderFeedLists();
             updateHiddenCount();
             loadFeeds();
-            setFilter(articleFilter);
         }
 
         function setTheme(theme) {
@@ -666,6 +665,8 @@
 
             allArticles = [];
             let loaded = 0;
+
+            document.querySelectorAll('.tab')?.forEach(t => t.classList.toggle('active', t.dataset.filter === articleFilter));
 
             enabledFeeds.forEach(url => fetchFeed(url));
 
@@ -764,6 +765,11 @@
             }
 
             renderTabs();
+
+            if (!allArticles.length) {
+                document.getElementById('mainContent').innerHTML = '<div class="loading"><div class="loading-dots"><span>L</span><span>A</span><span>D</span><span>E</span><span>N</span></div></div>';
+                return;
+            }
 
             if (!articles.length) {
                 document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle ausgeblendet oder keine Feeds aktiviert.</div>';
