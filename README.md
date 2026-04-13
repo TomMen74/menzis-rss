@@ -50,7 +50,9 @@ Folgende Feeds funktionieren nicht mit der rss2json API und wurden deaktiviert:
 
 ## Versionen
 
-- **v5.8** - Favicon hinzugefügt
+- **v6.0** - Drag & Drop Sortierung für Tabs und Keywords
+- v5.9 - Enter-Taste für Keywords, Drag&Drop für Feeds
+- v5.8 - Favicon hinzugefügt
 - v5.7 - Rate limiting Fix (500ms Verzögerung)
 - v5.6 - SyntaxError Fix
 - v5.5 - Ladekreisel Bugfix
