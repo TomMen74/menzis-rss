@@ -50,8 +50,14 @@ Folgende Feeds funktionieren nicht mit der rss2json API und wurden deaktiviert:
 
 ## Versionen
 
-- **v5.2** - Keywords-Tabs Bugfix, Artikelalter & Lesezeit
-- v5.1 - Swipe rechts für Später lesen, Keywords-Tabs, neue Feeds, Blau für Hell
+- **v5.8** - Favicon hinzugefügt
+- v5.7 - Rate limiting Fix (500ms Verzögerung)
+- v5.6 - SyntaxError Fix
+- v5.5 - Ladekreisel Bugfix
+- v5.4 - Nur Ladekreisel, kein Text
+- v5.3 - Version im Header anzeigen
+- v5.2 - Keywords-Tabs Bugfix
+- v5.1 - Swipe rechts für Später lesen, Keywords-Tabs
 - v5.0 - Saubere Neuorganisation mit Theme-System
 - v4.x - Theme-System eingeführt
 - v3.x - Initiale Web-App Version
