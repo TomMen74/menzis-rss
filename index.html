@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Menzis RSS v5.4</title>
+    <title>Menzis RSS v5.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -565,7 +565,7 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v5.4</small></div>
+        <div class="header-title">Menzis RSS <small>v5.5</small></div>
         <div class="search-container">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
             <input type="text" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
@@ -989,7 +989,6 @@
                     feedUrl: url
                 });
             });
-            loaded++;
             if (loaded >= enabledFeeds.length) renderArticles();
         }
 
