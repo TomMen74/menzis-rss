@@ -5,7 +5,7 @@
 PROJEKT: Menzis RSS App
 ORT: /home/tomas/projekte/rss app/
 AKTUALISIERT: 13. April 2026
-VERSION: v2.2.2
+VERSION: v2.2.3
 
 ================================================================================
 FUNKTIONEN
@@ -51,6 +51,10 @@ FUNKTIONEN
 8. ENTFERNT
    - Menüpunkt "Aussehen" (Themes)
    - Feeds: Fefe, Postillon, Übermedien (defekt/keine Daten)
+
+9. BILDER
+   - Automatische Extraktion aus content/description
+   - Filterung von Tracking-URLs (follow.it)
 
 ================================================================================
 FEED-KATEGORIEN
