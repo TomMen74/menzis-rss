@@ -3,64 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Menzis RSS v4.2</title>
+    <title>Menzis RSS v5.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --md-sys-color-primary: #00B800;
-            --md-sys-color-on-primary: #003300;
-            --md-sys-color-primary-container: #004400;
-            --md-sys-color-secondary: #ff8c00;
-            --md-sys-color-surface: #1a1a1a;
-            --md-sys-color-surface-container: #262626;
-            --md-sys-color-surface-container-high: #333333;
-            --md-sys-color-on-surface: #e6e6e6;
-            --md-sys-color-on-surface-variant: #b3b3b3;
-            --md-sys-color-outline: #666666;
-            --md-sys-color-error: #ff4444;
-            --md-sys-elevation-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-            --md-sys-elevation-2: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
-            --md-sys-elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
-            --md-sys-radius-small: 8px;
-            --md-sys-radius-medium: 12px;
-            --md-sys-radius-large: 16px;
-            --md-sys-radius-extra-large: 28px;
+            --primary: #00B800;
+            --on-primary: #003300;
+            --primary-container: #004400;
+            --secondary: #ff8c00;
+            --surface: #1a1a1a;
+            --surface-container: #262626;
+            --surface-container-high: #333333;
+            --on-surface: #e6e6e6;
+            --on-surface-variant: #b3b3b3;
+            --outline: #666666;
+            --error: #ff4444;
+            --elevation-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+            --elevation-2: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+            --elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+            --radius-small: 8px;
+            --radius-medium: 12px;
+            --radius-large: 16px;
+            --radius-extra-large: 28px;
         }
 
         :root[data-theme="light"] {
-            --md-sys-color-primary: #006600;
-            --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-primary-container: #b8ffb8;
-            --md-sys-color-secondary: #cc6600;
-            --md-sys-color-surface: #f0f0f0;
-            --md-sys-color-surface-container: #ffffff;
-            --md-sys-color-surface-container-high: #e8e8e8;
-            --md-sys-color-on-surface: #1a1a1a;
-            --md-sys-color-on-surface-variant: #555555;
-            --md-sys-color-outline: #bbbbbb;
-            --md-sys-color-error: #cc0000;
+            --primary: #006600;
+            --on-primary: #ffffff;
+            --primary-container: #b8ffb8;
+            --secondary: #cc6600;
+            --surface: #f0f0f0;
+            --surface-container: #ffffff;
+            --surface-container-high: #e8e8e8;
+            --on-surface: #1a1a1a;
+            --on-surface-variant: #555555;
+            --outline: #bbbbbb;
+            --error: #cc0000;
         }
 
         :root[data-theme="dark"] {
-            --md-sys-color-primary: #00cc00;
-            --md-sys-color-on-primary: #002200;
-            --md-sys-color-primary-container: #004400;
-            --md-sys-color-secondary: #ff9933;
-            --md-sys-color-surface: #0a0a0a;
-            --md-sys-color-surface-container: #1a1a1a;
-            --md-sys-color-surface-container-high: #2a2a2a;
-            --md-sys-color-on-surface: #e0e0e0;
-            --md-sys-color-on-surface-variant: #909090;
-            --md-sys-color-outline: #444444;
-            --md-sys-color-error: #ff5555;
+            --primary: #00cc00;
+            --on-primary: #002200;
+            --primary-container: #004400;
+            --secondary: #ff9933;
+            --surface: #0a0a0a;
+            --surface-container: #1a1a1a;
+            --surface-container-high: #2a2a2a;
+            --on-surface: #e0e0e0;
+            --on-surface-variant: #909090;
+            --outline: #444444;
+            --error: #ff5555;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             font-family: 'Roboto', sans-serif;
-            background: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-surface);
+            background: var(--surface);
+            color: var(--on-surface);
             min-height: 100vh;
             padding-bottom: env(safe-area-inset-bottom);
             -webkit-tap-highlight-color: transparent;
@@ -73,8 +73,8 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem 1rem;
-            background: var(--md-sys-color-surface-container);
-            box-shadow: var(--md-sys-elevation-2);
+            background: var(--surface-container);
+            box-shadow: var(--elevation-2);
             z-index: 100;
         }
 
@@ -89,11 +89,11 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .hamburger:hover { background: var(--md-sys-color-surface-container-high); }
+        .hamburger:hover { background: var(--surface-container-high); }
         .hamburger span {
             width: 18px;
             height: 2px;
-            background: var(--md-sys-color-on-surface);
+            background: var(--on-surface);
             margin: 0 auto;
             border-radius: 1px;
         }
@@ -101,7 +101,7 @@
         .header-title {
             font-size: 1.25rem;
             font-weight: 500;
-            color: var(--md-sys-color-secondary);
+            color: var(--secondary);
             flex: 1;
             letter-spacing: 0.1px;
         }
@@ -113,11 +113,11 @@
         }
 
         .search-input {
-            background: var(--md-sys-color-surface-container);
-            border: 1px solid var(--md-sys-color-outline);
-            color: var(--md-sys-color-on-surface);
+            background: var(--surface-container);
+            border: 1px solid var(--outline);
+            color: var(--on-surface);
             padding: 0.5rem 0.75rem 0.5rem 2.25rem;
-            border-radius: var(--md-sys-radius-extra-large);
+            border-radius: var(--radius-extra-large);
             width: 120px;
             font-size: 0.9rem;
             transition: width 0.3s, background 0.2s, border-color 0.2s;
@@ -125,24 +125,24 @@
         .search-input:focus { 
             width: 180px; 
             outline: none; 
-            background: var(--md-sys-color-surface-container-high);
-            border-color: var(--md-sys-color-primary);
+            background: var(--surface-container-high);
+            border-color: var(--primary);
         }
-        .search-input::placeholder { color: var(--md-sys-color-on-surface-variant); }
+        .search-input::placeholder { color: var(--on-surface-variant); }
         
         .search-icon {
             position: absolute;
             left: 10px;
             width: 18px;
             height: 18px;
-            color: var(--md-sys-color-on-surface-variant);
+            color: var(--on-surface-variant);
         }
 
         .tab-bar {
             display: flex;
             gap: 0.5rem;
             padding: 0.75rem 1rem;
-            background: var(--md-sys-color-surface-container);
+            background: var(--surface-container);
             overflow-x: auto;
             scrollbar-width: none;
         }
@@ -150,9 +150,9 @@
 
         .tab {
             padding: 0.5rem 1rem;
-            border-radius: var(--md-sys-radius-extra-large);
-            background: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-surface-variant);
+            border-radius: var(--radius-extra-large);
+            background: var(--surface);
+            color: var(--on-surface-variant);
             font-size: 0.8125rem;
             font-weight: 500;
             white-space: nowrap;
@@ -160,11 +160,11 @@
             border: none;
             transition: all 0.2s ease;
         }
-        .tab:hover { background: var(--md-sys-color-surface-container-high); }
+        .tab:hover { background: var(--surface-container-high); }
         .tab.active {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            box-shadow: var(--md-sys-elevation-1);
+            background: var(--primary);
+            color: var(--on-primary);
+            box-shadow: var(--elevation-1);
         }
 
         .articles-list {
@@ -177,30 +177,23 @@
         }
 
         .article-card {
-            background: var(--md-sys-color-surface-container);
-            border-radius: var(--md-sys-radius-medium);
+            background: var(--surface-container);
+            border-radius: var(--radius-medium);
             padding: 1rem;
-            box-shadow: var(--md-sys-elevation-1);
+            box-shadow: var(--elevation-1);
             cursor: pointer;
             position: relative;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .article-card:hover {
-            box-shadow: var(--md-sys-elevation-2);
-        }
-        .article-card:active {
-            transform: scale(0.98);
-        }
-        .article-card.swiping {
-            transform: translateX(-60px);
-            opacity: 0.7;
-        }
+        .article-card:hover { box-shadow: var(--elevation-2); }
+        .article-card:active { transform: scale(0.98); }
+        .article-card.swiping { transform: translateX(-60px); opacity: 0.7; }
         .article-card .swipe-hint {
             position: absolute;
             right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--md-sys-color-primary);
+            color: var(--primary);
             font-size: 1.25rem;
             opacity: 0;
             transition: opacity 0.2s;
@@ -211,7 +204,7 @@
             width: 100%;
             height: 160px;
             object-fit: cover;
-            border-radius: var(--md-sys-radius-small);
+            border-radius: var(--radius-small);
             margin-bottom: 0.75rem;
         }
 
@@ -220,37 +213,37 @@
             font-weight: 500;
             line-height: 1.4;
             margin-bottom: 0.5rem;
-            color: var(--md-sys-color-on-surface);
+            color: var(--on-surface);
         }
 
         .article-meta {
             font-size: 0.75rem;
-            color: var(--md-sys-color-on-surface-variant);
+            color: var(--on-surface-variant);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         .article-meta .feed-name {
-            color: var(--md-sys-color-primary);
+            color: var(--primary);
             font-weight: 500;
         }
         .article-meta .dot {
             width: 3px;
             height: 3px;
-            background: var(--md-sys-color-on-surface-variant);
+            background: var(--on-surface-variant);
             border-radius: 50%;
         }
 
-        .no-feeds {
+        .no-feeds, .error-msg {
             text-align: center;
             padding: 3rem 1rem;
-            color: var(--md-sys-color-on-surface-variant);
+            color: var(--on-surface-variant);
         }
-        .no-feeds h3 {
+        .no-feeds h3, .error-msg h3 {
             font-size: 1.25rem;
             font-weight: 500;
             margin-bottom: 0.5rem;
-            color: var(--md-sys-color-on-surface);
+            color: var(--on-surface);
         }
 
         .loading {
@@ -264,21 +257,18 @@
         .loading-spinner {
             width: 48px;
             height: 48px;
-            border: 4px solid var(--md-sys-color-surface-container-high);
-            border-top-color: var(--md-sys-color-primary);
+            border: 4px solid var(--surface-container-high);
+            border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text {
-            color: var(--md-sys-color-on-surface-variant);
-            font-size: 0.875rem;
-        }
+        .loading-text { color: var(--on-surface-variant); font-size: 0.875rem; }
 
         .pull-indicator {
             text-align: center;
             padding: 0.75rem;
-            color: var(--md-sys-color-primary);
+            color: var(--primary);
             font-size: 0.875rem;
             display: none;
         }
@@ -290,8 +280,8 @@
             width: 320px;
             max-width: 85vw;
             height: 100vh;
-            background: var(--md-sys-color-surface-container);
-            box-shadow: var(--md-sys-elevation-3);
+            background: var(--surface-container);
+            box-shadow: var(--elevation-3);
             z-index: 200;
             transition: left 0.3s ease;
             display: flex;
@@ -301,20 +291,16 @@
 
         .sidebar-header {
             padding: 1.5rem;
-            border-bottom: 1px solid var(--md-sys-color-outline);
+            border-bottom: 1px solid var(--outline);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .sidebar-title {
-            font-size: 1.25rem;
-            font-weight: 500;
-            color: var(--md-sys-color-on-surface);
-        }
+        .sidebar-title { font-size: 1.25rem; font-weight: 500; color: var(--on-surface); }
         .close-sidebar {
             background: none;
             border: none;
-            color: var(--md-sys-color-on-surface);
+            color: var(--on-surface);
             font-size: 1.5rem;
             cursor: pointer;
             width: 40px;
@@ -322,29 +308,22 @@
             border-radius: 20px;
             transition: background 0.2s;
         }
-        .close-sidebar:hover { background: var(--md-sys-color-surface-container-high); }
+        .close-sidebar:hover { background: var(--surface-container-high); }
 
         .nav-item {
             padding: 1rem 1.5rem;
             cursor: pointer;
-            border-bottom: 1px solid var(--md-sys-color-outline);
+            border-bottom: 1px solid var(--outline);
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: background 0.2s;
         }
-        .nav-item:hover { background: var(--md-sys-color-surface-container-high); }
-        .nav-item-label {
-            font-size: 1rem;
-            font-weight: 400;
-            color: var(--md-sys-color-on-surface);
-        }
-        .nav-item-icon {
-            color: var(--md-sys-color-on-surface-variant);
-        }
+        .nav-item:hover { background: var(--surface-container-high); }
+        .nav-item-label { font-size: 1rem; color: var(--on-surface); }
         .hidden-count {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
+            background: var(--primary);
+            color: var(--on-primary);
             padding: 2px 10px;
             border-radius: 10px;
             font-size: 0.75rem;
@@ -357,7 +336,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--md-sys-color-surface);
+            background: var(--surface);
             z-index: 300;
             display: none;
             flex-direction: column;
@@ -368,8 +347,8 @@
 
         .overlay-header {
             padding: 1rem 0.5rem;
-            background: var(--md-sys-color-surface-container);
-            border-bottom: 1px solid var(--md-sys-color-outline);
+            background: var(--surface-container);
+            border-bottom: 1px solid var(--outline);
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -377,21 +356,15 @@
         .close-btn {
             background: none;
             border: none;
-            color: var(--md-sys-color-on-surface);
+            color: var(--on-surface);
             padding: 0.5rem;
             border-radius: 20px;
             cursor: pointer;
             font-size: 1.25rem;
             transition: background 0.2s;
         }
-        .close-btn:hover { background: var(--md-sys-color-surface-container-high); }
-
-        .overlay-title {
-            font-size: 1.25rem;
-            font-weight: 500;
-            flex: 1;
-            color: var(--md-sys-color-on-surface);
-        }
+        .close-btn:hover { background: var(--surface-container-high); }
+        .overlay-title { font-size: 1.25rem; font-weight: 500; flex: 1; color: var(--on-surface); }
 
         .overlay-content {
             flex: 1;
@@ -403,7 +376,7 @@
             padding: 1rem 0.75rem 0.5rem;
             font-size: 0.875rem;
             font-weight: 500;
-            color: var(--md-sys-color-primary);
+            color: var(--primary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -414,15 +387,15 @@
             gap: 1rem;
             padding: 0.75rem;
             cursor: pointer;
-            border-radius: var(--md-sys-radius-small);
+            border-radius: var(--radius-small);
             transition: background 0.2s;
         }
-        .feed-item:hover { background: var(--md-sys-color-surface-container-high); }
+        .feed-item:hover { background: var(--surface-container-high); }
 
         .feed-toggle {
             width: 24px;
             height: 24px;
-            border: 2px solid var(--md-sys-color-outline);
+            border: 2px solid var(--outline);
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -430,12 +403,12 @@
             transition: all 0.2s;
         }
         .feed-toggle.checked {
-            background: var(--md-sys-color-primary);
-            border-color: var(--md-sys-color-primary);
+            background: var(--primary);
+            border-color: var(--primary);
         }
         .feed-toggle.checked::after {
             content: '✓';
-            color: var(--md-sys-color-on-primary);
+            color: var(--on-primary);
             font-size: 0.875rem;
             font-weight: bold;
         }
@@ -449,60 +422,52 @@
 
         .theme-btn {
             padding: 1rem;
-            border-radius: var(--md-sys-radius-medium);
+            border-radius: var(--radius-medium);
             cursor: pointer;
-            border: 1px solid var(--md-sys-color-outline);
+            border: 1px solid var(--outline);
             text-align: center;
             font-weight: 500;
             transition: all 0.2s;
         }
-        .theme-btn:hover { box-shadow: var(--md-sys-elevation-2); }
-        .theme-btn.active {
-            border-color: var(--md-sys-color-primary);
-            box-shadow: var(--md-sys-elevation-2);
-        }
+        .theme-btn:hover { box-shadow: var(--elevation-2); }
+        .theme-btn.active { border-color: var(--primary); box-shadow: var(--elevation-2); }
 
         .custom-url-input {
             width: 100%;
             padding: 0.875rem 1rem;
-            background: var(--md-sys-color-surface-container);
-            border: 1px solid var(--md-sys-color-outline);
-            color: var(--md-sys-color-on-surface);
-            border-radius: var(--md-sys-radius-small);
+            background: var(--surface-container);
+            border: 1px solid var(--outline);
+            color: var(--on-surface);
+            border-radius: var(--radius-small);
             font-size: 1rem;
             margin-bottom: 1rem;
         }
-        .custom-url-input:focus {
-            outline: none;
-            border-color: var(--md-sys-color-primary);
-        }
+        .custom-url-input:focus { outline: none; border-color: var(--primary); }
 
         .add-btn {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
+            background: var(--primary);
+            color: var(--on-primary);
             border: none;
             padding: 0.875rem 1.5rem;
-            border-radius: var(--md-sys-radius-small);
+            border-radius: var(--radius-small);
             cursor: pointer;
             font-weight: 500;
             font-size: 0.875rem;
             transition: box-shadow 0.2s;
         }
-        .add-btn:hover { box-shadow: var(--md-sys-elevation-2); }
+        .add-btn:hover { box-shadow: var(--elevation-2); }
 
         .restore-btn {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
+            background: var(--primary);
+            color: var(--on-primary);
             border: none;
             padding: 0.75rem 1rem;
-            border-radius: var(--md-sys-radius-small);
+            border-radius: var(--radius-small);
             cursor: pointer;
             font-weight: 500;
             margin: 1rem;
-        }
-
-        .overlay-content input::placeholder {
-            color: var(--md-sys-color-on-surface-variant);
+            display: block;
+            width: calc(100% - 2rem);
         }
 
         .fab {
@@ -512,10 +477,10 @@
             width: 56px;
             height: 56px;
             border-radius: 16px;
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
+            background: var(--primary);
+            color: var(--on-primary);
             border: none;
-            box-shadow: var(--md-sys-elevation-3);
+            box-shadow: var(--elevation-3);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -524,14 +489,8 @@
             z-index: 50;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .fab:hover { transform: scale(1.05); box-shadow: var(--md-sys-elevation-3); }
+        .fab:hover { transform: scale(1.05); box-shadow: var(--elevation-3); }
         .fab:active { transform: scale(0.95); }
-
-        .overlay-content .restore-btn {
-            display: block;
-            width: calc(100% - 2rem);
-            margin: 1rem;
-        }
     </style>
 </head>
 <body>
@@ -539,10 +498,10 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v4.2</small></div>
-        <div style="position:relative;display:flex;align-items:center;">
-            <svg style="position:absolute;left:8px;width:14px;height:14px;fill:var(--text-dim)" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
-            <input type="text" class="search-input" style="padding-left:28px" placeholder="Suchen..." oninput="filterArticles(this.value)">
+        <div class="header-title">Menzis RSS <small>v5.0</small></div>
+        <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
+            <input type="text" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
         </div>
     </div>
 
@@ -550,23 +509,33 @@
 
     <div id="mainContent">
         <div class="loading">
-            <div class="loading-dots"><span>L</span><span>A</span><span>D</span><span>E</span><span>N</span></div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Laden...</div>
         </div>
         <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
     </div>
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <span>Menü</span>
+            <span class="sidebar-title">Menü</span>
             <button class="close-sidebar" onclick="toggleSidebar()">×</button>
         </div>
-        <div class="nav-item" onclick="openOverlay('feeds')">Feed-Auswahl</div>
-        <div class="nav-item" onclick="openOverlay('url')">Eigene URL</div>
-        <div class="nav-item" onclick="openOverlay('theme')">Design</div>
-        <div class="nav-item" onclick="openOverlay('hidden')">
-            Versteckte Artikel <span id="hiddenCount" class="hidden-count">0</span>
+        <div class="nav-item" onclick="openOverlay('feeds')">
+            <span class="nav-item-label">Feed-Auswahl</span>
         </div>
-        <div class="nav-item" onclick="resetApp()">App zurücksetzen</div>
+        <div class="nav-item" onclick="openOverlay('url')">
+            <span class="nav-item-label">Eigene URL</span>
+        </div>
+        <div class="nav-item" onclick="openOverlay('theme')">
+            <span class="nav-item-label">Design</span>
+        </div>
+        <div class="nav-item" onclick="openOverlay('hidden')">
+            <span class="nav-item-label">Versteckte Artikel</span>
+            <span id="hiddenCount" class="hidden-count">0</span>
+        </div>
+        <div class="nav-item" onclick="resetApp()">
+            <span class="nav-item-label">App zurücksetzen</span>
+        </div>
     </div>
 
     <div class="overlay-page" id="overlay-feeds">
@@ -612,6 +581,9 @@
     </div>
 
     <script>
+        // ============================================
+        // FEED DATEN
+        // ============================================
         const feedData = {
             news: [
                 { name: 'Tagesschau', url: 'https://www.tagesschau.de/xml/rss2' },
@@ -664,25 +636,29 @@
             ]
         };
 
-        const themes = {
-            classic: { bg: '#000000', card: '#1E0505', accent: '#00B800' }
+        const categoryNames = {
+            news: 'Nachrichten', android: 'Android', apple: 'Apple', tech: 'Tech',
+            cooking: 'Kochen', lifestyle: 'Lifestyle', finance: 'Wirtschaft', custom: 'Eigene'
         };
 
-        const themeNames = {
-            classic: 'Classic'
-        };
+        const categoryOrder = ['news', 'android', 'apple', 'tech', 'cooking', 'lifestyle', 'finance'];
 
+        // Defekte Feeds (funktionieren nicht mit rss2json)
         const brokenFeeds = [
             'computerbild.de', 'turingmagazin.de', 'zeit.de', 'sueddeutsche.de', 
             'quarks.de', 'klimareporter.de', 'mannbackt.de',
             'valentinas-kochbuch.de', 'highfoodality.de'
         ];
-        
+
         function isBrokenFeed(url) {
             return brokenFeeds.some(b => url.includes(b));
         }
 
-        // Sammle alle bekannten Feed-URLs aus feedData
+        // ============================================
+        // LOKALER SPEICHER - INITIALISIERUNG
+        // ============================================
+        
+        // Sammle alle bekannten Feed-URLs
         const allKnownUrls = Object.values(feedData).flat().map(f => f.url);
         
         // Lade gespeicherte Feeds
@@ -705,63 +681,47 @@
         
         // Speichere bereinigte Auswahl
         localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
-        localStorage.setItem('savedFeedSelection', JSON.stringify(enabledFeeds));
-        localStorage.setItem('hiddenItems', '[]');
-        localStorage.setItem('articleFilter', 'all');
         
+        // Weitere Initialisierungen
         let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
-        let cardStyle = localStorage.getItem('cardStyle') || 'modern';
-        let currentTheme = localStorage.getItem('theme') || 'classic';
-        let articleFilter = localStorage.getItem('articleFilter') || '';
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        let articleFilter = localStorage.getItem('articleFilter') || 'all';
         let customFeeds = JSON.parse(localStorage.getItem('customFeeds')) || [];
-        const feedCategoryMap = {};
+        let allArticles = [];
         
+        // Kategorie-Map erstellen
+        const feedCategoryMap = {};
         Object.entries(feedData).forEach(([cat, feeds]) => {
             feeds.forEach(f => feedCategoryMap[f.url] = cat);
         });
         customFeeds.forEach(f => feedCategoryMap[f.url] = 'custom');
 
+        // ============================================
+        // INITIALISIERUNG
+        // ============================================
         function init() {
-            console.log('init started');
             try {
                 applyThemeMode();
-                setTheme(currentTheme);
                 updateThemeButtons();
-                console.log('theme set');
-                renderThemeSelector();
                 renderFeedLists();
                 updateHiddenCount();
-                console.log('UI rendered, starting feed load');
                 loadFeeds();
             } catch (e) {
                 console.error('init error:', e);
-                document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Fehler beim Starten.<br>Bitte App neu installieren.</div>';
+                document.getElementById('mainContent').innerHTML = '<div class="error-msg"><h3>Fehler beim Starten</h3>Bitte App neu laden.</div>';
             }
         }
 
+        // ============================================
+        // SEITENLEISTE (SIDEBAR)
+        // ============================================
         function toggleSidebar() {
-            console.log('toggle sidebar');
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar) {
-                sidebar.classList.toggle('active');
-            } else {
-                console.log('sidebar not found');
-            }
+            document.getElementById('sidebar').classList.toggle('active');
         }
 
-        function setTheme(theme) {
-            currentTheme = theme;
-            const colors = themes[theme];
-            document.documentElement.style.setProperty('--bg', colors.bg);
-            document.documentElement.style.setProperty('--card-bg', colors.card);
-            document.documentElement.style.setProperty('--accent', colors.accent);
-            localStorage.setItem('theme', theme);
-            
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.theme === theme);
-            });
-        }
-
+        // ============================================
+        // THEME (HELL/DUNKEL/AUTO)
+        // ============================================
         function setThemeMode(mode) {
             localStorage.setItem('themeMode', mode);
             applyThemeMode();
@@ -785,13 +745,9 @@
             document.getElementById('btnSystem')?.classList.toggle('active', mode === 'system');
         }
 
-        function renderThemeSelector() {
-            const container = document.getElementById('themeSelector');
-            container.innerHTML = Object.entries(themes).map(([key, val]) => 
-                `<div class="theme-btn" data-theme="${key}" onclick="setTheme('${key}')" style="background:${val.card};color:${val.accent}">${themeNames[key]}</div>`
-            ).join('');
-        }
-
+        // ============================================
+        // FEED LISTEN
+        // ============================================
         function renderFeedLists() {
             const container = document.getElementById('feedLists');
             let html = '';
@@ -800,11 +756,11 @@
             if (customFeeds.length) allCategories.custom = customFeeds;
 
             Object.entries(allCategories).forEach(([category, feeds]) => {
-                const title = category.charAt(0).toUpperCase() + category.slice(1);
+                const title = categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
                 html += `<div class="feed-category-title">${title}</div>`;
                 html += feeds.map(feed => `
                     <div class="feed-item" onclick="toggleFeed('${feed.url}')">
-                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" data-url="${feed.url}"></div>
+                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}"></div>
                         <span>${feed.name}</span>
                     </div>
                 `).join('');
@@ -824,12 +780,13 @@
                 enabledFeeds.push(url);
             }
             localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
-            // Merke die Auswahl für Reset-Fälle
-            localStorage.setItem('savedFeedSelection', JSON.stringify(enabledFeeds));
             renderFeedLists();
             loadFeeds();
         }
 
+        // ============================================
+        // EIGENE FEEDS HINZUFÜGEN
+        // ============================================
         function addCustomFeed() {
             const url = document.getElementById('customUrl').value.trim();
             if (!url) return;
@@ -849,16 +806,18 @@
             }
             
             document.getElementById('customUrl').value = '';
+            feedCategoryMap[url] = 'custom';
             renderFeedLists();
             loadFeeds();
             closeOverlay();
         }
 
+        // ============================================
+        // FEEDS LADEN
+        // ============================================
         function loadFeeds() {
-            console.log('loadFeeds started, feeds:', enabledFeeds);
-            
             if (!enabledFeeds || !enabledFeeds.length) {
-                document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Feeds ausgewählt.<br>Drücke ☰ für Menü → Feed-Auswahl</div>';
+                document.getElementById('mainContent').innerHTML = '<div class="no-feeds"><h3>Keine Feeds ausgewählt</h3>Drücke ☰ für Menü → Feed-Auswahl</div>';
                 return;
             }
 
@@ -871,12 +830,9 @@
             let loaded = 0;
             let rendered = false;
 
-            document.querySelectorAll('.tab')?.forEach(t => t.classList.toggle('active', t.dataset.filter === articleFilter));
-
             function checkAndRender() {
                 if (!rendered && loaded >= enabledFeeds.length) {
                     rendered = true;
-                    console.log('calling renderArticles');
                     renderArticles();
                 }
             }
@@ -884,73 +840,65 @@
             enabledFeeds.forEach(url => fetchFeed(url));
 
             function fetchFeed(url) {
-                console.log('fetching:', url);
                 fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&t=${Date.now()}`)
-                    .then(res => {
-                        console.log('response:', url, res.status);
-                        return res.json();
-                    })
+                    .then(res => res.json())
                     .then(data => {
-                        console.log('data:', url, data.status);
                         if (data.status === 'ok' && data.items && data.items.length > 0) {
                             processFeedData({ feed: { title: data.feed?.title || url.split('/')[2] }, items: data.items }, url);
                         }
                         loaded++;
-                        console.log('loaded count:', loaded, '/', enabledFeeds.length);
                         checkAndRender();
                     })
-                    .catch((e) => {
-                        console.log('fetch error:', url, e);
+                    .catch(() => {
                         loaded++;
-                        console.log('loaded count:', loaded, '/', enabledFeeds.length);
                         checkAndRender();
                     });
             }
 
             setTimeout(() => {
                 if (loaded < enabledFeeds.length) {
-                    console.log('timeout - forcing render');
                     loaded = enabledFeeds.length;
                     renderArticles();
                 }
             }, 20000);
-
-            function processFeedData(data, url) {
-                const feedName = data.feed.title || url.split('/')[2];
-                data.items.slice(0, 30).forEach(item => {
-                    let thumb = item.thumbnail || '';
-                    
-                    if (!thumb && item.content) {
-                        const m = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
-                        if (m) thumb = m[1];
-                    }
-                    if (!thumb && item.description) {
-                        const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
-                        if (m) thumb = m[1];
-                    }
-                    if (!thumb && item.enclosure && item.enclosure.type && item.enclosure.type.startsWith('image/')) {
-                        thumb = item.enclosure.thumbnail || item.enclosure.link || '';
-                    }
-                    if (thumb && thumb.includes('follow.it')) {
-                        thumb = '';
-                    }
-                    if (thumb && (thumb.includes('-150x150') || thumb.includes('150-150') || thumb.includes('vg06.met.vgwort'))) {
-                        thumb = '';
-                    }
-                    allArticles.push({
-                        title: item.title,
-                        link: item.link,
-                        pubDate: item.pubDate,
-                        thumbnail: thumb,
-                        feedName,
-                        feedUrl: url
-                    });
-                });
-                loaded++;
-                if (loaded >= enabledFeeds.length) renderArticles();
-            }
         }
 
+        function processFeedData(data, url) {
+            const feedName = data.feed.title || url.split('/')[2];
+            data.items.slice(0, 30).forEach(item => {
+                let thumb = item.thumbnail || '';
+                
+                if (!thumb && item.content) {
+                    const m = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
+                    if (m) thumb = m[1];
+                }
+                if (!thumb && item.description) {
+                    const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
+                    if (m) thumb = m[1];
+                }
+                if (!thumb && item.enclosure && item.enclosure.type && item.enclosure.type.startsWith('image/')) {
+                    thumb = item.enclosure.thumbnail || item.enclosure.link || '';
+                }
+                if (thumb && (thumb.includes('follow.it') || thumb.includes('-150x150') || thumb.includes('150-150') || thumb.includes('vg06.met.vgwort'))) {
+                    thumb = '';
+                }
+                
+                allArticles.push({
+                    title: item.title,
+                    link: item.link,
+                    pubDate: item.pubDate,
+                    thumbnail: thumb,
+                    feedName,
+                    feedUrl: url
+                });
+            });
+            loaded++;
+            if (loaded >= enabledFeeds.length) renderArticles();
+        }
+
+        // ============================================
+        // ARTIKEL ANZEIGEN
+        // ============================================
         function renderTabs() {
             const categoryCounts = {};
             allArticles
@@ -960,17 +908,10 @@
                     categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
                 });
 
-            const catNames = {
-                news: 'Nachrichten', android: 'Android', apple: 'Apple', tech: 'Tech',
-                cooking: 'Kochen', lifestyle: 'Lifestyle', finance: 'Wirtschaft'
-            };
-
-            const catOrder = ['news', 'android', 'apple', 'tech', 'cooking', 'lifestyle', 'finance'];
-
             let tabHtml = '<div class="tab' + (articleFilter === 'all' ? ' active' : '') + '" data-filter="all" onclick="setFilter(\'all\')">Alle</div>';
-            catOrder.forEach(cat => {
-                if (categoryCounts[cat] && catNames[cat]) {
-                    tabHtml += '<div class="tab' + (articleFilter === cat ? ' active' : '') + '" data-filter="' + cat + '" onclick="setFilter(\'' + cat + '\')">' + catNames[cat] + '</div>';
+            categoryOrder.forEach(cat => {
+                if (categoryCounts[cat] && categoryNames[cat]) {
+                    tabHtml += '<div class="tab' + (articleFilter === cat ? ' active' : '') + '" data-filter="' + cat + '" onclick="setFilter(\'' + cat + '\')">' + categoryNames[cat] + '</div>';
                 }
             });
 
@@ -990,12 +931,12 @@
             renderTabs();
 
             if (!allArticles.length) {
-                document.getElementById('mainContent').innerHTML = '<div class="loading"><div class="loading-dots"><span>L</span><span>A</span><span>D</span><span>E</span><span>N</span></div></div>';
+                document.getElementById('mainContent').innerHTML = '<div class="loading"><div class="loading-spinner"></div><div class="loading-text">Laden...</div></div>';
                 return;
             }
 
             if (!articles.length) {
-                document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle ausgeblendet oder keine Feeds aktiviert.</div>';
+                document.getElementById('mainContent').innerHTML = '<div class="no-feeds"><h3>Keine Artikel vorhanden</h3>Alle ausgeblendet oder keine Feeds aktiviert.</div>';
                 return;
             }
 
@@ -1015,9 +956,11 @@
             initPullToRefresh();
         }
 
+        // ============================================
+        // SWIPE (ARTIKEL VERSTECKEN)
+        // ============================================
         let swipeStartX = 0;
         let cardEl = null;
-        let currentTranslate = 0;
 
         function startSwipe(e, card) {
             cardEl = card;
@@ -1032,10 +975,7 @@
             const diff = currentX - swipeStartX;
             const rotate = diff * 0.05;
             card.style.transform = `translateX(${diff}px) rotate(${rotate}deg)`;
-            currentTranslate = diff;
-            
-            const opacity = Math.max(0, 1 - Math.abs(diff) / 400);
-            card.style.opacity = opacity;
+            card.style.opacity = Math.max(0, 1 - Math.abs(diff) / 400);
         }
 
         function endSwipe(e, card) {
@@ -1045,7 +985,7 @@
             
             if (diff > 80) {
                 card.style.transition = 'all 0.3s ease-out';
-                card.style.transform = `translateX(-400px) rotate(-20deg)`;
+                card.style.transform = 'translateX(-400px) rotate(-20deg)';
                 card.style.opacity = '0';
                 
                 setTimeout(() => {
@@ -1067,9 +1007,11 @@
             }
             
             cardEl = null;
-            currentTranslate = 0;
         }
 
+        // ============================================
+        // FILTER & SUCHE
+        // ============================================
         function filterArticles(query) {
             query = query.toLowerCase();
             document.querySelectorAll('.article-card').forEach(card => {
@@ -1084,34 +1026,7 @@
             document.querySelectorAll('.tab').forEach(t => {
                 t.classList.toggle('active', t.dataset.filter === filter);
             });
-            let articles = allArticles
-                .filter(a => !hiddenItems.includes(a.link))
-                .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-                .slice(0, 100);
-
-            if (filter !== 'all') {
-                articles = articles.filter(a => feedCategoryMap[a.feedUrl] === filter);
-            }
-
-            if (!articles.length) {
-                document.getElementById('mainContent').innerHTML = '<div class="no-feeds">Keine Artikel vorhanden.<br>Alle ausgeblendet oder keine Feeds aktiviert.</div>';
-                return;
-            }
-
-            document.getElementById('mainContent').innerHTML = `
-                <div class="articles-list">
-                    ${articles.map(a => `
-                        <div class="article-card" data-link="${a.link}" onclick="openArticle('${a.link}')" ontouchstart="startSwipe(event, this)" ontouchmove="moveSwipe(event, this)" ontouchend="endSwipe(event, this)">
-                            <span class="swipe-hint">←</span>
-                            ${a.thumbnail ? `<img src="${a.thumbnail}" alt="">` : ''}
-                            <div class="article-title">${a.title}</div>
-                            <div class="article-meta"><span class="feed-name">${a.feedName}</span><span class="dot"></span>${new Date(a.pubDate).toLocaleString('de-DE', {hour:'2-digit', minute:'2-digit'})}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
-            `;
-            initPullToRefresh();
+            renderArticles();
         }
 
         function openArticle(link) {
@@ -1124,38 +1039,11 @@
             setTimeout(renderArticles, 500);
         }
 
+        // ============================================
+        // VERSTECKTE ARTIKEL
+        // ============================================
         function updateHiddenCount() {
             document.getElementById('hiddenCount').textContent = hiddenItems.length;
-        }
-
-        function resetApp() {
-            localStorage.removeItem('enabledFeeds');
-            localStorage.removeItem('hiddenItems');
-            localStorage.removeItem('articleFilter');
-            localStorage.removeItem('savedFeedSelection');
-            
-            // Set standard feed
-            const defaultFeed = 'https://www.tagesschau.de/xml/rss2';
-            localStorage.setItem('enabledFeeds', JSON.stringify([defaultFeed]));
-            localStorage.setItem('savedFeedSelection', JSON.stringify([defaultFeed]));
-            localStorage.setItem('hiddenItems', '[]');
-            localStorage.setItem('articleFilter', 'all');
-            
-            // Reload page
-            location.reload();
-        }
-
-        function openOverlay(name) {
-            document.getElementById('overlay-' + name).classList.add('active');
-            document.getElementById('sidebar').classList.remove('active');
-            
-            if (name === 'hidden') {
-                renderHiddenList();
-            }
-        }
-
-        function closeOverlay() {
-            document.querySelectorAll('.overlay-page').forEach(o => o.classList.remove('active'));
         }
 
         function renderHiddenList() {
@@ -1197,14 +1085,33 @@
             renderArticles();
         }
 
-        function setCardStyle(style) {
-            cardStyle = style;
-            localStorage.setItem('cardStyle', style);
-            document.querySelectorAll('.card-style-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.style === style);
-            });
+        // ============================================
+        // APP ZURÜCKSETZEN
+        // ============================================
+        function resetApp() {
+            localStorage.clear();
+            location.reload();
         }
 
+        // ============================================
+        // OVERLAYS
+        // ============================================
+        function openOverlay(name) {
+            document.getElementById('overlay-' + name).classList.add('active');
+            document.getElementById('sidebar').classList.remove('active');
+            
+            if (name === 'hidden') {
+                renderHiddenList();
+            }
+        }
+
+        function closeOverlay() {
+            document.querySelectorAll('.overlay-page').forEach(o => o.classList.remove('active'));
+        }
+
+        // ============================================
+        // PULL TO REFRESH
+        // ============================================
         let ptrStart = 0;
         function initPullToRefresh() {
             const main = document.getElementById('mainContent');
@@ -1233,6 +1140,7 @@
             }, { passive: true });
         }
 
+        // App starten
         init();
     </script>
 </body>
