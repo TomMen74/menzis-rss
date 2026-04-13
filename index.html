@@ -713,7 +713,9 @@
         let cardStyle = localStorage.getItem('cardStyle') || 'modern';
         let currentTheme = localStorage.getItem('theme') || 'classic';
         let articleFilter = localStorage.getItem('articleFilter') || '';
+        let customFeeds = JSON.parse(localStorage.getItem('customFeeds')) || [];
         const feedCategoryMap = {};
+        
         Object.entries(feedData).forEach(([cat, feeds]) => {
             feeds.forEach(f => feedCategoryMap[f.url] = cat);
         });
