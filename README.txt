@@ -5,7 +5,7 @@
 PROJEKT: Menzis RSS App
 ORT: /home/tomas/projekte/rss app/
 AKTUALISIERT: 13. April 2026
-VERSION: v2.1.9
+VERSION: v2.2.0
 
 ================================================================================
 FUNKTIONEN
@@ -44,8 +44,9 @@ FUNKTIONEN
    - Tab "Alle" vorausgewählt
 
 7. DESIGN
+   - Google Material Design 3 Richtlinien
    - 5 Themes: Classic, Midnight, Forest, Sunset, Nacht
-   - Modern (flach) Darstellung
+   - Moderne Darstellung mit Elevation und Animationen
 
 ================================================================================
 FEED-KATEGORIEN
