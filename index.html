@@ -577,7 +577,6 @@
     <div id="mainContent">
         <div class="loading">
             <div class="loading-spinner"></div>
-            <div class="loading-text">Laden...</div>
         </div>
         <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
     </div>
@@ -920,7 +919,7 @@
             }
 
             document.getElementById('mainContent').innerHTML = `
-                <div class="loading"><div class="loading-spinner"></div><div class="loading-text">Laden...</div></div>
+                <div class="loading"><div class="loading-spinner"></div></div>
                 <div class="pull-indicator" id="pullIndicator">↓ Runterziehen zum Aktualisieren</div>
             `;
 
@@ -1034,7 +1033,7 @@
             renderTabs();
 
             if (!allArticles.length) {
-                document.getElementById('mainContent').innerHTML = '<div class="loading"><div class="loading-spinner"></div><div class="loading-text">Laden...</div></div>';
+                document.getElementById('mainContent').innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
                 return;
             }
 
