@@ -791,7 +791,27 @@
         });
         customFeeds.forEach(f => feedCategoryMap[f.url] = 'custom');
 
-        function init() {
+        function getArticleAge(pubDate) {
+            const now = new Date();
+            const pub = new Date(pubDate);
+            const diffMs = now - pub;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffMins < 1) return 'Gerade eben';
+            if (diffMins < 60) return 'vor ' + diffMins + ' Min';
+            if (diffHours < 24) return 'vor ' + diffHours + ' Std';
+            if (diffDays === 1) return 'Gestern';
+            if (diffDays < 7) return 'vor ' + diffDays + ' Tagen';
+            return pub.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+        }
+
+        function getReadingTime(title) {
+            const words = title.split(/\s+/).length;
+            const mins = Math.max(1, Math.ceil(words / 200));
+            return mins + ' Min';
+        }
             try {
                 applyThemeMode();
                 updateThemeButtons();
@@ -992,14 +1012,7 @@
             });
 
             keywords.forEach(kw => {
-                const count = allArticles.filter(a => 
-                    !hiddenItems.includes(a.link) && 
-                    !readLaterItems.includes(a.link) &&
-                    a.title.toLowerCase().includes(kw.toLowerCase())
-                ).length;
-                if (count > 0) {
-                    tabHtml += '<div class="tab' + (articleFilter === 'kw:' + kw ? ' active' : '') + '" data-filter="kw:' + kw + '" onclick="setFilter(\'kw:' + kw + '\')">' + kw + '</div>';
-                }
+                tabHtml += '<div class="tab' + (articleFilter === 'kw:' + kw ? ' active' : '') + '" data-filter="kw:' + kw + '" onclick="setFilter(\'kw:' + kw + '\')">' + kw + '</div>';
             });
 
             document.getElementById('tabBar').innerHTML = tabHtml;
@@ -1039,7 +1052,7 @@
                             <div onclick="openArticle('${a.link}')">
                                 ${a.thumbnail ? `<img src="${a.thumbnail}" alt="">` : ''}
                                 <div class="article-title">${a.title}</div>
-                                <div class="article-meta"><span class="feed-name">${a.feedName}</span><span class="dot"></span>${new Date(a.pubDate).toLocaleString('de-DE', {hour:'2-digit', minute:'2-digit'})}</div>
+                                <div class="article-meta"><span class="feed-name">${a.feedName}</span><span class="dot"></span>${getArticleAge(a.pubDate)}<span class="dot"></span>${getReadingTime(a.title)} Lesezeit</div>
                             </div>
                         </div>
                     `).join('')}
