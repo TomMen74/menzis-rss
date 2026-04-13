@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Menzis RSS v2.2.5</title>
+    <title>Menzis RSS v2.2.6</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -511,7 +511,7 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v2.2.5</small></div>
+        <div class="header-title">Menzis RSS <small>v2.2.6</small></div>
         <div style="position:relative;display:flex;align-items:center;">
             <svg style="position:absolute;left:8px;width:14px;height:14px;fill:var(--text-dim)" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
             <input type="text" class="search-input" style="padding-left:28px" placeholder="Suchen..." oninput="filterArticles(this.value)">
@@ -591,6 +591,7 @@
                 { name: 'NDR HH', url: 'https://www.ndr.de/nachrichten/hamburg/index~rss2.xml' }
             ],
             tech: [
+                { name: 'ComputerBILD', url: 'https://www.computerbild.de/rssfeed_2261.xml' },
                 { name: 'Futurezone', url: 'https://futurezone.de/rss' },
                 { name: 'Turing', url: 'https://turingmagazin.de/feed' }
             ],
@@ -778,7 +779,7 @@
             enabledFeeds.forEach(url => fetchFeed(url));
 
             function fetchFeed(url) {
-                fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`)
+                fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&t=${Date.now()}`)
                     .then(res => res.json())
                     .then(data => {
                         console.log('loaded:', url, 'status:', data.status);
