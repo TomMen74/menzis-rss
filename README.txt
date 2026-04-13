@@ -5,7 +5,7 @@
 PROJEKT: Menzis RSS App
 ORT: /home/tomas/projekte/rss app/
 AKTUALISIERT: 13. April 2026
-VERSION: v2.2.10
+VERSION: v2.2.11
 
 ================================================================================
 FUNKTIONEN
