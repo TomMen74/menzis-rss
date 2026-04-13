@@ -4,8 +4,8 @@
 
 PROJEKT: Menzis RSS App
 ORT: /home/tomas/projekte/rss app/
-AKTUALISIERT: 12. April 2026
-VERSION: v2.1.8
+AKTUALISIERT: 13. April 2026
+VERSION: v2.1.9
 
 ================================================================================
 FUNKTIONEN
@@ -32,10 +32,12 @@ FUNKTIONEN
    - Suchfeld im Header
    - Filtert Artikel nach Titel und Feed-Name
 
-5. DYNAMISCHE TABS
+5. STATISCHE TABS
    - Nur Kategorien mit Inhalt werden angezeigt
-   - Sortiert nach Artikelanzahl (meiste zuerst)
-   - "Alle" bleibt immer sichtbar
+   - Fixe Reihenfolge: Alle, Nachrichten, Regional, Tech, Tech-News,
+     Wirtschaft, Gesellschaft, Wissenschaft, Kultur, Lifestyle,
+     Mobile, Apple, Kochen
+   - Reihenfolge entspricht Feed-Auswahl Menü
 
 6. ERSTER START
    - Tagesschau, Caschy (Bremerhaven) und Tichys Einblick automatisch aktiviert
@@ -84,8 +86,7 @@ DATEIEN
 ├── index.html          (Hauptdatei - komplette App)
 ├── README.txt          (diese Beschreibung)
 ├── android/            (Capacitor Android Projekt)
-├── www/                (Web-Build für GitHub Pages)
-└── MenzisRSS-v2.1.8-debug.apk
+└── www/                (Web-Build für GitHub Pages)
 
 ================================================================================
 GITHUB
@@ -93,6 +94,5 @@ GITHUB
 
 Repository: https://github.com/TomMen74/menzis-rss
 Web-Version: https://tommen74.github.io/menzis-rss/
-APK: Im Repo verfügbar (MenzisRSS-v2.1.8-debug.apk)
 
 ================================================================================
