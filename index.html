@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Menzis RSS v3.7</title>
+    <title>Menzis RSS v3.8</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -511,7 +511,7 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v3.7</small></div>
+        <div class="header-title">Menzis RSS <small>v3.8</small></div>
         <div style="position:relative;display:flex;align-items:center;">
             <svg style="position:absolute;left:8px;width:14px;height:14px;fill:var(--text-dim)" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
             <input type="text" class="search-input" style="padding-left:28px" placeholder="Suchen..." oninput="filterArticles(this.value)">
@@ -624,6 +624,7 @@
                 { name: 'Sir Apfelot', url: 'https://www.sir-apfelot.de/feed/' },
                 { name: 'Apfelpage', url: 'https://www.apfelpage.de/feed/' },
                 { name: 'Macwelt', url: 'https://www.macwelt.de/feed/' }
+            ],
             cooking: [
                 { name: 'Eat this! (Vegan)', url: 'https://www.eat-this.org/feed/' },
                 { name: 'Backen macht glücklich', url: 'https://www.backenmachtgluecklich.de/feed/' }
@@ -1089,10 +1090,6 @@
             
             // Reload page
             location.reload();
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
         }
 
         function openOverlay(name) {
