@@ -5,7 +5,7 @@
 PROJEKT: Menzis RSS App
 ORT: /home/tomas/projekte/rss app/
 AKTUALISIERT: 13. April 2026
-VERSION: v2.2.4
+VERSION: v2.2.5
 
 ================================================================================
 FUNKTIONEN
@@ -64,7 +64,7 @@ FEED-KATEGORIEN
 Tagesschau, SPIEGEL, FAZ
 
 📱 TECH-NEWS:
-Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital
+Futurezone, Turing, Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital
 
 🌐 GESELLSCHAFT:
 NachDenkSeiten, Cicero, Tichys Einblick,
