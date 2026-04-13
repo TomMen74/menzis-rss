@@ -5,7 +5,7 @@
 PROJEKT: Menzis RSS App
 ORT: /home/tomas/projekte/rss app/
 AKTUALISIERT: 13. April 2026
-VERSION: v2.2.0
+VERSION: v2.2.2
 
 ================================================================================
 FUNKTIONEN
@@ -45,8 +45,12 @@ FUNKTIONEN
 
 7. DESIGN
    - Google Material Design 3 Richtlinien
-   - 5 Themes: Classic, Midnight, Forest, Sunset, Nacht
+   - Theme: Classic (Dunkelrot/Grün)
    - Moderne Darstellung mit Elevation und Animationen
+
+8. ENTFERNT
+   - Menüpunkt "Aussehen" (Themes)
+   - Feeds: Fefe, Postillon, Übermedien (defekt/keine Daten)
 
 ================================================================================
 FEED-KATEGORIEN
@@ -56,10 +60,10 @@ FEED-KATEGORIEN
 Tagesschau, SPIEGEL, FAZ
 
 📱 TECH-NEWS:
-Fefe, Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital
+Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital
 
 🌐 GESELLSCHAFT:
-Postillon, Übermedien, NachDenkSeiten, Cicero, Tichys Einblick,
+NachDenkSeiten, Cicero, Tichys Einblick,
 Telepolis, Apollo News, Junge Freiheit
 
 🍎 APPLE:
