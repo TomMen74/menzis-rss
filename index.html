@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Menzis RSS v3.9</title>
+    <title>Menzis RSS v4.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -25,6 +25,34 @@
             --md-sys-radius-medium: 12px;
             --md-sys-radius-large: 16px;
             --md-sys-radius-extra-large: 28px;
+        }
+
+        :root[data-theme="light"] {
+            --md-sys-color-primary: #006400;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #b8ffb8;
+            --md-sys-color-secondary: #ff8c00;
+            --md-sys-color-surface: #f5f5f5;
+            --md-sys-color-surface-container: #ffffff;
+            --md-sys-color-surface-container-high: #e8e8e8;
+            --md-sys-color-on-surface: #1a1a1a;
+            --md-sys-color-on-surface-variant: #666666;
+            --md-sys-color-outline: #bbbbbb;
+            --md-sys-color-error: #cc0000;
+        }
+
+        :root[data-theme="dark"] {
+            --md-sys-color-primary: #00B800;
+            --md-sys-color-on-primary: #003300;
+            --md-sys-color-primary-container: #004400;
+            --md-sys-color-secondary: #ff8c00;
+            --md-sys-color-surface: #000000;
+            --md-sys-color-surface-container: #1a1a1a;
+            --md-sys-color-surface-container-high: #2a2a2a;
+            --md-sys-color-on-surface: #e6e6e6;
+            --md-sys-color-on-surface-variant: #a0a0a0;
+            --md-sys-color-outline: #555555;
+            --md-sys-color-error: #ff4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -511,7 +539,7 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v3.9</small></div>
+        <div class="header-title">Menzis RSS <small>v4.0</small></div>
         <div style="position:relative;display:flex;align-items:center;">
             <svg style="position:absolute;left:8px;width:14px;height:14px;fill:var(--text-dim)" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
             <input type="text" class="search-input" style="padding-left:28px" placeholder="Suchen..." oninput="filterArticles(this.value)">
@@ -534,6 +562,7 @@
         </div>
         <div class="nav-item" onclick="openOverlay('feeds')">Feed-Auswahl</div>
         <div class="nav-item" onclick="openOverlay('url')">Eigene URL</div>
+        <div class="nav-item" onclick="openOverlay('theme')">Design</div>
         <div class="nav-item" onclick="openOverlay('hidden')">
             Versteckte Artikel <span id="hiddenCount" class="hidden-count">0</span>
         </div>
@@ -548,14 +577,20 @@
         <div class="overlay-content" id="feedLists"></div>
     </div>
 
-    <div class="overlay-page" id="overlay-design">
+    <div class="overlay-page" id="overlay-theme">
         <div class="overlay-header">
             <button class="close-btn" onclick="closeOverlay()">✕</button>
-            <span class="overlay-title">Aussehen</span>
+            <span class="overlay-title">Design</span>
         </div>
         <div class="overlay-content">
             <div class="feed-category-title">Farbschema</div>
             <div class="theme-selector" id="themeSelector"></div>
+            <div class="feed-category-title" style="margin-top:1rem;">Helligkeit</div>
+            <div class="theme-selector" style="margin-top:0.5rem;">
+                <div class="theme-btn" id="btnLight" onclick="setThemeMode('light')">☀️ Hell</div>
+                <div class="theme-btn" id="btnDark" onclick="setThemeMode('dark')">🌙 Dunkel</div>
+                <div class="theme-btn" id="btnSystem" onclick="setThemeMode('system')">⚙️ Auto</div>
+            </div>
         </div>
     </div>
 
@@ -696,7 +731,9 @@
         function init() {
             console.log('init started');
             try {
+                applyThemeMode();
                 setTheme(currentTheme);
+                updateThemeButtons();
                 console.log('theme set');
                 renderThemeSelector();
                 renderFeedLists();
@@ -730,6 +767,29 @@
             document.querySelectorAll('.theme-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.theme === theme);
             });
+        }
+
+        function setThemeMode(mode) {
+            localStorage.setItem('themeMode', mode);
+            applyThemeMode();
+            updateThemeButtons();
+        }
+
+        function applyThemeMode() {
+            const mode = localStorage.getItem('themeMode') || 'dark';
+            if (mode === 'system') {
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', mode);
+            }
+        }
+
+        function updateThemeButtons() {
+            const mode = localStorage.getItem('themeMode') || 'dark';
+            document.getElementById('btnLight')?.classList.toggle('active', mode === 'light');
+            document.getElementById('btnDark')?.classList.toggle('active', mode === 'dark');
+            document.getElementById('btnSystem')?.classList.toggle('active', mode === 'system');
         }
 
         function renderThemeSelector() {
