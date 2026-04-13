@@ -5,7 +5,7 @@
 PROJEKT: Menzis RSS App
 ORT: /home/tomas/projekte/rss app/
 AKTUALISIERT: 13. April 2026
-VERSION: v2.2.7
+VERSION: v2.2.8
 
 ================================================================================
 FUNKTIONEN
@@ -50,7 +50,7 @@ FUNKTIONEN
 
 8. ENTFERNT
    - Menüpunkt "Aussehen" (Themes)
-   - Feeds: Fefe, Postillon, Übermedien (defekt/keine Daten)
+   - Feeds: Fefe, Postillon, Übermedien, ComputerBILD, Turing, Zeit, Süddeutsche, Quarks, Klimareporter (API-Fehler/Rate-Limit)
 
 9. BILDER
    - Automatische Extraktion aus content/description
@@ -64,7 +64,7 @@ FEED-KATEGORIEN
 Tagesschau, SPIEGEL, FAZ
 
 📱 TECH-NEWS:
-Futurezone, Turing, Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital
+Futurezone, Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital
 
 🌐 GESELLSCHAFT:
 NachDenkSeiten, Cicero, Tichys Einblick,
