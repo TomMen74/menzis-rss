@@ -1,6 +1,6 @@
 # Menzis RSS - Projekt-Info
 
-## Aktueller Stand (v6.0)
+## Aktueller Stand (v6.2)
 
 Ein RSS-Reader als Web-App mit Android-APK.
 
@@ -60,9 +60,15 @@ curl -X POST -H "Authorization: token TOKEN" \
 
 ## Funktionen (aktiv)
 
+- Paralleles Laden der Feeds (keine 500ms Verzögerung mehr)
+- Nur Tabs mit Artikeln werden angezeigt
+- Tabs sind sticky (bleiben oben beim Scrollen)
+- Swipe-Hinweis wird während Swipe eingeblendet
+- Ganze Kachel ist klickbar
+- Hashtags statt Lesezeit (anklickbar → X/Twitter)
 - Swipe links = Ausblenden
 - Swipe rechts = Später lesen
-- Drag & Drop Sortierung: Feeds, Tabs, Keywords
+- Drag & Drop Sortierung: Feeds, Tabs, Keywords, Kategorien
 - Keywords als额外 Tabs
 - Enter-Taste für Keyword-Eingabe
 - Pull-to-Refresh
@@ -94,5 +100,5 @@ curl -X POST -H "Authorization: token TOKEN" \
 
 ## Bekannte Issues / ToDo
 
-- [ ] Drag & Drop für Kategorie-Reihenfolge (nur Tabs und Keywords bisher)
+- [x] Drag & Drop für Kategorie-Reihenfolge (nur Tabs und Keywords bisher)
 - [ ] Eventuell andere RSS-API falls rss2json zu viele Limits hat
