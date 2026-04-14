@@ -927,6 +927,13 @@
         }
 
         function updateHeaderInfo() {
+            if (!allArticles || !allArticles.length) {
+                const lastUpdate = localStorage.getItem('lastUpdate');
+                const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+                document.getElementById('headerTitle').innerHTML = `Menzis RSS <small>v6.4 · ${timeStr} · 0</small>`;
+                return;
+            }
+            
             const lastUpdate = localStorage.getItem('lastUpdate');
             const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
             
