@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.2</title>
+    <title>Menzis RSS v6.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -142,7 +142,7 @@
         .tab-bar {
             position: sticky;
             top: 52px;
-            z-index: 99;
+            z-index: 200;
             display: flex;
             gap: 0.5rem;
             padding: 0.75rem 1rem;
@@ -199,55 +199,41 @@
         .article-card .swipe-bg-left {
             position: absolute;
             left: 0;
+            right: 0;
             top: 0;
-            bottom: 0;
-            width: 80px;
+            height: 40px;
             background: var(--error);
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             transition: opacity 0.2s;
+            border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+            z-index: 10;
         }
         .article-card .swipe-bg-right {
             position: absolute;
+            left: 0;
             right: 0;
             top: 0;
-            bottom: 0;
-            width: 80px;
+            height: 40px;
             background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             transition: opacity 0.2s;
+            border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+            z-index: 10;
         }
         .article-card.swiping-left .swipe-bg-left { opacity: 1; }
         .article-card.swiping-right .swipe-bg-right { opacity: 1; }
         .article-card .swipe-label {
             color: white;
-            font-weight: 500;
-            font-size: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
             text-align: center;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
         }
-        .swipe-hint {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--surface-container);
-            color: var(--on-surface);
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-medium);
-            font-weight: 500;
-            z-index: 1000;
-            display: none;
-            box-shadow: var(--elevation-3);
-        }
-        .swipe-hint.left { color: var(--error); }
-        .swipe-hint.right { color: var(--primary); }
 
         .article-card img {
             width: 100%;
@@ -441,13 +427,32 @@
             color: var(--primary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            cursor: grab;
         }
-        .feed-category-title:active { cursor: grabbing; }
-        .feed-category-title.dragging { opacity: 0.5; }
-        .feed-category-title.drag-over { background: var(--primary-container); }
 
-        .feed-item {
+        .category-item {
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--on-surface);
+            background: var(--surface-container);
+            border-radius: var(--radius-medium);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .category-item:hover { background: var(--surface-container-high); }
+
+        .back-btn {
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary);
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+        .back-btn:hover { text-decoration: underline; }
+
+        .feed-category-title {
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -608,7 +613,7 @@
         <div class="hamburger" onclick="toggleSidebar()">
             <span></span><span></span><span></span>
         </div>
-        <div class="header-title">Menzis RSS <small>v6.2</small></div>
+        <div class="header-title">Menzis RSS <small>v6.3</small></div>
         <div class="search-container">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2"/></svg>
             <input type="text" class="search-input" placeholder="Suchen..." oninput="filterArticles(this.value)">
@@ -825,6 +830,17 @@
         
         let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
         let readLaterItems = JSON.parse(localStorage.getItem('readLaterItems')) || [];
+        
+        // Migrate old format (array of strings) to new format (array of objects)
+        if (hiddenItems.length > 0 && typeof hiddenItems[0] === 'string') {
+            hiddenItems = hiddenItems.map(link => ({ link: link, title: 'Alter Artikel', feedName: 'Unbekannt', pubDate: new Date().toISOString() }));
+            localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
+        }
+        if (readLaterItems.length > 0 && typeof readLaterItems[0] === 'string') {
+            readLaterItems = readLaterItems.map(link => ({ link: link, title: 'Alter Artikel', feedName: 'Unbekannt', pubDate: new Date().toISOString() }));
+            localStorage.setItem('readLaterItems', JSON.stringify(readLaterItems));
+        }
+        
         let keywords = JSON.parse(localStorage.getItem('keywords')) || [];
         let currentTheme = localStorage.getItem('theme') || 'dark';
         let articleFilter = localStorage.getItem('articleFilter') || 'all';
@@ -912,16 +928,40 @@
             const allCategories = { ...feedData };
             if (customFeeds.length) allCategories.custom = customFeeds;
 
-            Object.entries(allCategories).forEach(([category, feeds]) => {
-                const title = categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
-                html += `<div class="feed-category-title" draggable="true" data-category="${category}">${title}</div>`;
-                html += feeds.map((feed, idx) => `
-                    <div class="feed-item" draggable="true" data-url="${feed.url}" data-category="${category}" data-idx="${idx}" onclick="toggleFeed('${feed.url}')">
-                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}"></div>
-                        <span>${feed.name}</span>
-                    </div>
-                `).join('');
+            categoryOrder.forEach(cat => {
+                if (allCategories[cat]) {
+                    const title = categoryNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
+                    const feeds = allCategories[cat];
+                    html += `<div class="category-item" onclick="showCategoryFeeds('${cat}')">${title}</div>`;
+                }
             });
+
+            if (allCategories.custom && allCategories.custom.length) {
+                html += `<div class="category-item" onclick="showCategoryFeeds('custom')">Eigene Feeds</div>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        let currentCategory = null;
+
+        function showCategoryFeeds(category) {
+            currentCategory = category;
+            const container = document.getElementById('feedLists');
+            const allCategories = { ...feedData };
+            if (customFeeds.length) allCategories.custom = customFeeds;
+            
+            const title = categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
+            const feeds = allCategories[category] || [];
+            
+            let html = `<div class="back-btn" onclick="renderFeedLists()">← Zurück</div>`;
+            html += `<div class="feed-category-title">${title}</div>`;
+            html += feeds.map((feed, idx) => `
+                <div class="feed-item" data-url="${feed.url}" data-category="${category}" data-idx="${idx}" onclick="toggleFeed('${feed.url}')">
+                    <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}"></div>
+                    <span>${feed.name}</span>
+                </div>
+            `).join('');
             
             container.innerHTML = html;
             
@@ -930,13 +970,6 @@
                 item.addEventListener('dragend', handleDragEnd);
                 item.addEventListener('dragover', handleDragOver);
                 item.addEventListener('drop', handleDrop);
-            });
-
-            container.querySelectorAll('.feed-category-title').forEach(header => {
-                header.addEventListener('dragstart', handleCategoryDragStart);
-                header.addEventListener('dragend', handleCategoryDragEnd);
-                header.addEventListener('dragover', handleCategoryDragOver);
-                header.addEventListener('drop', handleCategoryDrop);
             });
         }
 
@@ -1156,7 +1189,7 @@
         function renderTabs() {
             const categoryCounts = {};
             allArticles
-                .filter(a => !hiddenItems.includes(a.link) && !readLaterItems.includes(a.link))
+                .filter(a => !hiddenItems.some(h => h.link === a.link) && !readLaterItems.some(r => r.link === a.link))
                 .forEach(a => {
                     const cat = feedCategoryMap[a.feedUrl] || 'other';
                     categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
@@ -1233,7 +1266,7 @@
 
         function renderArticles() {
             let articles = allArticles
-                .filter(a => !hiddenItems.includes(a.link) && !readLaterItems.includes(a.link))
+                .filter(a => !hiddenItems.some(h => h.link === a.link) && !readLaterItems.some(r => r.link === a.link))
                 .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
                 .slice(0, 100);
 
@@ -1303,20 +1336,9 @@
             if (diff < -20) {
                 card.classList.add('swiping-left');
                 swipeDirection = 'left';
-                const hint = document.getElementById('swipeHint');
-                hint.textContent = '← Ausblenden';
-                hint.className = 'swipe-hint left';
-                hint.style.display = 'block';
             } else if (diff > 20) {
                 card.classList.add('swiping-right');
                 swipeDirection = 'right';
-                const hint = document.getElementById('swipeHint');
-                hint.textContent = 'Später lesen →';
-                hint.className = 'swipe-hint right';
-                hint.style.display = 'block';
-            } else {
-                const hint = document.getElementById('swipeHint');
-                hint.style.display = 'none';
             }
             
             const rotate = diff * 0.03;
@@ -1325,9 +1347,6 @@
 
         function endSwipe(e, card) {
             if (!cardEl || card !== cardEl) return;
-            
-            const hint = document.getElementById('swipeHint');
-            hint.style.display = 'none';
             
             const diff = swipeStartX - e.changedTouches[0].clientX;
             
@@ -1338,8 +1357,8 @@
                 
                 setTimeout(() => {
                     const link = card.dataset.link;
-                    if (!hiddenItems.includes(link)) {
-                        hiddenItems.push(link);
+                    if (!hiddenItems.some(h => h.link === link)) {
+                        hiddenItems.push({ link: link, title: card.querySelector('.article-title')?.textContent || 'Artikel', feedName: card.querySelector('.feed-name')?.textContent || 'Unbekannt', pubDate: new Date().toISOString() });
                         localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
                         updateCounts();
                     }
@@ -1355,8 +1374,8 @@
                 
                 setTimeout(() => {
                     const link = card.dataset.link;
-                    if (!readLaterItems.includes(link)) {
-                        readLaterItems.push(link);
+                    if (!readLaterItems.some(r => r.link === link)) {
+                        readLaterItems.push({ link: link, title: card.querySelector('.article-title')?.textContent || 'Artikel', feedName: card.querySelector('.feed-name')?.textContent || 'Unbekannt', pubDate: new Date().toISOString() });
                         localStorage.setItem('readLaterItems', JSON.stringify(readLaterItems));
                         updateCounts();
                     }
@@ -1392,8 +1411,14 @@
         }
 
         function openArticle(link) {
-            if (!hiddenItems.includes(link)) {
-                hiddenItems.push(link);
+            if (!hiddenItems.some(h => h.link === link)) {
+                const article = allArticles.find(a => a.link === link);
+                hiddenItems.push({ 
+                    link: link, 
+                    title: article?.title || 'Artikel', 
+                    feedName: article?.feedName || 'Unbekannt', 
+                    pubDate: article?.pubDate || new Date().toISOString() 
+                });
                 localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
                 updateCounts();
             }
@@ -1412,7 +1437,7 @@
         }
 
         function renderReadLaterList() {
-            const later = allArticles.filter(a => readLaterItems.includes(a.link));
+            const later = readLaterItems;
             const container = document.getElementById('readLaterList');
             
             if (!later.length) {
@@ -1481,8 +1506,16 @@
             renderArticles();
         }
 
+        function restoreReadLater(link) {
+            readLaterItems = readLaterItems.filter(r => r.link !== link);
+            localStorage.setItem('readLaterItems', JSON.stringify(readLaterItems));
+            updateCounts();
+            renderReadLaterList();
+            renderArticles();
+        }
+
         function renderHiddenList() {
-            const hidden = allArticles.filter(a => hiddenItems.includes(a.link));
+            const hidden = hiddenItems;
             const container = document.getElementById('hiddenList');
             
             if (!hidden.length) {
@@ -1505,7 +1538,7 @@
         }
 
         function restoreHidden(link) {
-            hiddenItems = hiddenItems.filter(l => l !== link);
+            hiddenItems = hiddenItems.filter(h => h.link !== link);
             localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
             updateCounts();
             renderHiddenList();
