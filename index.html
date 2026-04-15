@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.9</title>
+    <title>Menzis RSS v7.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1277,16 +1277,18 @@
             categoryOrder.forEach(cat => {
                 if (allCategories[cat]) {
                     const title = categoryNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
-                    html += `<div class="category-item" onclick="showCategoryFeeds('${cat}')">${title}</div>`;
+                    html += '<div class="category-item" onclick="showCategoryFeeds(\'' + cat + '\')">' + title + '</div>';
                 }
             });
 
             if (allCategories.custom && allCategories.custom.length) {
-                html += `<div class="category-item" onclick="showCategoryFeeds('custom')">Eigene Feeds</div>";
+                html += '<div class="category-item" onclick="showCategoryFeeds(\'custom\')">Eigene Feeds</div>';
             }
             
             container.innerHTML = html;
         }
+
+        let currentCategory = null;
 
         function showCategoryFeeds(category) {
             currentCategory = category;
