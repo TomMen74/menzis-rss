@@ -1300,7 +1300,7 @@
                 </div>`;
             }
             
-            html += `<div class="feed-category-title">${title}</div>`;
+            html += `<div class="feed-category-title" onclick="event.stopPropagation();toggleCategoryVisibility(this)">${title}</div>`;
             
             if (category === 'custom') {
                 html += feeds.map((feed, idx) => `
@@ -1406,6 +1406,16 @@
             });
             localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
             showCategoryFeeds(category);
+        }
+        
+        function toggleCategoryVisibility(headerElem) {
+            const cat = headerElem.nextElementSibling;
+            if (!cat) return;
+            if (cat.style.display === 'none') {
+                cat.style.display = '';
+            } else {
+                cat.style.display = 'none';
+            }
         }
 
         function deleteCustomFeed(url, name) {
