@@ -1109,7 +1109,7 @@
         }
         
         function fetchFeed(url) {
-            return fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(url) + '&count=50')
+            return fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(url) + '&max_results=50')
                 .then(res => res.json())
                 .then(data => {
                     if (!data || data.status !== 'ok') {
