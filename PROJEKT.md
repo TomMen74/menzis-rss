@@ -1,6 +1,6 @@
 # Menzis RSS - Projekt-Info
 
-## Aktueller Stand (v6.5)
+## Aktueller Stand (v6.12)
 
 Ein RSS-Reader als Web-App mit Android-APK.
 
@@ -10,18 +10,17 @@ Ein RSS-Reader als Web-App mit Android-APK.
 - **Web-Version:** https://tommen74.github.io/menzis-rss/
 - **Releases:** https://github.com/TomMen74/menzis-rss/releases
 
-## GitHub Token
-
-(Im System gespeichert)
-
 ## Verzeichnisstruktur
 
 ```
 /home/tomas/projekte/rss app/
 ├── index.html              # Hauptdatei (wird bearbeitet)
-├── www/index.html          # Web-Version
+├── www/index.html          # Web-Version (Kopie)
 ├── android/                # Android-Projekt (Capacitor)
 │   └── app/src/main/assets/public/index.html
+├── serverless/rss.js       # Serverless RSS Parser (Vercel/Cloudflare)
+├── rss_reader.py           # Python RSS Reader Script
+├── PROJEKT.md              # Diese Datei
 ├── README.md
 ├── favicon.svg
 └── *.apk                   # Alte APKs
@@ -31,7 +30,7 @@ Ein RSS-Reader als Web-App mit Android-APK.
 
 ```bash
 # 1. index.html bearbeiten
-# 2. Version in title und header aktualisieren (z.B. v6.0 → v6.1)
+# 2. Version in title und header aktualisieren
 
 # 3. Kopieren und commit
 cp index.html www/index.html
@@ -39,7 +38,7 @@ cp favicon.svg www/
 cp index.html android/app/src/main/assets/public/index.html
 cp favicon.svg android/app/src/main/assets/public/
 git add index.html www/index.html
-git commit -m "v6.1 - Beschreibung"
+git commit -m "v6.x - Beschreibung"
 git push
 
 # 4. APK bauen
@@ -47,31 +46,14 @@ cd android
 ./gradlew assembleDebug
 
 # 5. Release erstellen und APK hochladen
-curl -X POST -H "Authorization: token TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"tag_name": "v6.1", "name": "Menzis RSS v6.1", "body": "Beschreibung"}' \
-  https://api.github.com/repos/TomMen74/menzis-rss/releases
-
-curl -X POST -H "Authorization: token TOKEN" \
-  -H "Content-Type: application/octet-stream" \
-  --data-binary @android/app/build/outputs/apk/debug/app-debug.apk \
-  "https://uploads.github.com/repos/TomMen74/menzis-rss/releases/ID/assets?name=MenzisRSS-v6.1-debug.apk"
 ```
 
 ## Funktionen (aktiv)
 
-- Paralleles Laden der Feeds (keine 500ms Verzögerung mehr)
-- Nur Tabs mit Artikeln werden angezeigt
-- Tabs sind sticky (bleiben oben beim Scrollen)
-- Swipe-Hinweis wird während Swipe oberhalb eingeblendet
-- Ganze Kachel ist klickbar
-- Interne Hashtag-Tabelle (themenbasiert, Top 5 pro Artikel)
 - Swipe links = Ausblenden
 - Swipe rechts = Später lesen
-- Drag & Drop Sortierung: Feeds, Tabs, Keywords, Kategorien
+- Drag & Drop Sortierung: Feeds, Tabs, Keywords
 - Keywords als额外 Tabs
-- Dynamische Keyword-Tabs (nur wenn passende Artikel existieren)
-- "Alle Keywords" Tab (kw:all Filter)
 - Enter-Taste für Keyword-Eingabe
 - Pull-to-Refresh
 - Suchfunktion
@@ -80,14 +62,7 @@ curl -X POST -H "Authorization: token TOKEN" \
 - Ladekreisel (ohne Text)
 - Version im Header
 - Favicon
-- Monochrome/flate Symbole
-
-## Versionierung
-
-- Format: **y.xx** (Major.Minor)
-- **y** = Major (nur auf Anweisung erhöhen)
-- **xx** = Minor (bei jedem Deploy +1)
-- Aktuell: **v6.5** (nächste: v6.6)
+- **Layer-Navigation** - Menü bleibt offen bis "Fertig"
 
 ## Feed-Kategorien
 
@@ -107,8 +82,39 @@ curl -X POST -H "Authorization: token TOKEN" \
 ## API
 
 - RSS-Parsing: `https://api.rss2json.com/v1/api.json?rss_url=...`
+- **Limit:** 10 Items pro Feed (kostenlos)
+
+## Themen-Hashtags
+
+Die App zeigt automatisch Hashtags basierend auf Kategorien an:
+- news: Ukraine, Russland, USA, China, EU, Wahl, etc.
+- tech: Apple, Microsoft, Google, KI, AI, etc.
+- finance: Börse, Aktien, ETF, Bank, etc.
+- android: Samsung, Galaxy, Pixel, etc.
+- apple: iPhone, iPad, Mac, etc.
+- lifestyle: Reisen, Urlaub, etc.
+- cooking: Rezept, Kochen, Vegan, etc.
+
+## Versions-Historie
+
+- v6.12 - Layer-Navigation: Feed-Auswahl bleibt offen bis Fertig
+- v6.11 - Feed-Auswahl auf/zu Problem behoben
+- v6.10 - Version korrigiert
+- v6.9 - Feed-Auswahl Navigation
+- v6.8 - Thumbnails aus description parsen
+- v6.7 - Feed-Auswahl Kategorie-Zustand
+- v6.6 - Hashtags bereinigt (Duplikate entfernt)
+- v6.5 - Versionen
+- v6.0 - Drag&Drop Tabs/Keywords
+- v5.9 - Drag&Drop Feeds
+- v5.8 - Favicon
+- v5.7 - Rate limiting
+- v5.6 - SyntaxError Fix
+- v5.5 - Ladekreisel Bugfix
+- v5.4 - Nur Ladekreisel, kein Text
 
 ## Bekannte Issues / ToDo
 
-- [x] Drag & Drop für Kategorie-Reihenfolge (nur Tabs und Keywords bisher)
-- [ ] Eventuell andere RSS-API falls rss2json zu viele Limits hat
+- [ ] Eigener RSS-Server (statt rss2json) für unbegrenzte Items
+- [ ] rss_reader.py als Server hosten
+- [ ] serverless/rss.js auf Vercel deployen
