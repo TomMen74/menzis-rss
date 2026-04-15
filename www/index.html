@@ -978,8 +978,10 @@
             
             let tabsHtml = '<div class="tab active" data-filter="all" onclick="setFilter(\'all\')">Alle</div>';
             
+            const enabledCategories = new Set(enabledFeeds.map(url => feedCategoryMap[url]).filter(Boolean));
+            
             categoryOrder.forEach(cat => {
-                if (categoryHasArticles(cat)) {
+                if (enabledCategories.has(cat) && categoryHasArticles(cat)) {
                     tabsHtml += '<div class="tab" data-filter="cat:' + cat + '" onclick="setFilter(\'cat:' + cat + '\')">' + (categoryNames[cat] || cat) + '</div>';
                 }
             });
