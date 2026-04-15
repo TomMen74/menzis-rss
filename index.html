@@ -869,41 +869,46 @@
 
         const allKnownUrls = Object.values(feedData).flat().map(f => f.url);
         
-        let enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds'));
+        let enabledFeeds = JSON.parse(localStorage.getItem('enabledFeeds')) || [];
         
-        if (!enabledFeeds || !Array.isArray(enabledFeeds) || enabledFeeds.length === 0) {
+        if (!enabledFeeds.length) {
             enabledFeeds = ['https://www.tagesschau.de/xml/rss2'];
         } else {
             enabledFeeds = enabledFeeds.filter(url => 
                 allKnownUrls.includes(url) && !isBrokenFeed(url)
             );
-            if (enabledFeeds.length === 0) {
+            if (!enabledFeeds.length) {
                 enabledFeeds = ['https://www.tagesschau.de/xml/rss2'];
             }
         }
         
         localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
         
-        let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems')) || [];
-        let readLaterItems = JSON.parse(localStorage.getItem('readLaterItems')) || [];
+        let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems'));
+        function getSafeArray(key) {
+            try {
+                const val = localStorage.getItem(key);
+                return val && Array.isArray(JSON.parse(val)) ? JSON.parse(val) : [];
+            } catch (e) { return []; }
+        }
         
-        // Migrate old format (array of strings) to new format (array of objects)
-        if (hiddenItems.length > 0 && typeof hiddenItems[0] === 'string') {
+        let hiddenItems = getSafeArray('hiddenItems');
+        let readLaterItems = getSafeArray('readLaterItems');
+        let keywords = getSafeArray('keywords');
+        let customFeeds = getSafeArray('customFeeds');
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        let articleFilter = localStorage.getItem('articleFilter') || 'all';
+        let allArticles = [];
+        
+        // Migrate old format
+        if (hiddenItems.length && typeof hiddenItems[0] === 'string') {
             hiddenItems = hiddenItems.map(link => ({ link: link, title: 'Alter Artikel', feedName: 'Unbekannt', pubDate: new Date().toISOString() }));
             localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
         }
-        if (readLaterItems.length > 0 && typeof readLaterItems[0] === 'string') {
+        if (readLaterItems.length && typeof readLaterItems[0] === 'string') {
             readLaterItems = readLaterItems.map(link => ({ link: link, title: 'Alter Artikel', feedName: 'Unbekannt', pubDate: new Date().toISOString() }));
             localStorage.setItem('readLaterItems', JSON.stringify(readLaterItems));
         }
-        
-        let keywords = JSON.parse(localStorage.getItem('keywords'));
-        if (!keywords || !Array.isArray(keywords)) keywords = [];
-        let currentTheme = localStorage.getItem('theme') || 'dark';
-        let articleFilter = localStorage.getItem('articleFilter') || 'all';
-        let customFeeds = JSON.parse(localStorage.getItem('customFeeds'));
-        if (!customFeeds || !Array.isArray(customFeeds)) customFeeds = [];
-        let allArticles = [];
         
         const feedCategoryMap = {};
         Object.entries(feedData).forEach(([cat, feeds]) => {
@@ -1699,8 +1704,13 @@
         }
 
         function resetApp() {
-            localStorage.clear();
-            location.reload();
+            if (!confirm('App wirklich zurücksetzen? Alle Daten werden gelöscht.')) return;
+            try {
+                localStorage.clear();
+            } catch (e) {}
+            setTimeout(() => {
+                window.location.href = window.location.pathname + '?' + Date.now();
+            }, 200);
         }
 
         function openOverlay(name) {
