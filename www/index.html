@@ -1063,27 +1063,39 @@
                 renderFeedLists();
                 renderKeywordList();
                 updateCounts();
+                console.log('init running, loading feeds...');
                 loadFeeds();
                 updateHeaderInfo();
             } catch (e) {
                 console.error('init error:', e);
+                alert('Init Error: ' + e.message);
                 document.getElementById('mainContent').innerHTML = '<div class="error-msg"><h3>Fehler beim Starten</h3>Bitte App neu laden.</div>';
             }
         }
 
+        
+
         let isLoading = false;
         
         function loadFeeds() {
-            if (isLoading) return;
+            console.log('loadFeeds called, enabledFeeds:', enabledFeeds);
+            if (isLoading) {
+                console.log('Already loading, returning...');
+                return;
+            }
             isLoading = true;
             
             const main = document.getElementById('mainContent');
             if (!main) {
-                main.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
+                console.log('ERROR: main is null!');
+                return;
             }
+            main.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
+            console.log('Loading feeds, fetching', enabledFeeds.length, 'feeds...');
             
             const promises = enabledFeeds.map(url => fetchFeed(url));
             Promise.all(promises).then(articles => {
+                console.log('All feeds loaded, articles:', articles.length);
                 allArticles = articles.filter(a => a).sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
                 localStorage.setItem('lastUpdate', Date.now().toString());
                 renderMainContent(allArticles);
@@ -1754,7 +1766,12 @@
             }, { passive: true });
         }
 
-        init();
+        // Auto-init on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     </script>
 </body>
 </html>
