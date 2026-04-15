@@ -1565,7 +1565,7 @@
                 updateCounts();
             }
             window.open(link, '_self');
-            setTimeout(renderArticles, 500);
+            setTimeout(renderMainContent, 500);
         }
 
         function openHashtag(tag) {
@@ -1645,7 +1645,7 @@
             localStorage.setItem('readLaterItems', JSON.stringify(readLaterItems));
             updateCounts();
             renderReadLaterList();
-            renderArticles();
+            renderMainContent();
         }
 
         function restoreReadLater(link) {
@@ -1653,7 +1653,7 @@
             localStorage.setItem('readLaterItems', JSON.stringify(readLaterItems));
             updateCounts();
             renderReadLaterList();
-            renderArticles();
+            renderMainContent();
         }
 
         function renderHiddenList() {
@@ -1684,7 +1684,7 @@
             localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
             updateCounts();
             renderHiddenList();
-            renderArticles();
+            renderMainContent();
         }
 
         function restoreAllHidden() {
@@ -1692,7 +1692,7 @@
             localStorage.setItem('hiddenItems', JSON.stringify(hiddenItems));
             updateCounts();
             renderHiddenList();
-            renderArticles();
+            renderMainContent();
         }
 
         function renderKeywordList() {
@@ -1714,7 +1714,7 @@
                 input.value = '';
                 renderKeywordList();
                 updateCounts();
-                renderArticles();
+                renderMainContent();
             }
         }
 
@@ -1726,7 +1726,7 @@
             if (articleFilter === 'kw:' + kw) {
                 setFilter('all');
             } else {
-                renderArticles();
+                renderMainContent();
             }
         }
 
