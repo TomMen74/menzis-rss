@@ -1058,18 +1058,26 @@
         }
 
         function init() {
+            console.log('init called');
             try {
                 applyThemeMode();
                 updateThemeButtons();
+                console.log('theme done, renderTabs...');
                 renderTabs();
+                console.log('renderFeedLists...');
                 renderFeedLists();
+                console.log('renderKeywordList...');
                 renderKeywordList();
+                console.log('updateCounts...');
                 updateCounts();
+                console.log('loadFeeds...');
                 loadFeeds();
+                console.log('updateHeaderInfo...');
                 updateHeaderInfo();
+                console.log('init complete');
             } catch (e) {
-                console.error('init error:', e);
-                document.getElementById('mainContent').innerHTML = '<div class="error-msg"><h3>Fehler beim Starten</h3>Bitte App neu laden.</div>';
+                console.error('init ERROR:', e);
+                document.getElementById('mainContent').innerHTML = '<div class="error-msg"><h3>Fehler: ' + e.message + '</h3>Bitte App neu laden.</div>';
             }
         }
 
@@ -1524,7 +1532,7 @@
             document.querySelectorAll('.tab').forEach(t => {
                 t.classList.toggle('active', t.dataset.filter === filter);
             });
-            renderArticles(filter);
+            renderMainContent(allArticles);
         }
 
         function openArticle(link) {
