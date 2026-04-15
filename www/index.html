@@ -1092,9 +1092,13 @@
             const main = document.getElementById('mainContent');
             main.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
             
+            console.log('loadFeeds: starting with', enabledFeeds.length, 'feeds');
+            
             const promises = enabledFeeds.map(url => fetchFeed(url));
             Promise.all(promises).then(articles => {
-                allArticles = articles.filter(a => a).sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                console.log('loadFeeds done, articles:', articles.length);
+                allArticles = articles.filter(a => a && a.title).sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                console.log('allArticles after filter:', allArticles.length);
                 localStorage.setItem('lastUpdate', Date.now().toString());
                 renderMainContent(allArticles);
                 renderTabs();
@@ -1102,20 +1106,26 @@
                 isLoading = false;
             }).catch(err => {
                 console.error('loadFeeds error:', err);
+                main.innerHTML = '<div class="error-msg"><h3>Fehler beim Laden</h3>' + err.message + '</div>';
                 isLoading = false;
             });
         }
         
         function fetchFeed(url) {
+            console.log('fetchFeed:', url);
             return fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(url))
-                .then(res => res.json())
+                .then(res => {
+                    console.log('fetchFeed response:', res.status);
+                    return res.json();
+                })
                 .then(data => {
+                    console.log('fetchFeed data:', data ? data.status : 'no data');
                     if (!data || data.status !== 'ok') {
-                        console.warn('Feed error:', url, data);
                         return [];
                     }
                     const feedTitle = (data.feed && data.feed.title) ? data.feed.title : 'Feed';
                     const cat = feedCategoryMap[url] || 'custom';
+                    console.log('feed:', feedTitle, 'items:', data.items ? data.items.length : 0);
                     return data.items.map(item => {
                         let thumb = item.thumbnail || '';
                         if (!thumb && item.enclosure && item.enclosure.link) {
@@ -1129,7 +1139,7 @@
                             title: item.title || 'Ohne Titel',
                             link: item.link || '',
                             content: item.description || item.content || '',
-                            pubDate: item.pubDate ? item.pubDate : new Date().toISOString(),
+                            pubDate: item.pubDate || new Date().toISOString(),
                             thumbnail: thumb,
                             feedName: feedTitle,
                             feedUrl: url,
@@ -1146,7 +1156,14 @@
         function renderMainContent(articles) {
             const main = document.getElementById('mainContent');
             if (!main) return;
+            
+            console.log('renderMainContent called, articles:', articles ? articles.length : 0);
             main.innerHTML = '';
+            
+            if (!articles || !articles.length) {
+                main.innerHTML = '<div class="no-feeds">Keine Artikel gefunden.</div>';
+                return;
+            }
             
             const filter = localStorage.getItem('articleFilter') || 'all';
             let filtered = articles;
