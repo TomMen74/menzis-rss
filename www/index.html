@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.4</title>
+    <title>Menzis RSS v6.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -232,11 +232,26 @@
         }
         .article-card.swiping-left .swipe-bg-left { opacity: 1; }
         .article-card.swiping-right .swipe-bg-right { opacity: 1; }
-        .article-card .swipe-label {
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
+
+        .article-card .swipe-hint {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            right: 0;
             text-align: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .article-card.swiping-left .swipe-hint {
+            opacity: 1;
+            color: var(--error);
+        }
+        .article-card.swiping-right .swipe-hint {
+            opacity: 1;
+            color: var(--primary);
         }
 
         .article-card img {
@@ -826,6 +841,16 @@
             cooking: 'Kochen', lifestyle: 'Lifestyle', finance: 'Wirtschaft', custom: 'Eigene'
         };
 
+        const topicHashtags = {
+            news: ['Ukraine', 'Russland', 'USA', 'China', 'EU', 'Wahl', 'Bundestag', 'Ampel', 'Union', 'CDU', 'SPD', 'AfD', 'FDP', 'Grüne', 'Klima', 'Energie', 'Inflation', 'Rezession', 'Wirtschaft', 'Konjunktur', 'Arbeitsmarkt', 'Wohnungskrise', 'Mieten', 'Migration', 'Flüchtlinge', 'Israel', 'Palästina', 'Gaza', 'Nahost', 'USA', 'Biden', 'Trump', 'Putin', 'Xi', 'Baerbock', 'Lindner', ' Scholz', 'Habeck', 'Söder', 'Merz', 'Wagenknecht', 'Ampel', 'Koalition', 'Regierung', 'Opposition', 'Bundestagswahl', 'Landtagswahl', 'Europatag', 'NATO', 'EU', 'UN', 'G20', 'G7', 'Welternährung', 'Klima', 'Umwelt', 'Nachhaltigkeit', 'Klimaschutz', 'Erderwärmung', 'COP', 'Pariser Abkommen'],
+            tech: ['Apple', 'Microsoft', 'Google', 'Amazon', 'Meta', 'Facebook', 'TikTok', 'Twitter', 'X', 'KI', 'AI', 'ChatGPT', 'OpenAI', 'GPT', 'Bitcoin', 'Crypto', 'NFT', 'Blockchain', 'Web3', 'Metaverse', 'VR', 'AR', 'Datenschutz', 'DSGVO', 'Privacy', 'Hacking', 'Cyber', 'Sicherheit', 'IT', 'Software', 'App', 'Android', 'iOS', 'Windows', 'Linux', 'Server', 'Cloud', 'AWS', 'Google Cloud', 'Azure', 'Hosting', 'Domain', 'SEO', 'Marketing', 'Social Media', 'Instagram', 'YouTube', 'LinkedIn', 'WhatsApp', 'Signal', 'Telegram', 'Datenschutz', 'Algorithmus', 'Empfehlung', 'Smartphone', 'Tablet', 'Laptop', 'PC', 'Hardware', 'Chip', 'Halbleiter', 'Semiconductor', 'Intel', 'AMD', 'Nvidia', 'TSMC', 'Qualcomm', 'Smart Home', 'IoT', '5G', '6G', 'Mobilfunk', 'Funkloch', 'Breitband', 'Glasfaser', 'DSL'],
+            finance: ['Börse', 'Aktien', 'ETF', 'Fond', 'Investment', 'Bank', 'Sparkasse', 'Commerzbank', 'Deutsche Bank', 'Postbank', 'DZ Bank', 'Kredit', 'Zins', 'Hypothek', 'Immobilie', 'Wohnung', 'Miete', 'Kaufpreis', 'Makler', 'Notar', 'Grundbuch', 'Kataster', 'Finanzamt', 'Steuer', 'ESt', 'USt', 'GewSt', 'KSt', 'Einkommensteuer', 'Lohnsteuer', 'Kirchensteuer', 'Solidaritätszuschlag', 'Soli', 'GDP', 'Bruttoinlandsprodukt', 'BIP', 'Inflation', 'Deflation', 'Teuerung', 'Preissteigerung', 'Energiepreise', 'Heizöl', 'Gas', 'Strom', 'Öl', 'Kohle', 'Erneuerbare', 'Wind', 'Solar', 'Sonnenenergie', 'Atomkraft', 'Kernkraft', 'Atomausstieg', 'Klimawandel', 'Nachhaltigkeit', 'ESG', 'Green Finance', 'Nachhaltigkeitsbericht', 'SDG', 'Chips Act', 'USA', 'China', 'EU', 'EZB', 'Fed', 'Federal Reserve', 'Dollar', 'Euro', 'Yen', 'Yuan', 'Rubel', 'Währung', 'Wechselkurs', 'Devisen', 'Forex', 'Kryptowährung', 'Bitcoin', 'Ether', 'Dogecoin', 'Token'],
+            android: ['Android', 'Samsung', 'Galaxy', 'S23', 'S24', 'Pixel', 'Google Pixel', 'Xiaomi', 'OnePlus', 'Oppo', 'Realme', 'Sony', 'Sony Xperia', 'Motorola', 'Redmi', 'POCO', 'Honor', 'Huawei', 'Nothing Phone', 'Fairphone', 'Stock Android', 'AOSP', 'Custom ROM', 'LineageOS', 'GrapheneOS', 'CyanogenMod', 'Magisk', 'Root', 'TWRP', 'Bootloader', 'Unlock', 'FRP', 'Bypass', 'Samsung Galaxy', 'One UI', 'OneUI', 'MIUI', 'ColorOS', 'OxygenOS', 'Realme UI', 'Funtouch', 'OriginOS', 'HarmonyOS', 'Android Auto', 'Android TV', 'Wear OS', 'Watch', 'Galaxy Watch', 'Pixel Watch', 'Tablet', 'Galaxy Tab', 'Pixel Tablet', 'Foldable', 'Faltphone', 'Flip', 'Galaxy Z Fold', 'Galaxy Z Flip', 'Huawei Mate', 'Mate X', 'App', 'APK', 'Play Store', 'FDroid', 'Sideload', 'XDA', 'Entwicklung', 'SDK', 'Android Studio', 'Kotlin', 'Java', 'Jetpack', 'Compose'],
+            apple: ['iPhone', 'iPad', 'Mac', 'MacBook', 'iMac', 'Mac mini', 'Mac Pro', 'Mac Studio', 'Apple Watch', 'AirPods', 'HomePod', 'Apple TV', 'Apple Intelligence', 'AI', 'iOS', 'iPadOS', 'macOS', 'watchOS', 'tvOS', 'swift', 'SwiftUI', 'Xcode', 'AppKit', 'SwiftUI', 'UIKit', 'ARKit', 'Metal', 'RealityKit', 'Vision Pro', 'VR', 'AR', 'Mixed Reality', 'Spatial Computing', 'M3', 'M2', 'M1', 'A17', 'A16', 'Chip', 'ProMotion', 'OLED', 'Mini-LED', 'Liquid Retina', 'ProRes', 'ProRAW', 'H.264', 'HEVC', 'AV1', 'FaceID', 'TouchID', 'Passkey', 'Apple Pay', 'Apple Card', 'Apple Cash', 'Family Sharing', 'iCloud', 'Apple One', 'iPhone 15', 'iPhone 15 Pro', 'iPhone 16', 'iPhone SE', 'Dynamic Island', 'USB-C', 'Lightning', 'MagSafe', 'Qi', 'Qi2', 'AirPods Pro', 'AirPods Max', 'WatchOS', 'iPadOS', 'iPad Pro', 'iPad Air', 'iPad mini', 'Final Cut', 'Logic Pro', 'GarageBand', 'iMovie', 'iWork', 'Pages', 'Numbers', 'Keynote', 'iCloud+', 'iCloud Drive', 'Find My', 'AirTag', 'Gaming', 'Apple Arcade', 'App Store', 'TestFlight', 'Sideloading'],
+            lifestyle: ['Reisen', 'Urlaub', 'Flug', 'Hotel', 'Airbnb', 'Booking', 'Bahn', 'Deutsche Bahn', 'ICE', 'Zug', 'Ticket', 'Buchung', 'Reiseblog', 'Tipps', 'Destination', 'Insel', 'Strand', 'Meer', 'Berg', 'Wandern', 'Rad', 'Fahrrad', 'E-Bike', 'Auto', 'Mietwagen', 'Carsharing', 'Sixt', 'Enterprise', 'Flixbus', 'FlixTrain', 'Rezession', 'Ausgehen', 'Essen', 'Restaurant', 'Café', 'Bar', 'Club', 'Kino', 'Film', 'Serie', 'Streaming', 'Netflix', 'Disney+', 'Amazon Prime', 'Apple TV+', 'HBO', 'Spotify', 'Podcast', 'Musik', 'Konzert', 'Festival', 'Sport', 'Fitness', 'Gym', 'Yoga', 'Meditation', 'Gesundheit', 'Ernährung', 'Vegan', 'Vegetarisch', 'Bio', 'Nachhaltigkeit', 'Mode', 'Fashion', 'Kleidung', 'Schuhe', 'Design', 'Architektur', 'Wohnen', 'Interior', 'Einrichtung', 'Möbel', 'IKEA', 'DIY', 'Selbermachen', 'Garten', 'Pflanze', 'Haustier', 'Hund', 'Katze', 'Tier'],
+            cooking: ['Rezept', 'Kochen', 'Backen', 'Braten', 'Dünsten', 'Grillen', 'Rohkost', 'Vegan', 'Vegetarisch', 'Pflanzlich', 'Pflanzenbasiert', 'Bio', 'Organic', 'Nachhaltig', 'Seasonal', 'Saisonal', 'Local', 'Regional', 'Klimafreundlich', 'CO2', 'Kohlenstoff', 'Klimabilanz', 'Foodwaste', 'Lebensmittel', 'Ingredient', 'Zutat', 'Gewürz', 'Kräuter', 'Basilikum', 'Oregano', 'Thymian', 'Rosmarin', 'Salbei', 'Petersilie', 'Schnittlauch', 'Knoblauch', 'Zwiebel', 'Tomate', 'Karotte', 'Kartoffel', 'Zucchini', 'Paprika', 'Gurke', 'Salat', 'Spinat', 'Kohl', 'Broccoli', 'Blumenkohl', 'Pilz', 'Avocado', 'Orange', 'Zitrone', 'Limone', 'Apfel', 'Birne', 'Beere', 'Erdbeer', 'Himbeer', 'Heidelbeer', 'Blaubeer', 'Johannisbeer', 'Traube', 'Melone', 'Mango', 'Ananas', 'Banane', 'Kiwi', 'Feige', 'Granatapfel', 'Nuss', 'Mandeln', 'Walnuss', 'Haselnuss', 'Cashew', 'Erdnuss', 'Öl', 'Olivenöl', 'Kokosöl', 'Rapsöl', 'Sesamöl', 'Tahini', 'Soße', 'Dressing', 'Vinaigrette', 'Mayonnaise', 'Senf', 'Ketchup', 'BBQ', 'Salsa', 'Pesto', 'Mus', 'Aufstrich', 'Brotaufstrich', 'Nährwert', 'Kalorien', 'Protein', 'Kohlenhydrat', 'Fett', 'Ballaststoff', 'Fiber', 'Vitamin', 'Mineral', 'Eisen', 'Zink', 'Kalzium', 'Magnesium', 'Omega-3', 'Omega-6', 'Fettsäure', 'Aminosäure', 'Protein pulver', 'Protein Shake', 'Smoothie', 'Saft', 'Cold Pressed', 'Preßsaft', 'Fermentation', 'Fermentiert', 'Kimchi', 'Sauerkraut', 'Kombucha', 'Tofu', 'Tempeh', 'Seitan', 'Jackfruit', 'Mushroom', 'Pilz', 'Fleischersatz', 'Meatless', 'Plantbased', 'Beyond Meat', 'Impossible Food', 'Veggie', 'Vegetarisch', 'Vegan']
+        };
+
         let categoryOrder = JSON.parse(localStorage.getItem('categoryOrder'));
         
         if (!categoryOrder || !Array.isArray(categoryOrder) || categoryOrder.length === 0) {
@@ -911,10 +936,121 @@
             return [...new Set(matches)];
         }
 
+        function getArticleHashtags(article) {
+            const cat = feedCategoryMap[article.feedUrl] || 'custom';
+            const topicList = topicHashtags[cat] || [];
+            const text = (article.title + ' ' + (article.content || article.description || '')).toLowerCase();
+            return topicList.filter(tag => text.includes(tag.toLowerCase())).slice(0, 5);
+        }
+
+        function hasArticlesForKeyword(kw) {
+            if (!allArticles || !kw) return false;
+            const q = kw.toLowerCase();
+            return allArticles.some(a => {
+                const text = (a.title + ' ' + (a.content || '') + ' ' + (a.feedName || '')).toLowerCase();
+                return text.includes(q);
+            });
+        }
+
+        function hasArticlesForAnyKeyword() {
+            if (!keywords || !keywords.length || !allArticles || !allArticles.length) return false;
+            return keywords.some(kw => hasArticlesForKeyword(kw));
+        }
+
+        function renderTabs() {
+            const tabBar = document.getElementById('tabBar');
+            if (!tabBar) return;
+            
+            let tabsHtml = '<div class="tab active" data-filter="all" onclick="setFilter(\'all\')">Alle</div>';
+            
+            categoryOrder.forEach(cat => {
+                tabsHtml += '<div class="tab" data-filter="cat:' + cat + '" onclick="setFilter(\'cat:' + cat + '\')">' + (categoryNames[cat] || cat) + '</div>';
+            });
+            
+            if (keywords && keywords.length && allArticles && allArticles.length) {
+                if (hasArticlesForAnyKeyword()) {
+                    tabsHtml += '<div class="tab" data-filter="kw:all" onclick="setFilter(\'kw:all\')">Keywords</div>';
+                }
+                keywords.forEach(kw => {
+                    if (hasArticlesForKeyword(kw)) {
+                        tabsHtml += '<div class="tab" data-filter="kw:' + kw + '" onclick="setFilter(\'kw:' + kw + '\')">' + kw + '</div>';
+                    }
+                });
+            }
+            
+            const activeFilter = localStorage.getItem('articleFilter') || 'all';
+            tabBar.innerHTML = tabsHtml;
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.filter === activeFilter);
+            });
+            
+            tabBar.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('dragstart', handleTabDragStart);
+                tab.addEventListener('dragend', handleTabDragEnd);
+                tab.addEventListener('dragover', handleTabDragOver);
+                tab.addEventListener('drop', handleTabDrop);
+            });
+        }
+
+        let draggedTab = null;
+
+        function handleTabDragStart(e) {
+            draggedTab = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleTabDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('drag-over'));
+            draggedTab = null;
+        }
+
+        function handleTabDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const target = e.target.closest('.tab');
+            if (target && target !== draggedTab) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('drag-over'));
+                target.classList.add('drag-over');
+            }
+        }
+
+        function handleTabDrop(e) {
+            e.preventDefault();
+            const target = e.target.closest('.tab');
+            if (!target || target === draggedTab) return;
+            
+            const fromFilter = draggedTab.dataset.filter;
+            const toFilter = target.dataset.filter;
+            
+            const tabs = Array.from(document.querySelectorAll('.tab'));
+            const fromIdx = tabs.findIndex(t => t.dataset.filter === fromFilter);
+            const toIdx = tabs.findIndex(t => t.dataset.filter === toFilter);
+            
+            if (fromIdx > -1 && toIdx > -1) {
+                if (fromFilter.startsWith('kw:')) {
+                    const kwFrom = fromFilter.substring(3);
+                    const kwTo = toFilter.substring(3);
+                    const fromKIdx = keywords.indexOf(kwFrom);
+                    const toKIdx = keywords.indexOf(kwTo);
+                    if (fromKIdx > -1 && toKIdx > -1) {
+                        const [moved] = keywords.splice(fromKIdx, 1);
+                        keywords.splice(toKIdx, 0, moved);
+                        localStorage.setItem('keywords', JSON.stringify(keywords));
+                        renderKeywordList();
+                    }
+                }
+                renderTabs();
+                setFilter(toFilter);
+            }
+        }
+
         function init() {
             try {
                 applyThemeMode();
                 updateThemeButtons();
+                renderTabs();
                 renderFeedLists();
                 renderKeywordList();
                 updateCounts();
@@ -930,7 +1066,7 @@
             if (!allArticles || !allArticles.length) {
                 const lastUpdate = localStorage.getItem('lastUpdate');
                 const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-                document.getElementById('headerTitle').innerHTML = `Menzis RSS <small>v6.4 · ${timeStr} · 0</small>`;
+                document.getElementById('headerTitle').innerHTML = `Menzis RSS <small>v6.5 · ${timeStr} · 0</small>`;
                 return;
             }
             
@@ -942,7 +1078,7 @@
                 !readLaterItems.some(r => r.link === a.link)
             ).length;
             
-            document.getElementById('headerTitle').innerHTML = `Menzis RSS <small>v6.4 · ${timeStr} · ${visibleCount}</small>`;
+            document.getElementById('headerTitle').innerHTML = `Menzis RSS <small>v6.5 · ${timeStr} · ${visibleCount}</small>`;
         }
 
         function toggleSidebar() {
@@ -1252,7 +1388,7 @@
             document.querySelectorAll('.tab').forEach(t => {
                 t.classList.toggle('active', t.dataset.filter === filter);
             });
-            renderArticles();
+            renderArticles(filter);
         }
 
         function openArticle(link) {
@@ -1295,7 +1431,7 @@
                 <div class="articles-list">
                     ${later.map(a => `
                         <div class="article-card" data-link="${a.link}" ontouchstart="startSwipe(event, this)" ontouchmove="moveSwipeRL(event, this)" ontouchend="endSwipeRL(event, this)">
-                            <div class="swipe-bg-left"><span class="swipe-label">Entfernen</span></div>
+                            <div class="swipe-hint">← Ausblenden · Später lesen →</div>
                             <div onclick="openArticle('${a.link}')">
                                 ${a.thumbnail ? `<img src="${a.thumbnail}" alt="">` : ''}
                                 <div class="article-title">${a.title}</div>
