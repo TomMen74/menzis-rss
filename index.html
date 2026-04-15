@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.10</title>
+    <title>Menzis RSS v6.11</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1226,7 +1226,7 @@
             if (!allArticles || !allArticles.length) {
                 const lastUpdate = localStorage.getItem('lastUpdate');
                 const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.10 · ' + timeStr + ' · 0</small>';
+                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.11 · ' + timeStr + ' · 0</small>';
                 return;
             }
             
@@ -1238,7 +1238,7 @@
                 !readLaterItems.some(r => r.link === a.link)
             ).length;
             
-            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.10 · ' + timeStr + ' · ' + visibleCount + '</small>';
+            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.11 · ' + timeStr + ' · ' + visibleCount + '</small>';
         }
 
         function toggleSidebar() {
@@ -1311,11 +1311,6 @@
             html += `<div class="feed-category-title" data-category="${category}" onclick="event.stopPropagation();toggleCategoryVisibility(this)">${title}</div>`;
             html += '<div class="feed-items-container">';
             
-            // Load collapsed state
-            const collapsed = JSON.parse(localStorage.getItem('collapsedCategories') || '{}');
-            if (collapsed[category]) {
-                html = html.replace('feed-items-container">', 'feed-items-container" style="display: none;">');
-            }
             if (category === 'custom') {
                 html += feeds.map((feed, idx) => `
                     <div class="feed-item" data-url="${feed.url}" data-category="${category}" data-idx="${idx}" onclick="toggleFeed('${feed.url}')">
@@ -1427,12 +1422,13 @@
             const cat = headerElem.nextElementSibling;
             if (!cat) return;
             const isHidden = cat.style.display === 'none';
-            cat.style.display = isHidden ? '' : 'none';
+            const newState = !isHidden;
+            cat.style.display = newState ? 'none' : '';
             
             // Save state to localStorage
             const category = headerElem.dataset.category;
             const collapsed = JSON.parse(localStorage.getItem('collapsedCategories') || '{}');
-            collapsed[category] = isHidden;
+            collapsed[category] = newState;
             localStorage.setItem('collapsedCategories', JSON.stringify(collapsed));
         }
 
