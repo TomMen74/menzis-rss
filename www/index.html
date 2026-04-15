@@ -532,6 +532,10 @@
             font-weight: bold;
         }
 
+        .feed-items-container {
+            display: block;
+        }
+
         .theme-selector {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -1301,7 +1305,7 @@
             }
             
             html += `<div class="feed-category-title" onclick="event.stopPropagation();toggleCategoryVisibility(this)">${title}</div>`;
-            
+            html += '<div class="feed-items-container">';
             if (category === 'custom') {
                 html += feeds.map((feed, idx) => `
                     <div class="feed-item" data-url="${feed.url}" data-category="${category}" data-idx="${idx}" onclick="toggleFeed('${feed.url}')">
@@ -1318,6 +1322,7 @@
                     </div>
                 `).join('');
             }
+            html += '</div>';
             
             container.innerHTML = html;
             
