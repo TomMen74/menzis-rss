@@ -968,6 +968,10 @@
             return keywords.some(kw => hasArticlesForKeyword(kw));
         }
 
+        function categoryHasArticles(cat) {
+            return allArticles && allArticles.some(a => (feedCategoryMap[a.feedUrl] || 'custom') === cat);
+        }
+
         function renderTabs() {
             const tabBar = document.getElementById('tabBar');
             if (!tabBar) return;
@@ -975,7 +979,9 @@
             let tabsHtml = '<div class="tab active" data-filter="all" onclick="setFilter(\'all\')">Alle</div>';
             
             categoryOrder.forEach(cat => {
-                tabsHtml += '<div class="tab" data-filter="cat:' + cat + '" onclick="setFilter(\'cat:' + cat + '\')">' + (categoryNames[cat] || cat) + '</div>';
+                if (categoryHasArticles(cat)) {
+                    tabsHtml += '<div class="tab" data-filter="cat:' + cat + '" onclick="setFilter(\'cat:' + cat + '\')">' + (categoryNames[cat] || cat) + '</div>';
+                }
             });
             
             if (keywords && keywords.length && allArticles && allArticles.length) {
