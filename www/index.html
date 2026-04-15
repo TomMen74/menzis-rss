@@ -884,20 +884,22 @@
         
         localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
         
-        let hiddenItems = JSON.parse(localStorage.getItem('hiddenItems'));
-        function getSafeArray(key) {
+        function getSafeItem(key, def) {
             try {
                 const val = localStorage.getItem(key);
-                return val && Array.isArray(JSON.parse(val)) ? JSON.parse(val) : [];
-            } catch (e) { return []; }
+                return val ? JSON.parse(val) : def;
+            } catch (e) {
+                console.warn('getSafeItem error for', key, e);
+                return def;
+            }
         }
         
-        let hiddenItems = getSafeArray('hiddenItems');
-        let readLaterItems = getSafeArray('readLaterItems');
-        let keywords = getSafeArray('keywords');
-        let customFeeds = getSafeArray('customFeeds');
-        let currentTheme = localStorage.getItem('theme') || 'dark';
-        let articleFilter = localStorage.getItem('articleFilter') || 'all';
+        let hiddenItems = getSafeItem('hiddenItems', []);
+        let readLaterItems = getSafeItem('readLaterItems', []);
+        let keywords = getSafeItem('keywords', []);
+        let customFeeds = getSafeItem('customFeeds', []);
+        let currentTheme = 'dark';
+        let articleFilter = 'all';
         let allArticles = [];
         
         // Migrate old format
@@ -1063,12 +1065,10 @@
                 renderFeedLists();
                 renderKeywordList();
                 updateCounts();
-                console.log('init running, loading feeds...');
                 loadFeeds();
                 updateHeaderInfo();
             } catch (e) {
                 console.error('init error:', e);
-                alert('Init Error: ' + e.message);
                 document.getElementById('mainContent').innerHTML = '<div class="error-msg"><h3>Fehler beim Starten</h3>Bitte App neu laden.</div>';
             }
         }
@@ -1078,24 +1078,14 @@
         let isLoading = false;
         
         function loadFeeds() {
-            console.log('loadFeeds called, enabledFeeds:', enabledFeeds);
-            if (isLoading) {
-                console.log('Already loading, returning...');
-                return;
-            }
+            if (isLoading) return;
             isLoading = true;
             
             const main = document.getElementById('mainContent');
-            if (!main) {
-                console.log('ERROR: main is null!');
-                return;
-            }
             main.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
-            console.log('Loading feeds, fetching', enabledFeeds.length, 'feeds...');
             
             const promises = enabledFeeds.map(url => fetchFeed(url));
             Promise.all(promises).then(articles => {
-                console.log('All feeds loaded, articles:', articles.length);
                 allArticles = articles.filter(a => a).sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
                 localStorage.setItem('lastUpdate', Date.now().toString());
                 renderMainContent(allArticles);
