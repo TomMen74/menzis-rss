@@ -897,10 +897,12 @@
             localStorage.setItem('readLaterItems', JSON.stringify(readLaterItems));
         }
         
-        let keywords = JSON.parse(localStorage.getItem('keywords')) || [];
+        let keywords = JSON.parse(localStorage.getItem('keywords'));
+        if (!keywords || !Array.isArray(keywords)) keywords = [];
         let currentTheme = localStorage.getItem('theme') || 'dark';
         let articleFilter = localStorage.getItem('articleFilter') || 'all';
-        let customFeeds = JSON.parse(localStorage.getItem('customFeeds')) || [];
+        let customFeeds = JSON.parse(localStorage.getItem('customFeeds'));
+        if (!customFeeds || !Array.isArray(customFeeds)) customFeeds = [];
         let allArticles = [];
         
         const feedCategoryMap = {};
@@ -1093,19 +1095,32 @@
             return fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(url))
                 .then(res => res.json())
                 .then(data => {
-                    if (!data || data.status !== 'ok') return [];
-                    const feedTitle = data.feed ? data.feed.title : 'Feed';
+                    if (!data || data.status !== 'ok') {
+                        console.warn('Feed error:', url, data);
+                        return [];
+                    }
+                    const feedTitle = (data.feed && data.feed.title) ? data.feed.title : 'Feed';
                     const cat = feedCategoryMap[url] || 'custom';
-                    return data.items.map(item => ({
-                        title: item.title || 'Ohne Titel',
-                        link: item.link || '',
-                        content: item.description || item.content || '',
-                        pubDate: item.pubDate ? item.pubDate : new Date().toISOString(),
-                        thumbnail: item.thumbnail || item.enclosure?.link || '',
-                        feedName: feedTitle,
-                        feedUrl: url,
-                        category: cat
-                    }));
+                    return data.items.map(item => {
+                        let thumb = item.thumbnail || '';
+                        if (!thumb && item.enclosure && item.enclosure.link) {
+                            thumb = item.enclosure.link;
+                        }
+                        if (!thumb && item.content) {
+                            const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/);
+                            if (imgMatch) thumb = imgMatch[1];
+                        }
+                        return {
+                            title: item.title || 'Ohne Titel',
+                            link: item.link || '',
+                            content: item.description || item.content || '',
+                            pubDate: item.pubDate ? item.pubDate : new Date().toISOString(),
+                            thumbnail: thumb,
+                            feedName: feedTitle,
+                            feedUrl: url,
+                            category: cat
+                        };
+                    });
                 })
                 .catch(err => {
                     console.error('fetchFeed error:', url, err);
