@@ -1062,6 +1062,117 @@
             }
         }
 
+        let isLoading = false;
+        
+        function loadFeeds() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            const main = document.getElementById('mainContent');
+            if (!main) {
+                main.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
+            }
+            
+            const promises = enabledFeeds.map(url => fetchFeed(url));
+            Promise.all(promises).then(articles => {
+                allArticles = articles.filter(a => a).sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                localStorage.setItem('lastUpdate', Date.now().toString());
+                renderMainContent(allArticles);
+                renderTabs();
+                updateHeaderInfo();
+                isLoading = false;
+            }).catch(err => {
+                console.error('loadFeeds error:', err);
+                isLoading = false;
+            });
+        }
+        
+        function fetchFeed(url) {
+            return fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(url))
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status !== 'ok') return [];
+                    const cat = feedCategoryMap[url] || 'custom';
+                    return data.items.map(item => ({
+                        title: item.title,
+                        link: item.link,
+                        content: item.description || item.content,
+                        pubDate: item.pubDate,
+                        thumbnail: item.thumbnail,
+                        feedName: data.feed.title,
+                        feedUrl: url,
+                        category: cat
+                    }));
+                })
+                .catch(err => {
+                    console.error('fetchFeed error:', url, err);
+                    return [];
+                });
+        }
+        
+        function renderMainContent(articles) {
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+            main.innerHTML = '';
+            
+            const filter = localStorage.getItem('articleFilter') || 'all';
+            let filtered = articles;
+            
+            if (filter === 'all') {
+                filtered = articles.filter(a => !hiddenItems.some(h => h.link === a.link) && !readLaterItems.some(r => r.link === a.link));
+            } else if (filter.startsWith('cat:')) {
+                const cat = filter.substring(4);
+                filtered = articles.filter(a => {
+                    if (hiddenItems.some(h => h.link === a.link) || readLaterItems.some(r => r.link === a.link)) return false;
+                    return (feedCategoryMap[a.feedUrl] || 'custom') === cat;
+                });
+            } else if (filter.startsWith('kw:')) {
+                const kw = filter.substring(3);
+                if (kw === 'all') {
+                    filtered = articles.filter(a => {
+                        if (hiddenItems.some(h => h.link === a.link) || readLaterItems.some(r => r.link === a.link)) return false;
+                        const text = (a.title + ' ' + (a.content || '')).toLowerCase();
+                        return keywords.some(k => text.includes(k.toLowerCase()));
+                    });
+                } else {
+                    const q = kw.toLowerCase();
+                    filtered = articles.filter(a => {
+                        if (hiddenItems.some(h => h.link === a.link) || readLaterItems.some(r => r.link === a.link)) return false;
+                        const text = (a.title + ' ' + (a.content || '') + ' ' + (a.feedName || '')).toLowerCase();
+                        return text.includes(q);
+                    });
+                }
+            } else {
+                filtered = articles.filter(a => !hiddenItems.some(h => h.link === a.link) && !readLaterItems.some(r => r.link === a.link));
+            }
+            
+            if (!filtered.length) {
+                main.innerHTML = '<div class="no-feeds">Keine Artikel gefunden.</div>';
+                return;
+            }
+            
+            const html = filtered.slice(0, 100).map(a => {
+                const hashtags = getArticleHashtags(a);
+                return '<div class="article-card" data-link="' + a.link + '" ontouchstart="startSwipe(event, this)" ontouchmove="moveSwipe(event, this)" ontouchend="endSwipe(event, this)">' +
+                    '<div class="swipe-hint">← Ausblenden · Später lesen →</div>' +
+                    (a.thumbnail ? '<img src="' + a.thumbnail + '" alt="">' : '') +
+                    '<div class="article-title">' + a.title + '</div>' +
+                    '<div class="article-meta"><span class="feed-name">' + a.feedName + '</span> · <span>' + getArticleAge(a.pubDate) + '</span></div>' +
+                    (hashtags.length ? '<div class="article-meta hashtags">' + hashtags.map(t => '<span class="hashtag" onclick="event.stopPropagation(); openHashtag(\'' + t + '\')">#' + t + '</span>').join('') + '</div>' : '') +
+                '</div>';
+            }).join('');
+            
+            main.innerHTML = html;
+            
+            main.querySelectorAll('.article-card').forEach(card => {
+                card.addEventListener('click', e => {
+                    if (!e.target.classList.contains('hashtag')) {
+                        openArticle(card.dataset.link);
+                    }
+                });
+            });
+        }
+
         function updateHeaderInfo() {
             if (!allArticles || !allArticles.length) {
                 const lastUpdate = localStorage.getItem('lastUpdate');
