@@ -910,8 +910,10 @@
         customFeeds.forEach(f => feedCategoryMap[f.url] = 'custom');
 
         function getArticleAge(pubDate) {
+            if (!pubDate) return '';
             const now = new Date();
             const pub = new Date(pubDate);
+            if (isNaN(pub.getTime())) return '';
             const diffMs = now - pub;
             const diffMins = Math.floor(diffMs / 60000);
             const diffHours = Math.floor(diffMins / 60);
@@ -1091,15 +1093,16 @@
             return fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(url))
                 .then(res => res.json())
                 .then(data => {
-                    if (data.status !== 'ok') return [];
+                    if (!data || data.status !== 'ok') return [];
+                    const feedTitle = data.feed ? data.feed.title : 'Feed';
                     const cat = feedCategoryMap[url] || 'custom';
                     return data.items.map(item => ({
-                        title: item.title,
-                        link: item.link,
-                        content: item.description || item.content,
-                        pubDate: item.pubDate,
-                        thumbnail: item.thumbnail,
-                        feedName: data.feed.title,
+                        title: item.title || 'Ohne Titel',
+                        link: item.link || '',
+                        content: item.description || item.content || '',
+                        pubDate: item.pubDate ? item.pubDate : new Date().toISOString(),
+                        thumbnail: item.thumbnail || item.enclosure?.link || '',
+                        feedName: feedTitle,
                         feedUrl: url,
                         category: cat
                     }));
