@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.11</title>
+    <title>Menzis RSS v6.12</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -683,7 +683,7 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <span class="sidebar-title">Menü</span>
-            <button class="close-sidebar" onclick="toggleSidebar()">×</button>
+            <button class="close-sidebar" onclick="closeSidebar()">×</button>
         </div>
         <div class="nav-item" onclick="openOverlay('feeds')">
             <span class="nav-item-label">Feed-Auswahl</span>
@@ -713,7 +713,7 @@
 
     <div class="overlay-page" id="overlay-feeds">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <button class="close-btn" onclick="closeSidebar()">✕</button>
             <span class="overlay-title">Feed-Auswahl</span>
         </div>
         <div class="overlay-content" id="feedLists"></div>
@@ -721,7 +721,7 @@
 
     <div class="overlay-page" id="overlay-theme">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <button class="close-btn" onclick="closeSidebar()">✕</button>
             <span class="overlay-title">Design</span>
         </div>
         <div class="overlay-content">
@@ -735,7 +735,7 @@
 
     <div class="overlay-page" id="overlay-url">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <button class="close-btn" onclick="closeSidebar()">✕</button>
             <span class="overlay-title">Eigene URL hinzufügen</span>
         </div>
         <div class="overlay-content">
@@ -746,7 +746,7 @@
 
     <div class="overlay-page" id="overlay-readLater">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <button class="close-btn" onclick="closeSidebar()">✕</button>
             <span class="overlay-title">Später lesen</span>
         </div>
         <div class="overlay-content" id="readLaterList"></div>
@@ -754,7 +754,7 @@
 
     <div class="overlay-page" id="overlay-keywords">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <button class="close-btn" onclick="closeSidebar()">✕</button>
             <span class="overlay-title">Keywords</span>
         </div>
         <div class="overlay-content">
@@ -768,7 +768,7 @@
 
     <div class="overlay-page" id="overlay-hidden">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeOverlay()">✕</button>
+            <button class="close-btn" onclick="closeSidebar()">✕</button>
             <span class="overlay-title">Versteckte Artikel</span>
         </div>
         <div class="overlay-content" id="hiddenList"></div>
@@ -1226,7 +1226,7 @@
             if (!allArticles || !allArticles.length) {
                 const lastUpdate = localStorage.getItem('lastUpdate');
                 const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.11 · ' + timeStr + ' · 0</small>';
+                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.12 · ' + timeStr + ' · 0</small>';
                 return;
             }
             
@@ -1238,7 +1238,7 @@
                 !readLaterItems.some(r => r.link === a.link)
             ).length;
             
-            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.11 · ' + timeStr + ' · ' + visibleCount + '</small>';
+            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.12 · ' + timeStr + ' · ' + visibleCount + '</small>';
         }
 
         function toggleSidebar() {
@@ -1299,7 +1299,8 @@
             const title = categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
             const feeds = allCategories[category] || [];
             
-            let html = `<div class="back-btn" onclick="renderFeedLists()">← Zurück</div>`;
+            let html = '<div class="back-btn" onclick="renderFeedLists()">← Zurück</div>';
+            html += '<button class="add-btn" style="margin: 0.5rem 1rem;" onclick="finishFeedSelection()">Fertig</button>';
             
             if (category !== 'custom') {
                 html += `<div class="category-actions">
@@ -1399,6 +1400,11 @@
             }
             localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
             renderFeedLists();
+            // loadFeeds wird NICHT automatisch aufgerufen - bleibt in der Auswahl
+        }
+
+        function finishFeedSelection() {
+            closeOverlay();
             loadFeeds();
         }
 
@@ -1757,14 +1763,21 @@
 
         function openOverlay(name) {
             document.getElementById('overlay-' + name).classList.add('active');
-            document.getElementById('sidebar').classList.remove('active');
+            // Sidebar bleibt offen, wird nicht geschlossen
             
             if (name === 'hidden') renderHiddenList();
             if (name === 'readLater') renderReadLaterList();
             if (name === 'keywords') renderKeywordList();
+            if (name === 'feeds') renderFeedLists();
         }
 
         function closeOverlay() {
+            document.querySelectorAll('.overlay-page').forEach(o => o.classList.remove('active'));
+            // Sidebar bleibt offen
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
             document.querySelectorAll('.overlay-page').forEach(o => o.classList.remove('active'));
         }
 
