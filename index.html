@@ -666,6 +666,28 @@
         }
         .fab:hover { transform: scale(1.05); box-shadow: var(--elevation-3); }
         .fab:active { transform: scale(0.95); }
+        /* New navigation buttons in feed selection overlay */
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            margin: 0.5rem 0;
+        }
+        .action-button {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-small);
+            cursor: pointer;
+            font-weight: 500;
+            border: 0;
+            background: var(--surface-container-high);
+            color: var(--on-surface);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .action-button.back { background: var(--surface-container-high); }
+        .action-button.finish { background: var(--primary); color: var(--on-primary); }
+        .action-button.back:hover { background: var(--surface-container); color: var(--primary); }
+        .action-button.finish:hover { box-shadow: var(--elevation-2); transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -1316,8 +1338,11 @@
             const title = categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
             const feeds = allCategories[category] || [];
             
-            let html = '<div class="back-btn" onclick="renderFeedLists()">← Zurück</div>';
-            html += '<button class="add-btn" style="margin: 0.5rem 1rem;" onclick="finishFeedSelection()">Fertig</button>';
+            let html = '';
+            html += '<div class="button-container">';
+            html += '  <button class="action-button back" onclick="renderFeedLists()" aria-label="Zurück">← Zurück</button>';
+            html += '  <button class="action-button finish" onclick="finishFeedSelection()" aria-label="Fertig">Fertig ✕</button>';
+            html += '</div>';
             
             if (category !== 'custom') {
                 html += `<div class="category-actions">
@@ -1430,6 +1455,7 @@
 
         function finishFeedSelection() {
             closeOverlay();
+            closeSidebar();
             loadFeeds();
         }
 
