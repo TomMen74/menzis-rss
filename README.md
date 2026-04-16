@@ -1,4 +1,4 @@
-# Menzis RSS v5.1
+# Menzis RSS v6.18
 
 Ein einfacher RSS-Reader als Web-App.
 
@@ -8,7 +8,7 @@ Ein einfacher RSS-Reader als Web-App.
 - **Swipe-Funktion** - Swipe links = Ausblenden | Swipe rechts = Später lesen
 - **Später lesen** - Menü zeigt alle gespeicherten Artikel
 - **Versteckte Artikel** - Menü zeigt alle ausgeblendeten Artikel
-- **Keywords** - Eigene Schlagwörter als额外 Tabs (z.B. "Schwerin", "Android")
+- **Keywords** - Eigene Schlagwörter als zusätzliche Tabs (z.B. "Schwerin", "Android")
 - **Suchfunktion** - Filtert Artikel nach Titel und Feed-Name
 - **Kategorien-Tabs** - Dynamische Tabs basierend auf aktiven Feeds
 - **Pull-to-Refresh** - Nach unten ziehen zum Aktualisieren
@@ -22,10 +22,10 @@ Ein einfacher RSS-Reader als Web-App.
 
 | Kategorie | Feeds |
 |-----------|-------|
-| **Nachrichten** | Tagesschau, SPIEGEL, FAZ, NDR (MV, SH, NI, HH), NachDenkSeiten, Cicero, Tichys Einblick, Telepolis, Apollo News, Junge Freiheit, **Die Welt, n-tv, Handelsblatt, Tagesspiegel, Focus** |
-| **Tech** | Futurezone, Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital, **Heise, Golem.de, BasicThinking, der Freitag** |
-| **Wirtschaft** | Gründerszene, Deutsche Startups, **WirtschaftsWoche, Makronom** |
-| **Lifestyle** | Mit Vergnügen, Eurogamer, Moviepilot, **Deutsche Welle, The Local** |
+| **Nachrichten** | Tagesschau, SPIEGEL, FAZ, NDR (MV, SH, NI, HH), NachDenkSeiten, Cicero, Tichys Einblick, Telepolis, Apollo News, Junge Freiheit, Die Welt, n-tv, Handelsblatt, Tagesspiegel, Focus |
+| **Tech** | Futurezone, Caschy, Netzpolitik, t3n, Kuketz IT, ComputerBase, Inside Digital, Heise, Golem.de, BasicThinking, der Freitag |
+| **Wirtschaft** | Gründerszene, Deutsche Startups, WirtschaftsWoche, Makronom |
+| **Lifestyle** | Mit Vergnügen, Eurogamer, Moviepilot, Deutsche Welle, The Local |
 | **Android** | Android-User.de, XDA Android, SmartDroid |
 | **Apple** | Macerkopf, iFun, Sir Apfelot, Apfelpage, Macwelt |
 | **Kochen** | Eat this! (Vegan), Backen macht glücklich |
@@ -50,7 +50,10 @@ Folgende Feeds funktionieren nicht mit der rss2json API und wurden deaktiviert:
 
 ## Versionen
 
-- **v6.0** - Drag & Drop Sortierung für Tabs und Keywords
+- **v6.18** - UI overhaul: Feed-Auswahl Overlay zeigt zwei echte Buttons nebeneinander
+  - Zurück (links) kehrt eine Ebene zurück (renderFeedLists)
+  - Fertig (rechts) schließt Overlay und Sidebar und navigiert zur Feed-Seite (Fertig ✕)
+- v6.17 - Debug APK bereitgestellt
 - v5.9 - Enter-Taste für Keywords, Drag&Drop für Feeds
 - v5.8 - Favicon hinzugefügt
 - v5.7 - Rate limiting Fix (500ms Verzögerung)
@@ -63,3 +66,52 @@ Folgende Feeds funktionieren nicht mit der rss2json API und wurden deaktiviert:
 - v5.0 - Saubere Neuorganisation mit Theme-System
 - v4.x - Theme-System eingeführt
 - v3.x - Initiale Web-App Version
+
+## Changes (Changelog)
+
+- **v6.18 (2026-04-16)**
+  - UI overhaul: Feed-Auswahl Overlay zeigt zwei echte Buttons nebeneinander
+    - Zurück (links) kehrt eine Ebene zurück (renderFeedLists)
+    - Fertig (rechts) schließt Overlay und Sidebar und navigiert zur Feed-Seite (Fertig ✕)
+  - Version im Web-UI-Code auf v6.18 aktualisiert
+  - Branch feat/feed-buttons-ui erstellt und Änderungen dorthin gepusht
+  - PR ggf. manuell erstellt (Link unten im Repo)
+
+- **v6.17 (YYYY-MM-DD)**
+  - Debug APK bereitgestellt
+
+- v5.9 (YYYY-MM-DD)
+  - Enter-Taste für Keywords, Drag&Drop für Feeds
+
+- v5.8 (YYYY-MM-DD)
+  - Favicon hinzugefügt
+
+- v5.7 (YYYY-MM-DD)
+  - Rate limiting Fix (500ms Verzögerung)
+
+- v5.6 (YYYY-MM-DD)
+  - SyntaxError Fix
+
+- v5.5 (YYYY-MM-DD)
+  - Ladekreisel Bugfix
+
+- v5.4 (YYYY-MM-DD)
+  - Nur Ladekreisel, kein Text
+
+- v5.3 (YYYY-MM-DD)
+  - Version im Header anzeigen
+
+- v5.2 (YYYY-MM-DD)
+  - Keywords-Tabs Bugfix
+
+- v5.1 (YYYY-MM-DD)
+  - Swipe rechts für Später lesen, Keywords-Tabs
+
+- v5.0 (YYYY-MM-DD)
+  - Saubere Neuorganisation mit Theme-System
+
+- v4.x (YYYY-MM-DD)
+  - Theme-System eingeführt
+
+- v3.x (YYYY-MM-DD)
+  - Initiale Web-App Version
