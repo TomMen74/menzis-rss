@@ -1,0 +1,43 @@
+name: Build APK Release
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+      - name: Build Debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v6.18
+          name: Release v6.18
+          body: |
+            Automated release containing the debug APK built from main.
+          draft: false
+          prerelease: false
+      - name: Upload APK
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: android/app/build/outputs/apk/debug/app-debug.apk
+          asset_name: MenzisRSS-v6.18-debug.apk
+          asset_content_type: application/vnd.android.package-archive
