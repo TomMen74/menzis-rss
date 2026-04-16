@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.16</title>
+    <title>Menzis RSS v6.17</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1243,7 +1243,7 @@
             if (!allArticles || !allArticles.length) {
                 const lastUpdate = localStorage.getItem('lastUpdate');
                 const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.16 · ' + timeStr + ' · 0</small>';
+                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.17 · ' + timeStr + ' · 0</small>';
                 return;
             }
             
@@ -1255,7 +1255,7 @@
                 !readLaterItems.some(r => r.link === a.link)
             ).length;
             
-            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.16 · ' + timeStr + ' · ' + visibleCount + '</small>';
+            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.17 · ' + timeStr + ' · ' + visibleCount + '</small>';
         }
 
         function toggleSidebar() {
@@ -1333,7 +1333,7 @@
                 html += feeds.map((feed, idx) => `
                     <div class="feed-item" data-url="${feed.url}" data-category="${category}" data-idx="${idx}" onclick="event.stopPropagation();toggleFeed('${feed.url}')">
                         <span>${feed.name}</span>
-                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" onclick="event.stopPropagation();toggleFeed('${feed.url}')"></div>
+                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" data-feed-url="${feed.url}" onclick="event.stopPropagation();toggleFeed('${feed.url}')"></div>
                         <svg class="delete-icon" onclick="event.stopPropagation();deleteCustomFeed('${feed.url}', '${feed.name}')" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </div>
                 `).join('');
@@ -1341,7 +1341,7 @@
                 html += feeds.map((feed, idx) => `
                     <div class="feed-item" data-url="${feed.url}" data-category="${category}" data-idx="${idx}" onclick="event.stopPropagation();toggleFeed('${feed.url}')">
                         <span>${feed.name}</span>
-                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" onclick="event.stopPropagation();toggleFeed('${feed.url}')"></div>
+                        <div class="feed-toggle ${enabledFeeds.includes(feed.url) ? 'checked' : ''}" data-feed-url="${feed.url}" onclick="event.stopPropagation();toggleFeed('${feed.url}')"></div>
                     </div>
                 `).join('');
             }
@@ -1416,8 +1416,16 @@
                 enabledFeeds.push(url);
             }
             localStorage.setItem('enabledFeeds', JSON.stringify(enabledFeeds));
-            renderFeedLists();
-            // loadFeeds wird NICHT automatisch aufgerufen - bleibt in der Auswahl
+            
+            // Checkbox visuell aktualisieren OHNE Neu-Render
+            const toggle = document.querySelector('[data-feed-url="' + url + '"]');
+            if (toggle) {
+                if (enabledFeeds.includes(url)) {
+                    toggle.classList.add('checked');
+                } else {
+                    toggle.classList.remove('checked');
+                }
+            }
         }
 
         function finishFeedSelection() {
