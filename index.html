@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.17</title>
+<title>Menzis RSS v6.18</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1265,7 +1265,7 @@
             if (!allArticles || !allArticles.length) {
                 const lastUpdate = localStorage.getItem('lastUpdate');
                 const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.17 · ' + timeStr + ' · 0</small>';
+            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.18 · ' + timeStr + ' · 0</small>';
                 return;
             }
             
@@ -1277,7 +1277,7 @@
                 !readLaterItems.some(r => r.link === a.link)
             ).length;
             
-            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.17 · ' + timeStr + ' · ' + visibleCount + '</small>';
+            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.18 · ' + timeStr + ' · ' + visibleCount + '</small>';
         }
 
         function toggleSidebar() {
