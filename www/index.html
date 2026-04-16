@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <title>Menzis RSS v6.14</title>
+    <title>Menzis RSS v6.15</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -724,7 +724,7 @@
 
     <div class="overlay-page" id="overlay-feeds">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeSidebar()">✕</button>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Feed-Auswahl</span>
         </div>
         <div class="overlay-content" id="feedLists"></div>
@@ -732,7 +732,7 @@
 
     <div class="overlay-page" id="overlay-theme">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeSidebar()">✕</button>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Design</span>
         </div>
         <div class="overlay-content">
@@ -746,7 +746,7 @@
 
     <div class="overlay-page" id="overlay-url">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeSidebar()">✕</button>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Eigene URL hinzufügen</span>
         </div>
         <div class="overlay-content">
@@ -757,7 +757,7 @@
 
     <div class="overlay-page" id="overlay-readLater">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeSidebar()">✕</button>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Später lesen</span>
         </div>
         <div class="overlay-content" id="readLaterList"></div>
@@ -765,7 +765,7 @@
 
     <div class="overlay-page" id="overlay-keywords">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeSidebar()">✕</button>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Keywords</span>
         </div>
         <div class="overlay-content">
@@ -779,7 +779,7 @@
 
     <div class="overlay-page" id="overlay-hidden">
         <div class="overlay-header">
-            <button class="close-btn" onclick="closeSidebar()">✕</button>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
             <span class="overlay-title">Versteckte Artikel</span>
         </div>
         <div class="overlay-content" id="hiddenList"></div>
@@ -1237,7 +1237,7 @@
             if (!allArticles || !allArticles.length) {
                 const lastUpdate = localStorage.getItem('lastUpdate');
                 const timeStr = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.14 · ' + timeStr + ' · 0</small>';
+                document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.15 · ' + timeStr + ' · 0</small>';
                 return;
             }
             
@@ -1249,7 +1249,7 @@
                 !readLaterItems.some(r => r.link === a.link)
             ).length;
             
-            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.14 · ' + timeStr + ' · ' + visibleCount + '</small>';
+            document.getElementById('headerTitle').innerHTML = 'Menzis RSS <small>v6.15 · ' + timeStr + ' · ' + visibleCount + '</small>';
         }
 
         function toggleSidebar() {
